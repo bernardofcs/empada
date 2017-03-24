@@ -9,10 +9,17 @@ class App extends Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    // console.log("componentDidMount <App />");
+    const mysocket = new WebSocket("ws://localhost:3001")
+    this.socket = mysocket;
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     // console.log('submitted')
    console.log(this.state.insert)
+   this.socket.send(this.state.insert)
   }
 
   handleChange = (e) => {
