@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
         // associations can be defined here
         assigned_user.belongsTo(models.User)
         assigned_user.belongsTo(models.Project)
-        assigned_user.hasMany(models.Task)
+        assigned_user.hasMany(models.task)
       }
     }
   });

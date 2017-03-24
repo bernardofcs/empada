@@ -7,8 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: (models) => {
         // associations can be defined here
-        manager_user.belongsTo(models.User)
-        manager_user.belongsTo(models.Project)
+        manager_user.belongsTo(models.user)
+        manager_user.belongsTo(models.project)
       }
     }
   });
