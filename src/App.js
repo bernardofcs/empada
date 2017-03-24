@@ -2,11 +2,21 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import InsertForm from './InsertForm.js'
+import TaskDashboard from './TaskDashboard'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {};
+  }
+
+  handleStartTask() {
+
+  }
+
+  handleEndTask() {
+
   }
 
   componentDidMount() {
@@ -27,6 +37,7 @@ class App extends Component {
     console.log(e.target.value)
     this.setState({insert: e.target.value})
   }
+
   render() {
     return (
       <div className="App">
