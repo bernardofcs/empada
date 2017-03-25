@@ -44,12 +44,17 @@ class App extends Component {
 
   handleLogin = (e) => {
     e.preventDefault();
-    console.log('login');
+    // console.log('login');
+    const loginObj = {type: 'login', email: this.state.login_email, password: this.state.login_password}
+    this.socket.send(JSON.stringify(loginObj))
   }
 
   handleRegister = (e) => {
     e.preventDefault();
-    console.log('registered');
+    // console.log('registered');
+    const registerObj = {type: 'register', firstname: this.state.register_firstname, lastname: this.state.register_lastname, email: this.state.email,
+    password: this.state.password}
+    this.socket.send(JSON.stringify(registerObj))
   }
 
   render() {
