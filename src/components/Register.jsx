@@ -1,17 +1,22 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 
 class Register extends Component {
 
   render(){
     return (
-      <div>
-        <h2 ref="subtitle">Sign Up</h2>
-        <div>Please login to your account.</div>
-        <form>
-          <input />
-        </form>
-      </div>
+      <form action="/" onSubmit={this.props.handleRegister}>
+        <h2>Sign Up</h2><br />
+        First Name
+        <input type="text" name="register-firstname" onChange={this.props.handleInputChange} /><br />
+        Last Name
+        <input type="text" name="register-lastname" onChange={this.props.handleInputChange} /><br />
+        Email
+        <input type="email" name="register-email" onChange={this.props.handleInputChange} /><br />
+        Password
+        <input type="password" name="register-password" onChange={this.props.handleInputChange} /><br />
+        <button type="submit" label="Login">Create Account</button><br />
+        <button onClick={this.props.openLogin}>Already Registered?</button>
+      </form>
     );
   }
 }

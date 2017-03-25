@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import InsertForm from './InsertForm.js'
 import AuthModal from './components/AuthModal.jsx'
 
 class App extends Component {
@@ -22,19 +21,6 @@ class App extends Component {
     this.socket = mysocket;
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log('submitted')
-   console.log(this.state.insert)
-   this.socket.send(this.state.insert)
-  }
-
-  handleChange = (e) => {
-    e.preventDefault();
-    console.log(e.target.value)
-    this.setState({insert: e.target.value})
-  }
-
   openModal = () => {
     this.setState({modalIsOpen: true});
   }
@@ -48,6 +34,24 @@ class App extends Component {
     this.setState({modalIsOpen: false});
   }
 
+  handleInputChange = (e) => {
+    e.preventDefault();
+    const objkey = e.target.name
+    const stateobj = {}
+    stateobj[objkey] = e.target.value
+    this.setState(stateobj)
+  }
+
+  handleLogin = (e) => {
+    e.preventDefault();
+    console.log('login');
+  }
+
+  handleRegister = (e) => {
+    e.preventDefault();
+    console.log('registered');
+  }
+
   render() {
     return (
       <div className="App">
@@ -56,9 +60,9 @@ class App extends Component {
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
-        <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <button onClick={this.openModal}>Open Modal</button>
-        <AuthModal modalIsOpen={this.state.modalIsOpen} afterOpenModal={this.afterOpenModal} closeModal={this.closeModal} contentLabel="" />
+        <button onClick={this.openModal}>Login</button>
+        <AuthModal handleLogin={this.handleLogin} handleRegister={this.handleRegister} handleInputChange={this.handleInputChange} modalIsOpen={this.state.modalIsOpen} afterOpenModal={this.afterOpenModal} 
+        closeModal={this.closeModal} contentLabel="" />
       </div>
     );
   }
