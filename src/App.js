@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import InsertForm from './InsertForm.js'
-import Modal from 'react-modal';
+import AuthModal from './components/AuthModal.jsx'
 
 class App extends Component {
   constructor(props){
@@ -11,12 +11,12 @@ class App extends Component {
       modalIsOpen: false
     };
 
-    this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    // this.openModal = this.openModal.bind(this);
+    // this.afterOpenModal = this.afterOpenModal.bind(this);
+    // this.closeModal = this.closeModal.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     // console.log("componentDidMount <App />");
     const mysocket = new WebSocket("ws://localhost:3001")
     this.socket = mysocket;
@@ -35,16 +35,16 @@ class App extends Component {
     this.setState({insert: e.target.value})
   }
 
-  openModal() {
+  openModal = () => {
     this.setState({modalIsOpen: true});
   }
 
-  afterOpenModal() {
+  afterOpenModal = () => {
     // references are now sync'd and can be accessed.
-    this.refs.subtitle.style.color = '#013';
+    // this.refs.subtitle.style.color = '#013';
   }
 
-  closeModal() {
+  closeModal = () => {
     this.setState({modalIsOpen: false});
   }
 
@@ -58,7 +58,7 @@ class App extends Component {
         <br />
         <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <button onClick={this.openModal}>Open Modal</button>
-        <Modal isOpen={this.state.modalIsOpen} onAfterOpen={this.afterOpenModal} onRequestClose={this.closeModal} contentLabel="" />
+        <AuthModal modalIsOpen={this.state.modalIsOpen} afterOpenModal={this.afterOpenModal} closeModal={this.closeModal} contentLabel="" />
       </div>
     );
   }
