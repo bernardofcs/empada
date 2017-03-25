@@ -14,7 +14,7 @@ class App extends Component {
   handleStartTask = (e) => {
     e.preventDefault();
     let message = {
-      type: 'start-time', 
+      type: 'start-time-for-contractor-tasks', 
       start_time: Date.now(),
       project_id: 12,
       id: 1
@@ -25,6 +25,14 @@ class App extends Component {
 
   handleEndTask = (e) => {
     e.preventDefault(); 
+    let message = {
+      type: 'end-time-for-contractor-tasks', 
+      end_date: Date.now(),
+      project_id: 12,
+      id: 1
+    }
+    console.log('it is activating the button')
+    this.socket.send(JSON.stringify(message));
   }
 
   componentDidMount = () => {

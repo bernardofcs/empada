@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Button, Input } from 'react-materialize';
+import { Row, Button } from 'react-materialize';
 import './App.css'
 // only keep what you want to use 
 // use radio button separately in each form, can't press the end button until the first button has been clicked
@@ -28,18 +28,14 @@ class TaskDashboard extends Component {
         <header>List of Tasks</header>
 
         <div>
-          {/*<div onClick={this.props.handleStartTask}>*/}
-            <Button waves='light' onClick={this.props.handleStartTask}>button</Button>
-          {/*</div>*/}
+          <Button waves='light' onClick={this.props.handleStartTask}>Begin Task</Button>
           <p>'tasks.assigned_start_time'</p>
           <p>'tasks.description'</p>
           <p>'tasks.assigned_end_time'</p>
         </div>
 
         <div>
-          <form onSubmit={this.props.handleEndTask}>
-            <Input name='group2' type='radio' value='brown' label='End Task' disabled='disabled' />
-          </form>
+          <Button waves='light' onClick={this.props.handleEndTask}>End Task</Button>
         </div>
       </Row>
     );
