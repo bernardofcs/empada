@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import InsertForm from './InsertForm.js'
 import TaskDashboard from './TaskDashboard'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+// import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 class App extends Component {
   constructor(props){
@@ -11,15 +11,23 @@ class App extends Component {
     this.state = {};
   }
 
-  handleStartTask() {
-
+  handleStartTask = (e) => {
+    e.preventDefault();
+    let message = {
+      type: 'start-time', 
+      start_time: Date.now(),
+      project_id: 12,
+      id: 1
+    }
+    console.log('it is activating the button')
+    this.socket.send(JSON.stringify(message));
   }
 
-  handleEndTask() {
-
+  handleEndTask = (e) => {
+    e.preventDefault(); 
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     // console.log("componentDidMount <App />");
     const mysocket = new WebSocket("ws://localhost:3001")
     this.socket = mysocket;
@@ -28,8 +36,8 @@ class App extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     // console.log('submitted')
-   console.log(this.state.insert)
-   this.socket.send(this.state.insert)
+    console.log(this.state.insert)
+    this.socket.send(this.state.insert)
   }
 
   handleChange = (e) => {
@@ -47,6 +55,7 @@ class App extends Component {
         </div>
         <br />
         <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        <TaskDashboard handleStartTask={this.handleStartTask} handleEndTask={this.handleEndTask}/>
       </div>
     );
   }
