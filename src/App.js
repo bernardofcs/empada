@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import InsertForm from './InsertForm.js'
+import { Timeline } from 'react-chartkick';
 
 class App extends Component {
   constructor(props){
@@ -27,7 +28,15 @@ class App extends Component {
     console.log(e.target.value)
     this.setState({insert: e.target.value})
   }
+
   render() {
+
+    let data = [
+      ["Washington", "1789-04-29", "1797-03-03"],
+      ["Washington", "1798-04-29", "1799-03-03"],
+      ["Adams", "1797-03-03", "1801-03-03"]
+    ];
+
     return (
       <div className="App">
         <div className="App-header">
@@ -36,6 +45,9 @@ class App extends Component {
         </div>
         <br />
         <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        <div className='timeline'>
+          <Timeline data={data} />
+        </div>
       </div>
     );
   }
