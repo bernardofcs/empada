@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import EventCreationForm from './EventCreationForm.jsx';
 import InsertForm from './InsertForm.js'
 import { Timeline } from 'react-chartkick';
 
@@ -32,9 +33,9 @@ class App extends Component {
   render() {
 
     let data = [
-      ["Washington", "1789-04-29", "1797-03-03"],
-      ["Washington", "1798-04-29", "1799-03-03"],
-      ["Adams", "1797-03-03", "1801-03-03"]
+      ["Washington", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
+      ["Washington", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
+      ["Adams", new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
     ];
 
     return (
