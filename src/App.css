@@ -3,6 +3,10 @@
     padding: 1em;
 }
 
+body {
+    font-size: 80%;
+}
+
 .App-logo {
     animation: App-logo-spin infinite 20s linear;
     height: 80px;
