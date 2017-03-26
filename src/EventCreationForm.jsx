@@ -2,16 +2,28 @@ import React, { Component } from 'react';
 import './App.css';
 
 class EventCreationForm extends Component {
-  
+  constructor(props){
+    super(props);
+    this.state = {
+      selected: {name: "", id: 0}
+    };
+    this.toggle = this.toggle.bind(this);
+  }
   toggle(e) {
-    console.log(e.target.className);
-
+    console.log(e.target.innerHTML);
     // "collection-item active" ? "collection-item" : "collection-item active";
-    if (e.target.className == "collection-item active"){
+    if (e.target.className === "collection-item active"){
       e.target.className = "collection-item";
     } else {
-    e.target.className="collection-item active";
+      e.target.className="collection-item active";
     }
+    console.log(e.target.getAttribute('data-id'));
+    this.setState({
+      selected: {
+        name: e.target.innerHTML,
+        id: e.target.getAttribute('data-id')
+      }
+    }); 
   } 
   render() {
     return (
@@ -31,7 +43,7 @@ class EventCreationForm extends Component {
               <div className="collection">
                 
                   {this.props.assigned_people.map( (p) => {
-                    return (<a href="#!" className="collection-item" onClick={this.toggle}>{p}</a>);
+                    return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.toggle}>{p.name}</a>);
                   })}
                 
               </div>
@@ -39,6 +51,7 @@ class EventCreationForm extends Component {
           </div>
           <div className="col s8">
             <div className="card-panel">
+              {this.state.selected.name}
               <table>
                 <thead>
                   <tr>
@@ -50,29 +63,26 @@ class EventCreationForm extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td><form><input type="text"/></form></td>
-                    <td><form><input type="text"/></form></td>
-                    <td><form><input type="text"/></form></td>
-                    <td><form><input type="text"/></form></td>
+                    <td><form><input type="text" placeholder="New task"/></form></td>
+                    <td><form><input type="text" placeholder="Description of task"/></form></td>
+                    <td><form><input type="text" placeholder="Start Task time"/></form></td>
+                    <td><form><input type="text" placeholder="End Task Time"/></form></td>
                   </tr>
-                  <tr>
-                    <td>Alvin</td>
-                    <td>Eclair</td>
-                    <td>12:00</td>
-                    <td>14:00</td>
-                  </tr>
-                  <tr>
-                    <td>Alan</td>
-                    <td>Jellybean</td>
-                    <td>16:00</td>
-                    <td>19:00</td>
-                  </tr>
-                  <tr>
-                    <td>Jonathan</td>
-                    <td>Lollipop</td>
-                    <td>21:00</td>
-                    <td>24:00</td>
-                  </tr>
+                
+                  {this.props.tasks
+                    .filter((t)=> {
+                      console.log("Filtering...")
+                      console.log(t.user_id)
+                      console.log(this.state.selected.id)
+                      console.log(t.user_id == this.state.selected.id);
+                      return t.user_id == this.state.selected.id;
+                    })
+                    .map((t)=> {
+                      console.log("map out table rows")
+                      return (
+                        <tr><td data-task-id={t.id}>{t.name}</td><td data-task-id={t.id}>{t.description}</td><td data-task-id={t.id}>{t.assined_end_time}</td></tr>
+                      );
+                    })}     
                 </tbody>
               </table>
             </div>
