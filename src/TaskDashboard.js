@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Table } from 'react-materialize';
+import { Row, Table, Collection } from 'react-materialize';
 import TaskDashboardFields from './TaskDashboardFields.jsx'
 import '../styles/App.css'
 
@@ -7,9 +7,8 @@ class TaskDashboard extends Component {
   render() {
     return (
       <Row>
-        <header>
-           List of Tasks
-        </header>
+        <Collection header="List of Tasks">
+        </Collection>
 
         <Table>
 

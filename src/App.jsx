@@ -12,9 +12,16 @@ class App extends Component {
       list_of_tasks : [
         {
           start_time: Date.now(),
-          assigned_start_time: Date.now(), 
-          description: 'description', 
-          assigned_end_time: Date.now(), 
+          assigned_start_time: Date.now(),
+          description: 'description',
+          assigned_end_time: Date.now(),
+          end_date: Date.now()
+        },
+        {
+          start_time: Date.now(),
+          assigned_start_time: Date.now(),
+          description: 'another kickass description',
+          assigned_end_time: Date.now(),
           end_date: Date.now()
         }
       ]
@@ -24,30 +31,31 @@ class App extends Component {
   handleStartTask = (e) => {
     e.preventDefault();
     
-    e.target.className += " disabled"
+    e.target.className += " disabled";
     
     let message = {
       type: 'start-time-for-contractor-tasks', 
-      start_time: this.state.start_time,
+      type2: 'begin-task-button-disabled',
+      start_time: Date.now(),
       project_id: 12,
       id: 2
     }
-    console.log('it is activating the button')
+    console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
   handleEndTask = (e) => {
     e.preventDefault(); 
 
-    e.target.className += " disabled"    
+    e.target.className += " disabled"
 
     let message = {
       type: 'end-time-for-contractor-tasks', 
-      end_date: this.state.end_date,
+      end_date: Date.now(),
       project_id: 12,
-      id: 3
+      id: 2
     }
-    console.log('it is activating the button')
+    console.log('end task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
