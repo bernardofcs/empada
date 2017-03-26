@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Button } from 'react-materialize';
-import './App.css'
+import '../styles/App.css'
 // only keep what you want to use 
 // use radio button separately in each form, can't press the end button until the first button has been clicked
 

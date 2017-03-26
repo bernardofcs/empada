@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row } from 'react-materialize';
-import './App.css';
+import '../styles/App.css';
 
 class InsertForm extends Component {
   render() {

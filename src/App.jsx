@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import '../styles/App.css';
 import InsertForm from './InsertForm.js'
 import TaskDashboard from './TaskDashboard'
 // import { BrowserRouter, Route, Link } from 'react-router-dom'
@@ -13,6 +13,9 @@ class App extends Component {
 
   handleStartTask = (e) => {
     e.preventDefault();
+    
+    e.target.className += " disabled"
+    
     let message = {
       type: 'start-time-for-contractor-tasks', 
       start_time: Date.now(),
@@ -25,6 +28,9 @@ class App extends Component {
 
   handleEndTask = (e) => {
     e.preventDefault(); 
+
+    e.target.className += " disabled"    
+
     let message = {
       type: 'end-time-for-contractor-tasks', 
       end_date: Date.now(),
