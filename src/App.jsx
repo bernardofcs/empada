@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import '../styles/App.css';
 import InsertForm from './InsertForm.js'
-import TaskDashboard from './TaskDashboard'
+import TaskDashboard from './TaskDashboard.js'
 // import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {};
+    this.state = {
+      list_of_tasks : [
+        {
+          start_time: Date.now(),
+          assigned_start_time: Date.now(), 
+          description: 'description', 
+          assigned_end_time: Date.now(), 
+          end_date: Date.now()
+        }
+      ]
+    };
   }
 
   handleStartTask = (e) => {
@@ -18,9 +28,9 @@ class App extends Component {
     
     let message = {
       type: 'start-time-for-contractor-tasks', 
-      start_time: Date.now(),
+      start_time: this.state.start_time,
       project_id: 12,
-      id: 1
+      id: 2
     }
     console.log('it is activating the button')
     this.socket.send(JSON.stringify(message));
@@ -33,9 +43,9 @@ class App extends Component {
 
     let message = {
       type: 'end-time-for-contractor-tasks', 
-      end_date: Date.now(),
+      end_date: this.state.end_date,
       project_id: 12,
-      id: 1
+      id: 3
     }
     console.log('it is activating the button')
     this.socket.send(JSON.stringify(message));
@@ -64,12 +74,19 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          {/*<img src={logo} className="App-logo" alt="logo" />*/}
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
-        <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <TaskDashboard handleStartTask={this.handleStartTask} handleEndTask={this.handleEndTask}/>
+        <InsertForm 
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit} 
+          />
+        <TaskDashboard 
+          handleStartTask={this.handleStartTask} 
+          handleEndTask={this.handleEndTask}
+          listOfTasks={this.state.list_of_tasks}
+          />
       </div>
     );
   }

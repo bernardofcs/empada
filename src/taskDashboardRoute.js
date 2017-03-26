@@ -1,9 +1,6 @@
-import React from 'react'
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
+import React, { Component } from 'react';
+import { Row, Button, Table } from 'react-materialize';
+import '../styles/App.css'
 
 const TaskDashboardRouter = () => (
   <Router>
