@@ -2,18 +2,26 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import EventCreationForm from './EventCreationForm.jsx';
-import InsertForm from './InsertForm.js'
+// import InsertForm from './InsertForm.js'
 import { Timeline } from 'react-chartkick';
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {};
+    this.state = {
+      data: [
+        ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
+        ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
+        ["Sally", new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
+      ],
+      assigned_people: ['Jimmy','Johnny','Sally'],
+      tasks: ['eat food','sleep long time','smell flowers']
+    };
   }
 
   componentDidMount() {
     // console.log("componentDidMount <App />");
-    const mysocket = new WebSocket("ws://localhost:3001")
+    const mysocket = new WebSocket("ws://localhost:3001");
     this.socket = mysocket;
   }
 
@@ -32,22 +40,17 @@ class App extends Component {
 
   render() {
 
-    let data = [
-      ["Washington", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
-      ["Washington", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
-      ["Adams", new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
-    ];
-
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to EMPADA</h2>
-        </div>
-        <br />
-        <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <div className='timeline'>
-          <Timeline data={data} />
+        <h1> Make your next event super organized </h1>
+        {/*<InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />*/}
+        <div className="event-wrapper">
+          <div className="event-creation-form">
+            <EventCreationForm assigned_people ={this.state.assigned_people} tasks={this.state.tasks}/>
+          </div>
+          <div className='timeline'>
+            <Timeline data={this.state.data} />
+          </div>
         </div>
       </div>
     );
