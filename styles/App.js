@@ -17,6 +17,18 @@ export default StyleSheet.create({
   'App-intro': {
     'fontSize': [{ 'unit': 'string', 'value': 'large' }]
   },
+  'timeline-container': {
+    'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
+    'width': [{ 'unit': '%H', 'value': 0.8 }],
+    // overflow: auto;
+  },
+  'timeline': {
+    // width: 1000px;
+  },
+  'Table': {
+    'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
+    'width': [{ 'unit': '%H', 'value': 0.8 }]
+  },
   // .disabled {
   text-decoration: line-through; 
 }

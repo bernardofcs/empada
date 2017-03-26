@@ -28,6 +28,11 @@
   /*width: 1000px;*/
 }
 
+Table {
+  margin: auto;
+  width: 80%;  
+}
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

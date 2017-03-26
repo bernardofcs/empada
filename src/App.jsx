@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
-// import logo from './logo.svg';
 import '../styles/App.css';
-import InsertForm from './InsertForm.js'
 import TaskDashboard from './TaskDashboard.js'
-// import { BrowserRouter, Route, Link } from 'react-router-dom'
-=======
-import logo from './logo.svg';
-import './App.css';
-import InsertForm from './InsertForm.js'
+// import logo from './logo.svg';
+import ProgressBar from './ProgressBar.js';
 import { Timeline } from 'react-chartkick';
->>>>>>> 53e7ff07b146c176244f798989efc9058fd82171
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-<<<<<<< HEAD
       list_of_tasks : [
         {
           start_time: Date.now(),
@@ -65,15 +57,6 @@ class App extends Component {
     }
     console.log('end task button pressed');
     this.socket.send(JSON.stringify(message));
-  }
-
-  componentDidMount = () => {
-    // console.log("componentDidMount <App />");
-    const mysocket = new WebSocket("ws://localhost:3001")
-    this.socket = mysocket;
-=======
-      tasks: []
-    };
   }
 
   componentDidMount() {
@@ -169,29 +152,16 @@ class App extends Component {
         this.setState({'tasks': tasks})
       }
     }
->>>>>>> 53e7ff07b146c176244f798989efc9058fd82171
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log('submitted')
-<<<<<<< HEAD
-    console.log(this.state.insert)
-    this.socket.send(this.state.insert)
-=======
-   console.log(this.state.insert)
-   this.socket.send(this.state.insert)
->>>>>>> 53e7ff07b146c176244f798989efc9058fd82171
-  }
-
-  handleChange = (e) => {
-    e.preventDefault();
-    console.log(e.target.value)
-    this.setState({insert: e.target.value})
   }
 
   render() {
-<<<<<<< HEAD
+    let sample_data = [
+      ["Washington",  new Date(1789,  4, 19),  new Date(1789,  9,  3)],
+      ["Washington",  new Date(1789,  9,  3),  new Date(1790,  1,  3)],
+      ["Washington",  new Date(1790,  1,  3),  new Date(1790,  3,  3)]
+    ];
+    console.log(sample_data)
+    let libraryData = {};
     return (
       <div className="App">
         <div className="App-header">
@@ -199,41 +169,17 @@ class App extends Component {
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
-        <InsertForm 
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit} 
-          />
         <TaskDashboard 
-          handleStartTask={this.handleStartTask} 
+          handleStartTask={this.handleStartTask}
           handleEndTask={this.handleEndTask}
           listOfTasks={this.state.list_of_tasks}
           />
-=======
-
-    let sample_data = [
-      ["Washington",  new Date(1789,  4, 19),  new Date(1789,  9,  3)],
-      ["Washington",  new Date(1789,  9,  3),  new Date(1790,  1,  3)],
-      ["Washington",       new Date(1790,  1,  3),  new Date(1790,  3,  3)]
-    ];
-    console.log(sample_data)
-    // let libraryData = {timeline:{ singleColor: '#8d8' }};
-    let libraryData = {};
-
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to EMPADA</h2>
-        </div>
-        <br />
-        <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <div className='timeline-container'>
           <div className='timeline'>
             <Timeline data={sample_data} library={libraryData} stacked={true} />
-            <Timeline data={this.state.tasks} library={libraryData} stacked={true} />
           </div>
         </div>
->>>>>>> 53e7ff07b146c176244f798989efc9058fd82171
+        <ProgressBar />
       </div>
     );
   }
