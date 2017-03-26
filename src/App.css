@@ -18,10 +18,16 @@
   font-size: large;
 }
 
-.timeline {
-  width: 80%;
+.timeline-container {
   margin: auto;
+  width: 80%;
+  /*overflow: auto;*/
 }
+
+.timeline {
+  /*width: 1000px;*/
+}
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
