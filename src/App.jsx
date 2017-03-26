@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import AuthModal from './components/AuthModal.jsx'
 
@@ -52,7 +52,7 @@ class App extends Component {
   handleRegister = (e) => {
     e.preventDefault();
     // console.log('registered');
-    const registerObj = {type: 'register', firstname: this.state.register_firstname, lastname: this.state.register_lastname, email: this.state.email,
+    const registerObj = {type: 'register', firstname: this.state.register_firstname, lastname: this.state.register_lastname, email: this.state.register_email,
     password: this.state.password}
     this.socket.send(JSON.stringify(registerObj))
   }
@@ -61,7 +61,6 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
