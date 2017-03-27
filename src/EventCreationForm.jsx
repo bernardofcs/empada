@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import NewTaskFields from './NewTaskFields.jsx';
+import AddNewPersonButton from './AddNewPersonButton.jsx'
 
 class EventCreationForm extends Component {
   render() {
@@ -16,11 +17,12 @@ class EventCreationForm extends Component {
             </form>
             </div>
             <div className="card-panel">
-              <button className="waves-effect waves-light btn-large" onClick={this.props.addNewAssignedUser}>Add {this.props.eventCreation.newAssignedPerson} to your event!</button>
+              <AddNewPersonButton {...this.props} />
               <div className="collection">
               <input type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
+              <input type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
                   {this.props.assigned_people.map( (p) => {
-                    return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.props.toggle}>{p.name}</a>);
+                    return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.props.toggle}>{p.name}({p.email})</a>);
                   })}
               </div>
             </div>

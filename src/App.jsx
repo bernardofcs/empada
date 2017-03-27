@@ -18,7 +18,8 @@ class App extends Component {
         newDescription: "",
         newStartTime: "",
         newEndTime: "",
-        newAssignedPerson: ""
+        newAssignedPerson: "",
+        newAssignedEmail: ""
       },
       timelineData: [
         // ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
@@ -28,15 +29,18 @@ class App extends Component {
       assigned_people: [
         {
           name: 'Jimmy',
-          id: 1
+          id: 1,
+          email: "jimmy@email.com"
         },
         {
           name: 'Johnny',
-          id: 2
+          id: 2,
+          email: "Johnny@email.com"
         },
         {
           name: 'Sally',
-          id: 3
+          id: 3,
+          email: "sally@email.com"
         }
       ],
       tasks: [
@@ -59,14 +63,28 @@ class App extends Component {
   }
 
   addNewAssignedUser = (event) => {
+    this.socket.send(JSON.stringify({
+      data: {
+        name: this.state.eventCreation.newAssignedPerson,
+        id: this.state.assigned_people.length+1,
+        email: this.state.eventCreation.newAssignedEmail
+      },
+      type: "eventCreation-addNewAssignedPerson"
+    }));
     this.setState({assigned_people: this.state.assigned_people
       .concat({
         name: this.state.eventCreation.newAssignedPerson,
-        id: this.state.assigned_people.length+1
+        id: this.state.assigned_people.length+1,
+        email: this.state.eventCreation.newAssignedEmail
       })
-    })
-  }
+    });
 
+  }
+  handleAssignedEmail = (event) => {
+    let newEmail = Object.assign({},this.state.eventCreation);
+    newEmail.newAssignedEmail = event.target.value;
+    this.setState({eventCreation: newEmail});
+  }
   handleAssignedPerson = (event) => {
     let newPerson = Object.assign({},this.state.eventCreation);
     newPerson.newAssignedPerson = event.target.value;
@@ -190,6 +208,10 @@ class App extends Component {
     // console.log("componentDidMount <App />");
   const mysocket = new WebSocket("ws://localhost:3001");
   this.socket = mysocket;
+  this.socket.onmessage = (event) => {
+    console.log(`From server: ${event.data}`);
+    // this.newMessageFromServer(event.data);
+  }
   this.updateTimeline();
   }
   
@@ -198,6 +220,11 @@ class App extends Component {
   if(previousState.tasks.length != this.state.tasks.length){
     this.updateTimeline();
   }
+
+  if (previousState.eventCreation.selected.id !== this.state.eventCreation.selected.id) {
+    
+  }
+
 }
 
   render() {
@@ -224,6 +251,7 @@ class App extends Component {
               updateTimeline={this.updateTimeline}
               handleAssignedPerson={this.handleAssignedPerson}
               addNewAssignedUser={this.addNewAssignedUser}
+              handleAssignedEmail={this.handleAssignedEmail}
               />
           </div>
           <div className='timeline'>

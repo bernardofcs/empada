@@ -1,7 +1,7 @@
 import React from 'react';
 
 function NewTaskFields (props) {
-  //  console.log(props)
+   console.log(props)
   if (props.eventCreation.selected.name !== ""){
     return ( 
 
