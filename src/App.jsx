@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 // import AuthModal from './components/AuthModal.jsx'
-import axios from 'axios'
+// import axios from 'axios'
 import Auth0Lock from 'auth0-lock'
 
 class App extends Component {
@@ -22,44 +22,71 @@ class App extends Component {
     this.lock.show();
   }
 
-  componentWillMount = () => {
-    this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com');
-    this.lock.on("authenticated", (authResult) => {
-        console.log(authResult)
-        this.setState({idToken: authResult.idToken})
-          this.lock.getProfile(this.state.idToken, (err, profile) => {
-            if (err) {
-              console.log("Error loading the Profile", err);
-              return;
-            }
-            this.setState({profile: profile});
-
-        });
-      });
+  logout = () => {
+    this.setState({profile: undefined})
+    localStorage.removeItem("profile")
+    // this.showLock()
   }
+
+  componentWillMount = () => {
+    console.log("componentWillMount <App />");    
+    this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
+      theme: {
+        primaryColor: '#26e'
+      },
+      languageDictionary: {
+        title: 'Authenticate'
+      },
+      closable: false,
+      additionalSignUpFields: [{
+        name: "given_name",
+        placeholder: "Enter your first name",
+        // icon: "https://example.com/name_icon.png",
+        validator: (value) => {
+          return value.length > 1
+        }
+      },{
+        name: "family_name",
+        placeholder: "Enter your last name",
+        // icon: "https://example.com/name_icon.png",
+        validator: (value) => {
+          return value.length > 1
+        }
+      }]
+    });
+
+    this.lock.on("authenticated", (authResult) => {
+      localStorage.setItem("accessToken", authResult.accessToken);
+      this.lock.getProfile(authResult.idToken, (err, profile) => {
+        if (err) {
+          console.log("Error loading the Profile", err);
+          return;
+        }
+        localStorage.setItem("profile", JSON.stringify(profile));
+        this.setState({profile: profile});
+        this.handleLogin()
+      });
+    });
+  }
+
   componentDidMount = () => {
     // console.log("componentDidMount <App />");
-    const http = axios.create({
-      baseURL: 'https://localhost:3001',
-      timeout: 1000,
-      headers: {'X-Custom-Header': 'foobar'}
-    });
-    this.http = http;
+    setTimeout(() => {
+      if(!localStorage.profile){
+        this.showLock();
+      }else{
+        const storageProfile = JSON.parse(localStorage.profile)
+        this.setState({profile: storageProfile})
+      }
+    }, 450)
     const mysocket = new WebSocket("ws://localhost:3001")
     this.socket = mysocket;
   }
 
-  openModal = () => {
-    this.setState({modalIsOpen: true});
-  }
-
-  afterOpenModal = () => {
-    // references are now sync'd and can be accessed.
-    // this.refs.subtitle.style.color = '#013';
-  }
-
-  closeModal = () => {
-    this.setState({modalIsOpen: false});
+  handleLogin = () => {
+    console.log(this.state.profile.email)
+    const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
+    this.socket.send(JSON.stringify(loginObj))
   }
 
   // handleInputChange = (e) => {
@@ -69,32 +96,7 @@ class App extends Component {
   //   stateobj[objkey] = e.target.value
   //   this.setState(stateobj)
   // }
-
-  // handleLogin = (e) => {
-  //   e.preventDefault();
-  //   // console.log('login');
-  //   // const loginObj = {type: 'login', email: this.state.login_email, password: this.state.login_password}
-  //   // this.socket.send(JSON.stringify(loginObj))
-  //   this.http.post('/user', {
-  //     email: this.state.login_email,
-  //     password: this.state.login_password
-  //   })
-  //   .then(function (response) {
-  //     console.log(response);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  // }
-
-  // handleRegister = (e) => {
-  //   e.preventDefault();
-  //   // console.log('registered');
-  //   const registerObj = {type: 'register', first_name: this.state.register_firstname, last_name: this.state.register_lastname, email: this.state.register_email, 
-  //   password: this.state.register_password}
-  //   this.socket.send(JSON.stringify(registerObj))
-  // }
-
+  
   render() {
     return (
       <div className="App">
@@ -103,8 +105,9 @@ class App extends Component {
         </div>
         <br />
         <div className="login-box">
-          <a onClick={this.showLock}>Sign In</a>
-          <p></p>
+          <button onClick={this.showLock}>Sign In</button>
+          <button onClick={this.logout}>Log out</button>
+          {this.state.profile && <p>Logged in as: {this.state.profile.email}</p>}
         </div>
         {/*<button onClick={this.openModal}>Login</button>*/}       
       </div>
