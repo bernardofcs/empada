@@ -2,46 +2,101 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import TaskDashboard from './TaskDashboard.js'
 // import logo from './logo.svg';
+import { Input } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import { Timeline } from 'react-chartkick';
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       list_of_tasks : [
         {
           start_time: Date.now(),
-          assigned_start_time: Date.now(),
+          assigned_start_time: new Date().toLocaleTimeString(),
           description: 'description',
-          assigned_end_time: Date.now(),
-          end_date: Date.now()
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_date: Date.now(),
+          id: 1
         },
         {
           start_time: Date.now(),
-          assigned_start_time: Date.now(),
-          description: 'another kickass description',
-          assigned_end_time: Date.now(),
-          end_date: Date.now()
+          assigned_start_time: new Date().toLocaleTimeString(),
+          description: 'another description',
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_date: Date.now(),
+          id: 2
+        },
+        {
+          start_time: Date.now(),
+          assigned_start_time: new Date().toLocaleTimeString(),
+          description: 'a third description',
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_date: Date.now(),
+          id: 3
+        }
+      ],
+      assigned_people: [
+        {
+          user_id: 1,
+          task_id: 1, 
+        },
+        {
+          user_id: 1,
+          task_id: 2, 
+        },
+        {
+          user_id: 2,
+          task_id: 3
+        }
+      ],
+      progress_bar : [
+        { 
+          user_id: 1,
+          incomplete_tasks: 100, 
+          completed_tasks: 0
+        },
+        {
+          user_id: 2,
+          incomplete_tasks: 100, 
+          completed_tasks: 0
         }
       ]
-    };
+    }
   }
 
-  handleStartTask = (e) => {
+    
+    // if (progressBar.)
+    // let chartArrayValues = progressBar.map((chartArray) => {
+    //   return chartArray.length 
+    // })
+
+    // progressBar.map((chartArray) => {
+    //   if (chartArray.user_id === e.target.id) {
+    //     chartArray.completed_tasks
+    //   }
+    // })
+  updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
-    
-    e.target.className += " disabled";
-    
-    let message = {
-      type: 'start-time-for-contractor-tasks', 
-      type2: 'begin-task-button-disabled',
-      start_time: Date.now(),
-      project_id: 12,
-      id: 2
-    }
-    console.log('start task button pressed');
-    this.socket.send(JSON.stringify(message));
+
+    let progressBars = this.state.progress_bar.map((id) => {
+      return (this.state.assigned_people.filter((t) =>
+        t.user_id === id.user_id))
+    })
+
+    let progressBarCurrentLength = progressBars.forEach((el, i) => {
+      el.forEach((elm) => {
+        if (Number(elm.user_id) === Number(e.target.value)) {
+          console.log(el.length)
+        }
+      })
+    })
+
+    this.state.progress_bar.forEach((i) => {
+      if (Number(i.user_id) === Number(e.target.value)) {
+        console.log(progressBarCurrentLength)
+      }
+    })
   }
 
   handleEndTask = (e) => {
@@ -59,8 +114,35 @@ class App extends Component {
     this.socket.send(JSON.stringify(message));
   }
 
+  handleStartTask = (e) => {
+    e.preventDefault();
+    
+    e.target.className += " disabled";
+    
+    let message = {
+      type: 'start-time-for-contractor-tasks', 
+      start_time: Date.now(),
+      project_id: 12,
+      id: 2
+    }
+    console.log('start task button pressed');
+    this.socket.send(JSON.stringify(message));
+  }
+
+  // handleAddContractorToProgressBar = (e) => {
+  //   e.preventDefault(); 
+
+  //   let message = {
+  //     type: 'add-contractor-to-progress-bar',
+  //     name: this.state.name,
+  //     completed_tasks: this.state.completed_tasks,
+  //     incomplete_tasks: this.state.incomplete_tasks
+  //   }
+  //   console.log('contractor added to progress bar');
+  //   this.socket.send(JSON.stringify(message));
+  // }
+
   componentDidMount() {
-    // console.log("componentDidMount <App />");
     this.socket = new WebSocket("ws://localhost:3001");
 
     this.socket.onopen = () => {
@@ -71,85 +153,17 @@ class App extends Component {
       const data = JSON.parse(event.data);
       console.log(data);
 
-      const tasks = [];
-      for (let key of Object.keys(data.data).slice(0,1)) {
-        const task = data.data[key];
+      switch (data.type) {
+        // case 'add-contractor-to-progress-bar':
+        //   this.concat.setState({
+        //     name: this.state.name,
+        //     completed_tasks: this.state.completed_tasks,
+        //     incomplete_tasks: this.state.incomplete_tasks
+        //   })
+        // break;
 
-        if (task.start_date < task.assigned_start_date
-          && task.end_date < task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.assigned_start_date,
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.end_date
-          ],
-          [
-            task.task_name,
-            task.end_date,
-            task.assigned_end_date
-          ])
-        } else if (task.start_date < task.assigned_start_date
-          && task.end_date > task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.assigned_start_date
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.assigned_end_date
-          ],
-          [
-            task.task_name,
-            task.assigned_end_date,
-            task.end_date
-          ])
-        } else if (task.start_date > task.assigned_start_date
-          && task.end_date < task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.assigned_start_date,
-            task.start_date
-          ],
-          [
-            task.task_name,
-            task.start_date,
-            task.end_date
-          ],
-          [
-            task.task_name,
-            task.end_date,
-            task.assigned_end_date
-          ])
-        } else if (task.start_date > task.assigned_start_date
-          && task.end_date > task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.assigned_start_date,
-            task.start_date
-          ],
-          [
-            task.task_name,
-            task.start_date,
-            task.assigned_end_date
-          ],
-          [
-            task.task_name,
-            task.assigned_end_date,
-            task.end_date
-          ])
-        }
-      };
-
-      console.log(tasks);
-
-      if (data.type === 'tasks') {
-        this.setState({'tasks': tasks})
+        default:
+          console.error('Failed to send back');
       }
     }
   }
@@ -173,13 +187,24 @@ class App extends Component {
           handleStartTask={this.handleStartTask}
           handleEndTask={this.handleEndTask}
           listOfTasks={this.state.list_of_tasks}
-          />
+          updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+        />
         <div className='timeline-container'>
           <div className='timeline'>
             <Timeline data={sample_data} library={libraryData} stacked={true} />
           </div>
         </div>
-        <ProgressBar />
+        <Input
+          placeholder="Create a new contractor"
+          label="Create a new contractor"
+          onSubmit={this.handleAddContractorToProgressBar}
+        />
+        <ProgressBar 
+          taskName={this.state.name}
+          completedTasks={this.state.completed_tasks}
+          incompleteTasks={this.state.incomplete_tasks}
+          progressBar={this.state.progress_bar}
+        />
       </div>
     );
   }

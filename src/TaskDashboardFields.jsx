@@ -7,7 +7,11 @@ class TaskDashboardFields extends Component {
     return (
       <tr>
         <td>
-          <Button waves='light' onClick={this.props.handleStartTask}>Begin Task</Button>
+          <Button 
+            waves='light' 
+            onClick={this.props.handleStartTask}>
+            Begin Task
+          </Button>
         </td>
         <td>
           <p>{this.props.task.assigned_start_time}</p>
@@ -19,11 +23,18 @@ class TaskDashboardFields extends Component {
           <p>{this.props.task.assigned_end_time}</p>
         </td>
         <td>
-          <Button waves='light' onClick={this.props.handleEndTask}>End Task</Button>
+          <Button 
+            waves='light' 
+            value={this.props.task.id}
+            onClick={this.props.updateCompletedAndIncompleteTasks}>
+            End Task
+          </Button>
         </td>
       </tr>
     );
   }
 }
+
+// onClick={this.props.handleEndTask}
 
 export default TaskDashboardFields;
