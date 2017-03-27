@@ -5,47 +5,6 @@ import NewTaskFields from './NewTaskFields.jsx';
 class EventCreationForm extends Component {
   constructor(props){  
     super(props);
-    this.state = {
-      selected: {name: "", id: NaN},
-      newTask: "",
-      newDescription: "",
-      newStartTime: "",
-      newEndTime: ""
-    };
-    this.toggle = this.toggle.bind(this);
-    this.newTask = this.newTask.bind(this);
-    this.newDescription = this.newDescription.bind(this);
-    this.newStartTime = this.newStartTime.bind(this);
-    this.newEndTime = this.newEndTime.bind(this);
-  }
-  toggle(e) {
-    if (e.target.className === "collection-item active"){
-      e.target.className = "collection-item";
-    } else {
-      e.target.className="collection-item active";
-    }
-    this.setState({
-      selected: {
-        name: e.target.innerHTML,
-        id: e.target.getAttribute('data-id')
-      }
-    }); 
-  } 
-  newTask(event){
-    console.log(event.target.value);
-    this.setState({newTask: event.target.value});
-  }
-  newDescription(event){
-    console.log(event.target.value);
-    this.setState({newDescription: event.target.value});
-  }
-  newStartTime(event){
-    console.log(event.target.value);
-    this.setState({newStartTime: event.target.value});
-  }
-  newEndTime(event){
-    console.log(event.target.value);
-    this.setState({newEndTime: event.target.value});
   }
 
   render() {
@@ -65,14 +24,14 @@ class EventCreationForm extends Component {
             <div className="card-panel">
               <div className="collection">
                   {this.props.assigned_people.map( (p) => {
-                    return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.toggle}>{p.name}</a>);
+                    return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.props.toggle}>{p.name}</a>);
                   })}
               </div>
             </div>
           </div>
           <div className="col s8">
             <div className="card-panel">
-              {this.state.selected.name}
+              <button className="waves-effect waves-light btn-large" onClick={this.props.addTask}>Add new task for {this.props.eventCreation.selected.name}</button>
               <table>
                 <thead>
                   <tr>
@@ -83,17 +42,21 @@ class EventCreationForm extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <NewTaskFields {...this.state} functions={{
-                    newTask: this.newTask,
-                    newDescription: this.newDescription,
-                    newStartTime: this.newStartTime,
-                    newEndTime: this.newEndTime
+                  <NewTaskFields {...this.state} {...this.props} functions={{
+                    newTask: this.props.newTask,
+                    newDescription: this.props.newDescription,
+                    newStartTime: this.props.newStartTime,
+                    newEndTime: this.props.newEndTime
                   }} />
                   {this.props.tasks
                     .filter((t)=> {
-                      return t.user_id === this.state.selected.id;
+                      console.log('filtering');
+                      console.log(t.user_id);
+                      console.log(this.props.eventCreation.selected.id);
+                      return t.user_id == this.props.eventCreation.selected.id;
                     })
                     .map((t)=> {
+                      console.log('mapping')
                       return (
                         <tr>
                           <td data-task-id={t.id}>{t.name}</td>
