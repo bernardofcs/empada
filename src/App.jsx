@@ -20,9 +20,9 @@ class App extends Component {
         newEndTime: ""
       },
       timelineData: [
-        ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
-        ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
-        ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
+        // ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
+        // ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
+        // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
       ],
       assigned_people: [
         {
@@ -39,10 +39,10 @@ class App extends Component {
         }
       ],
       tasks: [
-        {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '2017-03-01',assigned_end_time: '2017-03-02'},
-        {id: 2, user_id: 1, name: 'buy cups', description: 'go to dollar store',assigned_start_time: '2017-03-02',assigned_end_time: '2017-03-03'},
-        {id: 3, user_id: 2, name: 'bring music', description: 'check out spotify',assigned_start_time: '2017-03-01',assigned_end_time: '2017-03-02'},
-        {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '2017-03-01',assigned_end_time: '2017-03-04'}
+        {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '08:00:00',assigned_end_time: '10:00:00'},
+        {id: 2, user_id: 1, name: 'buy cups', description: 'go to dollar store',assigned_start_time: '15:00:00',assigned_end_time: '17:00:00'},
+        {id: 3, user_id: 2, name: 'bring music', description: 'check out spotify',assigned_start_time: '09:00:00',assigned_end_time: '11:00:00'},
+        {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '11:00:00',assigned_end_time: '18:00:00'}
       ]
     };
     this.toggle = this.toggle.bind(this);
@@ -57,9 +57,8 @@ class App extends Component {
   }
   updateTimeline = () => {
     let timelineData = this.state.tasks.map( (t) => {
-
-      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, t.assigned_start_time, t.assigned_end_time ]);
-      return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, t.assigned_start_time, t.assigned_end_time ]
+      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-01T'+t.assigned_start_time, '2017-03-01T'+t.assigned_end_time ]);
+      return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-01T'+t.assigned_start_time, '2017-03-01T'+t.assigned_end_time ]
     });
     
     this.setState({ timelineData: timelineData });
@@ -78,7 +77,6 @@ class App extends Component {
         assigned_end_time: t_values.newEndTime
       })
     });
-    this.updateTimeline();
     const defaults = { 
       newTask: "",
       newDescription: "",
@@ -175,7 +173,14 @@ class App extends Component {
   this.socket = mysocket;
   this.updateTimeline();
   }
-   
+  
+  componentDidUpdate(previousProps, previousState) {
+  // only update chart if the data has changed
+  if(previousState.tasks.length != this.state.tasks.length){
+    this.updateTimeline();
+  }
+}
+
   render() {
 
     return (
@@ -197,6 +202,7 @@ class App extends Component {
               newEventDate={this.newEventDate}
               newEventDescription={this.newEventDescription}
               newEventName={this.newEventName}
+              updateTimeline={this.updateTimeline}
               />
           </div>
           <div className='timeline'>
