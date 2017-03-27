@@ -22,7 +22,7 @@ class App extends Component {
       timelineData: [
         ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
         ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
-        ["Sally", new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
+        ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
       ],
       assigned_people: [
         {
@@ -53,6 +53,16 @@ class App extends Component {
     this.newEventDate = this.newEventDate.bind(this);
     this.newEventDescription = this.newEventDescription.bind(this);
     this.newEventName = this.newEventName.bind(this);
+    this.updateTimeline = this.updateTimeline.bind(this);
+  }
+  updateTimeline = () => {
+    let timelineData = this.state.tasks.map( (t) => {
+
+      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, t.assigned_start_time, t.assigned_end_time ]);
+      return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, t.assigned_start_time, t.assigned_end_time ]
+    });
+    
+    this.setState({ timelineData: timelineData });
   }
 
   addTask = () => {
@@ -68,13 +78,7 @@ class App extends Component {
         assigned_end_time: t_values.newEndTime
       })
     });
-
-    this.setState({timelineData: this.state.timelineData
-      .concat({
-
-      })
-    });
-
+    this.updateTimeline();
     const defaults = { 
       newTask: "",
       newDescription: "",
@@ -167,8 +171,9 @@ class App extends Component {
   }
   componentDidMount() {
     // console.log("componentDidMount <App />");
-    const mysocket = new WebSocket("ws://localhost:3001");
-    this.socket = mysocket;
+  const mysocket = new WebSocket("ws://localhost:3001");
+  this.socket = mysocket;
+  this.updateTimeline();
   }
    
   render() {
