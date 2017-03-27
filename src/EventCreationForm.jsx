@@ -13,12 +13,12 @@ class EventCreationForm extends Component {
               <input type="text" onChange={this.props.handleNameChange} placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
               <input type="text" onChange={this.props.handleDescChange} placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
               <input type="date" onChange={this.props.handleDateChange} placeholder="2017/01/01" value={this.props.eventCreation.date} onChange={this.props.newEventDate}/>
-              <input type="text" onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
-              <input type="submit"/>
             </form>
             </div>
             <div className="card-panel">
+              <button className="waves-effect waves-light btn-large" onClick={this.props.addNewAssignedUser}>Add {this.props.eventCreation.newAssignedPerson} to your event!</button>
               <div className="collection">
+              <input type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
                   {this.props.assigned_people.map( (p) => {
                     return (<a href="#!" data-id={p.id} className="collection-item" onClick={this.props.toggle}>{p.name}</a>);
                   })}

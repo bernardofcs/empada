@@ -17,7 +17,8 @@ class App extends Component {
         newTask: "",
         newDescription: "",
         newStartTime: "",
-        newEndTime: ""
+        newEndTime: "",
+        newAssignedPerson: ""
       },
       timelineData: [
         // ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
@@ -54,11 +55,29 @@ class App extends Component {
     this.newEventDescription = this.newEventDescription.bind(this);
     this.newEventName = this.newEventName.bind(this);
     this.updateTimeline = this.updateTimeline.bind(this);
+    this.handleAssignedPerson = this.handleAssignedPerson.bind(this);
   }
+
+  addNewAssignedUser = (event) => {
+    this.setState({assigned_people: this.state.assigned_people
+      .concat({
+        name: this.state.eventCreation.newAssignedPerson,
+        id: this.state.assigned_people.length+1
+      })
+    })
+  }
+
+  handleAssignedPerson = (event) => {
+    let newPerson = Object.assign({},this.state.eventCreation);
+    newPerson.newAssignedPerson = event.target.value;
+    this.setState({eventCreation: newPerson});
+  }
+
+
   updateTimeline = () => {
     let timelineData = this.state.tasks.map( (t) => {
-      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-01T'+t.assigned_start_time, '2017-03-01T'+t.assigned_end_time ]);
-      return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-01T'+t.assigned_start_time, '2017-03-01T'+t.assigned_end_time ]
+      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
+      return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]
     });
     
     this.setState({ timelineData: timelineData });
@@ -203,6 +222,8 @@ class App extends Component {
               newEventDescription={this.newEventDescription}
               newEventName={this.newEventName}
               updateTimeline={this.updateTimeline}
+              handleAssignedPerson={this.handleAssignedPerson}
+              addNewAssignedUser={this.addNewAssignedUser}
               />
           </div>
           <div className='timeline'>
