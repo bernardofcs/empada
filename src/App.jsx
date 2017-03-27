@@ -151,6 +151,7 @@ class App extends Component {
       };
       tasks.map((arr) => {
         arr.push(colorMap[arr[3]]);
+        arr[3] = `${arr[0]} - ${arr[3]}`;
       });
 
       if (data.type === 'tasks') {
@@ -175,9 +176,9 @@ class App extends Component {
   render() {
     const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
     let sample_data = [
-      ["Washington", new Date(1789,  4, 19), new Date(1789,  9,  3), timing[0], '#a23c7a'],
-      ["Washington", new Date(1789,  9,  3), new Date(1790,  1,  3), timing[2], '#40a67d'],
-      ["Washington", new Date(1790,  1,  3), new Date(1790,  3,  3), timing[3], '#5581b4']
+      ["Ammar", new Date(2016, 11, 1, 8,  1), new Date(2016, 11, 1, 8, 30), timing[0], '#a23c7a'],
+      ["Ammar", new Date(2016, 11, 1, 8, 30), new Date(2016, 11, 1, 9,  1), timing[2], '#40a67d'],
+      ["Ammar", new Date(2016, 11, 1, 9,  1), new Date(2016, 11, 1, 9, 30), timing[3], '#5581b4']
     ];
     let libraryData = {timeline: {groupByRowLabel: true}};
 
