@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tasks: []
+      tasks: [],
     };
   }
 
@@ -22,89 +22,141 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
 
       const tasks = [];
-      for (let key of Object.keys(data.data).slice(0,1)) {
+      const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
+      for (let key of Object.keys(data.data)) {
         const task = data.data[key];
+        // console.log(`creating task bars: ${task.task_name}`);
 
         if (task.start_date < task.assigned_start_date
-          && task.end_date < task.assigned_end_date) {
+          && task.end_date < task.assigned_end_date
+          && task.assigned_start_date < task.end_date) {
           tasks.push([
             task.task_name,
             task.start_date,
             task.assigned_start_date,
+            timing[0]
           ],
           [
             task.task_name,
             task.assigned_start_date,
-            task.end_date
+            task.end_date,
+            timing[2]
+
           ],
           [
             task.task_name,
             task.end_date,
-            task.assigned_end_date
+            task.assigned_end_date,
+            timing[3]
           ])
         } else if (task.start_date < task.assigned_start_date
           && task.end_date > task.assigned_end_date) {
           tasks.push([
             task.task_name,
             task.start_date,
-            task.assigned_start_date
+            task.assigned_start_date,
+            timing[0]
           ],
           [
             task.task_name,
             task.assigned_start_date,
-            task.assigned_end_date
+            task.assigned_end_date,
+            timing[2]
           ],
           [
             task.task_name,
             task.assigned_end_date,
-            task.end_date
+            task.end_date,
+            timing[4]
           ])
         } else if (task.start_date > task.assigned_start_date
           && task.end_date < task.assigned_end_date) {
           tasks.push([
             task.task_name,
             task.assigned_start_date,
-            task.start_date
+            task.start_date,
+            timing[1]
           ],
           [
             task.task_name,
             task.start_date,
-            task.end_date
+            task.end_date,
+            timing[2]
           ],
           [
             task.task_name,
             task.end_date,
-            task.assigned_end_date
+            task.assigned_end_date,
+            timing[3]
           ])
         } else if (task.start_date > task.assigned_start_date
-          && task.end_date > task.assigned_end_date) {
+          && task.end_date > task.assigned_end_date
+          && task.start_date < task.assigned_end_date) {
           tasks.push([
             task.task_name,
             task.assigned_start_date,
-            task.start_date
+            task.start_date,
+            timing[1]
           ],
           [
             task.task_name,
             task.start_date,
-            task.assigned_end_date
+            task.assigned_end_date,
+            timing[2]
           ],
           [
             task.task_name,
             task.assigned_end_date,
-            task.end_date
+            task.end_date,
+            timing[4]
+          ])
+        } else if (task.end_date < task.assigned_start_date) {
+          tasks.push([
+            task.task_name,
+            task.start_date,
+            task.end_date,
+            timing[3]
+          ],
+          [
+            task.task_name,
+            task.assigned_start_date,
+            task.assigned_end_date,
+            timing[3]
+          ])
+        } else if (task.start_date > task.assigned_end_date) {
+          tasks.push([
+            task.task_name,
+            task.start_date,
+            task.end_date,
+            timing[1]
+          ],
+          [
+            task.task_name,
+            task.assigned_start_date,
+            task.assigned_end_date,
+            timing[1]
           ])
         }
       };
 
-      console.log(tasks);
+      const colorMap = {
+        // should contain a map of category -> color for every category
+        'early start'     : '#139A43',
+        'late start'      : '#F26430',
+        'as scheduled'    : '#279AF1',
+        'completed early' : '#139A43',
+        'completed late'  : '#F26430'
+      };
+      tasks.map((arr) => {
+        arr.push(colorMap[arr[3]]);
+      });
 
       if (data.type === 'tasks') {
-        this.setState({'tasks': tasks})
-      }
-    }
+        this.setState({'tasks': tasks});
+      };
+    };
   }
 
   handleSubmit = (e) => {
@@ -121,15 +173,13 @@ class App extends Component {
   }
 
   render() {
-
+    const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
     let sample_data = [
-      ["Washington",  new Date(1789,  4, 19),  new Date(1789,  9,  3)],
-      ["Washington",  new Date(1789,  9,  3),  new Date(1790,  1,  3)],
-      ["Washington",       new Date(1790,  1,  3),  new Date(1790,  3,  3)]
+      ["Washington", new Date(1789,  4, 19), new Date(1789,  9,  3), timing[0], '#a23c7a'],
+      ["Washington", new Date(1789,  9,  3), new Date(1790,  1,  3), timing[2], '#40a67d'],
+      ["Washington", new Date(1790,  1,  3), new Date(1790,  3,  3), timing[3], '#5581b4']
     ];
-    console.log(sample_data)
-    // let libraryData = {timeline:{ singleColor: '#8d8' }};
-    let libraryData = {};
+    let libraryData = {timeline: {groupByRowLabel: true}};
 
     return (
       <div className="App">
@@ -138,11 +188,11 @@ class App extends Component {
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
-        <InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        {/*<InsertForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />*/}
         <div className='timeline-container'>
           <div className='timeline'>
-            <Timeline data={sample_data} library={libraryData} stacked={true} />
-            <Timeline data={this.state.tasks} library={libraryData} stacked={true} />
+            <Timeline data={sample_data} library={libraryData} />
+            <Timeline data={this.state.tasks} library={libraryData} />
           </div>
         </div>
       </div>
