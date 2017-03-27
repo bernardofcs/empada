@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "auth0-lock": "^10.13.0",
+    "axios": "^0.15.3",
     "material-ui": "^0.17.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
