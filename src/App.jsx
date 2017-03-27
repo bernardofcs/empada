@@ -11,6 +11,9 @@ class App extends Component {
     this.state = {
       eventCreation: {
         selected: {name: "", id: NaN},
+        date: "",
+        name: "",
+        description: "",
         newTask: "",
         newDescription: "",
         newStartTime: "",
@@ -47,32 +50,88 @@ class App extends Component {
     this.newEndTime = this.newEndTime.bind(this)
     this.newTask = this.newTask.bind(this);
     this.newDescription = this.newDescription.bind(this);
+    this.newEventDate = this.newEventDate.bind(this);
+    this.newEventDescription = this.newEventDescription.bind(this);
+    this.newEventName = this.newEventName.bind(this);
   }
 
-  componentDidMount() {
-    // console.log("componentDidMount <App />");
-    const mysocket = new WebSocket("ws://localhost:3001");
-    this.socket = mysocket;
+  addTask = () => {
+    //add a new task to the task state, and add data to timeline.
+    const t_values = this.state.eventCreation;
+    this.setState({tasks: this.state.tasks
+      .concat({
+        id: this.state.tasks.length+1,
+        user_id: t_values.selected.id,
+        name: t_values.newTask,
+        description: t_values.newDescription,
+        assigned_start_time: t_values.newStartTime,
+        assigned_end_time: t_values.newEndTime
+      })
+    });
+
+    this.setState({timelineData: this.state.timelineData
+      .concat({
+
+      })
+    });
+
+    const defaults = { 
+      newTask: "",
+      newDescription: "",
+      newStartTime: "",
+      newEndTime: ""
+    };
+    let defaultValues = Object.assign({},this.state.eventCreation,defaults);
+    // console.log(defaultValues);
+    this.setState({eventCreation: defaultValues});
+  }
+
+  newEventName(event){
+    //watch for values added to new task name
+    // console.log(event.target.value);
+    let newName = Object.assign({},this.state.eventCreation);
+    newName.name = event.target.value;
+    this.setState({eventCreation: newName});
+  }
+
+  newEventDescription(event){
+    //watch for values added to new task description
+    // console.log(event.target.value);
+    let newEventDescription = Object.assign({},this.state.eventCreation);
+    newEventDescription.description = event.target.value;
+    this.setState({eventCreation: newEventDescription});
+  }
+  newEventDate(event){
+    //watch for values added to new task start time
+    // console.log(event.target.value);
+    let newEventDate = Object.assign({},this.state.eventCreation);
+    newEventDate.date = event.target.value;
+    this.setState({eventCreation: newEventDate});
   }
   newTask(event){
+    //watch for values added to new task name
     // console.log(event.target.value);
     let newTask = Object.assign({},this.state.eventCreation);
     newTask.newTask = event.target.value;
     this.setState({eventCreation: newTask});
   }
+
   newDescription(event){
+    //watch for values added to new task description
     // console.log(event.target.value);
     let newDescription = Object.assign({},this.state.eventCreation);
     newDescription.newDescription = event.target.value;
     this.setState({eventCreation: newDescription});
   }
   newStartTime(event){
+    //watch for values added to new task start time
     // console.log(event.target.value);
     let newST = Object.assign({},this.state.eventCreation);
     newST.newStartTime = event.target.value;
     this.setState({eventCreation: newST});
   }
   newEndTime(event){
+    //watch for values added to new task end time
     // console.log(event.target.value);
     let newET = Object.assign({},this.state.eventCreation);
     newET.newEndTime = event.target.value;
@@ -92,29 +151,6 @@ class App extends Component {
     this.setState({insert: e.target.value})
   }
 
-  addTask = () => {
-    console.log(this.state); 
-    const t_values = this.state.eventCreation
-    this.setState({tasks: this.state.tasks
-      .concat({
-        id: this.state.tasks.length+1,
-        user_id: t_values.selected.id,
-        name: t_values.newTask,
-        description: t_values.newDescription,
-        assigned_start_time: t_values.newStartTime,
-        assigned_end_time: t_values.newEndTime
-      })
-    });
-    const defaults = { 
-      newTask: "",
-      newDescription: "",
-      newStartTime: "",
-      newEndTime: ""
-    };
-    let defaultValues = Object.assign({},this.state.eventCreation,defaults);
-    // console.log(defaultValues);
-    this.setState({eventCreation: defaultValues});
-  }
 
   toggle(e) {
     if (e.target.className === "collection-item active"){
@@ -128,7 +164,13 @@ class App extends Component {
     this.setState({
       eventCreation: newSelected
     }); 
-  } 
+  }
+  componentDidMount() {
+    // console.log("componentDidMount <App />");
+    const mysocket = new WebSocket("ws://localhost:3001");
+    this.socket = mysocket;
+  }
+   
   render() {
 
     return (
@@ -147,6 +189,9 @@ class App extends Component {
               newDescription={this.newDescription}
               newStartTime={this.newStartTime}
               newEndTime={this.newEndTime}
+              newEventDate={this.newEventDate}
+              newEventDescription={this.newEventDescription}
+              newEventName={this.newEventName}
               />
           </div>
           <div className='timeline'>

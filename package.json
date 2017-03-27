@@ -5,6 +5,7 @@
   "dependencies": {
     "chart.js": "^1.1.1",
     "chartkick": "^2.2.3",
+    "dateformat": "^2.0.0",
     "react": "^15.4.2",
     "react-chartjs": "^0.8.0",
     "react-chartkick": "^0.1.3",

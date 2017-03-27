@@ -10,9 +10,9 @@ class EventCreationForm extends Component {
           <div className="col s4">
             <div className="card-panel">
             <form onSubmit={this.props.handleSubmit}>
-              <input type="text" onChange={this.props.handleNameChange} placeholder="THE MAIN EVENT!" ref="insert" />
-              <input type="text" onChange={this.props.handleDescChange} placeholder="Descript your event here" />
-              <input type="date" onChange={this.props.handleDateChange} placeholder="2017/01/01" />
+              <input type="text" onChange={this.props.handleNameChange} placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
+              <input type="text" onChange={this.props.handleDescChange} placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
+              <input type="date" onChange={this.props.handleDateChange} placeholder="2017/01/01" value={this.props.eventCreation.date} onChange={this.props.newEventDate}/>
               <input type="text" onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
               <input type="submit"/>
             </form>
@@ -38,7 +38,7 @@ class EventCreationForm extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <NewTaskFields {...this.state} {...this.props} functions={{
+                  <NewTaskFields {...this.props} functions={{
                     newTask: this.props.newTask,
                     newDescription: this.props.newDescription,
                     newStartTime: this.props.newStartTime,
