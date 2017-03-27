@@ -16,7 +16,7 @@ class App extends Component {
         newStartTime: "",
         newEndTime: ""
       },
-      data: [
+      timelineData: [
         ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
         ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
         ["Sally", new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
@@ -55,28 +55,28 @@ class App extends Component {
     this.socket = mysocket;
   }
   newTask(event){
-    console.log(event.target.value);
+    // console.log(event.target.value);
     let newTask = Object.assign({},this.state.eventCreation);
     newTask.newTask = event.target.value;
     this.setState({eventCreation: newTask});
   }
   newDescription(event){
-    console.log(event.target.value);
+    // console.log(event.target.value);
     let newDescription = Object.assign({},this.state.eventCreation);
-    newDescription.newDesciption = event.target.value;
-    this.setState({newDescription: newDescription});
+    newDescription.newDescription = event.target.value;
+    this.setState({eventCreation: newDescription});
   }
   newStartTime(event){
-    console.log(event.target.value);
+    // console.log(event.target.value);
     let newST = Object.assign({},this.state.eventCreation);
     newST.newStartTime = event.target.value;
-    this.setState({newStartTime: newST});
+    this.setState({eventCreation: newST});
   }
   newEndTime(event){
-    console.log(event.target.value);
+    // console.log(event.target.value);
     let newET = Object.assign({},this.state.eventCreation);
     newET.newEndTime = event.target.value;
-    this.setState({newEndTime: newET});
+    this.setState({eventCreation: newET});
   }
 
   handleSubmit = (e) => {
@@ -94,6 +94,26 @@ class App extends Component {
 
   addTask = () => {
     console.log(this.state); 
+    const t_values = this.state.eventCreation
+    this.setState({tasks: this.state.tasks
+      .concat({
+        id: this.state.tasks.length+1,
+        user_id: t_values.selected.id,
+        name: t_values.newTask,
+        description: t_values.newDescription,
+        assigned_start_time: t_values.newStartTime,
+        assigned_end_time: t_values.newEndTime
+      })
+    });
+    const defaults = { 
+      newTask: "",
+      newDescription: "",
+      newStartTime: "",
+      newEndTime: ""
+    };
+    let defaultValues = Object.assign({},this.state.eventCreation,defaults);
+    // console.log(defaultValues);
+    this.setState({eventCreation: defaultValues});
   }
 
   toggle(e) {
@@ -130,7 +150,7 @@ class App extends Component {
               />
           </div>
           <div className='timeline'>
-            <Timeline data={this.state.data} />
+            <Timeline data={this.state.timelineData} />
           </div>
         </div>
       </div>

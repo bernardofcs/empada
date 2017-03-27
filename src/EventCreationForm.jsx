@@ -3,10 +3,6 @@ import './App.css';
 import NewTaskFields from './NewTaskFields.jsx';
 
 class EventCreationForm extends Component {
-  constructor(props){  
-    super(props);
-  }
-
   render() {
     return (
       <div>
@@ -50,13 +46,13 @@ class EventCreationForm extends Component {
                   }} />
                   {this.props.tasks
                     .filter((t)=> {
-                      console.log('filtering');
-                      console.log(t.user_id);
-                      console.log(this.props.eventCreation.selected.id);
+                      // console.log('filtering');
+                      // console.log(t.user_id);
+                      // console.log(this.props.eventCreation.selected.id);
                       return t.user_id == this.props.eventCreation.selected.id;
                     })
                     .map((t)=> {
-                      console.log('mapping')
+                      // console.log('mapping')
                       return (
                         <tr>
                           <td data-task-id={t.id}>{t.name}</td>
