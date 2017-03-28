@@ -14,8 +14,18 @@
   color: white;
 }
 
-.App-intro {
-  font-size: large;
+.collapsible {
+  font-size: 0.7rem;
+}
+
+.collapsible-header p {
+  margin: 0;
+  padding: 1rem;
+  line-height: 1rem;
+}
+
+.collapsible-body {
+  padding: 1rem;
 }
 
 @keyframes App-logo-spin {
