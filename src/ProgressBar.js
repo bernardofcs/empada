@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 // import { Button } from 'react-materialize';
-import { PieChart } from 'react-chartkick';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
 
