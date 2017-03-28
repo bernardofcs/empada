@@ -61,13 +61,13 @@ class App extends Component {
       progress_bar : [
         { 
           user_id: 1,
-          incomplete_tasks: 50, 
-          completed_tasks: 50
+          incomplete_tasks: 100, 
+          completed_tasks: 0
         },
         {
           user_id: 2,
-          incomplete_tasks: 80, 
-          completed_tasks: 20
+          incomplete_tasks: 100, 
+          completed_tasks: 0
         }
       ]
     }
@@ -248,6 +248,7 @@ class App extends Component {
           placeholder="Create a new contractor"
           label="Create a new contractor"
           onSubmit={this.handleAddContractorToProgressBar}
+          name={'this input is for testing purposes only'}
         />
         <ProgressBar 
           taskName={this.state.name}
