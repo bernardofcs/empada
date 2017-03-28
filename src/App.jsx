@@ -194,15 +194,10 @@ class App extends Component {
   eventCreationSelectToggle = (e) => {
     let newSelected = Object.assign({},this.state.eventCreation);
     const newId =  e.target.getAttribute('data-id');
-    console.log(e.target)
-    console.log(newId)
     if (newId === this.state.eventCreation.selected.id){
       newSelected.selected.name = "";
       newSelected.selected.id = NaN;
     } else if (isNaN(this.state.eventCreation.selected.id)){
-      console.log(newSelected)
-      // console.log(newId)
-      console.log(this.state.assigned_people)
       newSelected.selected.name = this.state.assigned_people.filter((p)=> p.id == newId)[0].name;
       newSelected.selected.id = newId;
     } else {
@@ -230,8 +225,6 @@ class App extends Component {
   if(previousState.tasks.length != this.state.tasks.length){
     this.updateTimeline();
   }
-
-
 }
 
   render() {
