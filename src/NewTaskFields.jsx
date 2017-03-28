@@ -15,6 +15,6 @@ function NewTaskFields (props) {
     );
   }
 
-  return <tr><td><h5>Select an assigned person</h5></td></tr>
+  return <tr><td colSpan="4"><h5>Select an assigned person</h5></td></tr>
 };
 module.exports = NewTaskFields;
