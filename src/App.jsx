@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import EventCreationForm from './EventCreationForm.jsx';
-// import InsertForm from './InsertForm.js'
 import { Timeline } from 'react-chartkick';
 
 class App extends Component {
@@ -21,43 +19,12 @@ class App extends Component {
         newAssignedPerson: "",
         newAssignedEmail: "",
         assigned_people: [
-          {
-            name: 'Jimmy',
-            id: 1,
-            email: "jimmy@email.com"
-          },
-          {
-            name: 'Johnny',
-            id: 2,
-            email: "Johnny@email.com"
-          },
-          {
-            name: 'Sally',
-            id: 3,
-            email: "sally@email.com"
-          }
         ],
-        tasks: [
-          {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '08:00:00',assigned_end_time: '10:00:00'},
-          {id: 2, user_id: 1, name: 'buy cups', description: 'go to dollar store',assigned_start_time: '15:00:00',assigned_end_time: '17:00:00'},
-          {id: 3, user_id: 2, name: 'bring music', description: 'check out spotify',assigned_start_time: '09:00:00',assigned_end_time: '11:00:00'},
-          {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '11:00:00',assigned_end_time: '18:00:00'}
-        ],
+        tasks: [],
         timelineData: []
       }
     };
-    // this.eventCreationSelectToggle = this.eventCreationSelectToggle.bind(this);
-    // this.newStartTime = this.newStartTime.bind(this)
-    // this.newEndTime = this.newEndTime.bind(this)
-    // this.newTask = this.newTask.bind(this);
-    // this.newDescription = this.newDescription.bind(this);
-    // this.newEventDate = this.newEventDate.bind(this);
-    // this.newEventDescription = this.newEventDescription.bind(this);
-    // this.newEventName = this.newEventName.bind(this);
-    // this.updateTimeline = this.updateTimeline.bind(this);
-    // this.handleAssignedPerson = this.handleAssignedPerson.bind(this);
   }
-
   addNewAssignedUser = (event) => {
     var newUser = Object.assign({},this.state.eventCreation)
     newUser.assigned_people.push({
@@ -80,7 +47,6 @@ class App extends Component {
     this.setState({eventCreation: newPerson});
   }
   updateTimeline = () => {
-
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
       // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
       return [this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(t.user_id,10) )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]
@@ -190,27 +156,25 @@ class App extends Component {
   }
   componentDidMount() {
     // console.log("componentDidMount <App />");
-  const mysocket = new WebSocket("ws://localhost:3001");
-  this.socket = mysocket;
-  this.socket.onconnect = (event) => {
-    console.log(`Connected! : ${event}`);
-  }
-  this.socket.onmessage = (event) => {
-    console.log(`From server: ${event.data}`);
-    // this.newMessageFromServer(event.data);
-  }
-  this.updateTimeline();
-  }
-  componentDidUpdate(previousProps, previousState) {
-  // only update chart if the data has changed
-  if(previousState.eventCreation.tasks.length !== this.state.eventCreation.tasks.length){
-    console.log('detected task added')
+    const mysocket = new WebSocket("ws://localhost:3001");
+    this.socket = mysocket;
+    this.socket.onconnect = (event) => {
+      console.log(`Connected! : ${event}`);
+    }
+    this.socket.onmessage = (event) => {
+      console.log(`From server: ${event.data}`);
+      // this.newMessageFromServer(event.data);
+    }
     this.updateTimeline();
   }
-}
-
+  componentDidUpdate(previousProps, previousState) {
+    // only update chart if the data has changed
+    if(previousState.eventCreation.tasks.length !== this.state.eventCreation.tasks.length){
+      console.log('detected task added')
+      this.updateTimeline();
+    }
+  }
   render() {
-
     return (
       <div className="App">
         <h1> Micromanage your next event</h1>
