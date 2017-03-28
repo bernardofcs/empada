@@ -84,6 +84,7 @@ class App extends Component {
     //     chartArray.completed_tasks
     //   }
     // })
+
   updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
     
@@ -113,6 +114,7 @@ class App extends Component {
       }
     })
 
+    // end state that I want to set for incomplete and completed tasks
     let completedTasksNewState = 0; 
     let incompleteTasksNewState = 0; 
 
@@ -126,22 +128,22 @@ class App extends Component {
       }
     })
 
+    // will probably have to create a new field, one that is initially set once a new bar is created, so that it will have a static value to check to see how long the initial state was, that way it is always reduced/increased by the same percentage
+
     console.log(completedTasksNewState);
     console.log(incompleteTasksNewState);
-  }
 
-  handleEndTask = (e) => {
-    e.preventDefault(); 
-
-    e.target.className += " disabled"
-
+    e.target.className += " disabled";
+    
     let message = {
-      type: 'end-time-for-contractor-tasks', 
-      end_date: Date.now(),
+      type: 'end-time-for-contractor-tasks-and-updating-progress-bar', 
+      completed_tasks: completedTasksNewState,
+      incomplete_tasks: incompleteTasksNewState,
+      start_time: Date.now(),
       project_id: 12,
       id: 2
     }
-    console.log('end task button pressed');
+    console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
@@ -185,19 +187,38 @@ class App extends Component {
       console.log(data);
 
       switch (data.type) {
-        // case 'add-contractor-to-progress-bar':
-        //   this.concat.setState({
-        //     name: this.state.name,
-        //     completed_tasks: this.state.completed_tasks,
-        //     incomplete_tasks: this.state.incomplete_tasks
-        //   })
-        // break;
+        case 'update-progress-bar':
+          this.setState({
+            completed_tasks: data.completed_tasks,
+            incomplete_tasks: data.incomplete_tasks
+          })
+        break;
 
         default:
           console.error('Failed to send back');
       }
     }
   }
+
+  componentDidUpdate() {
+    this.socket.onmessage = (event) => {
+      console.log('entered did update');
+      const data = JSON.parse(event.data);
+      console.log(data);
+
+      switch (data.type) {
+        case 'update-progress-bar':
+          this.concat.setState({
+            completed_tasks: data.completed_tasks,
+            incomplete_tasks: data.incomplete_tasks
+          })
+        break;
+
+        default:
+          console.error('Failed to send back');
+      }
+    }
+  }  
 
   render() {
     let sample_data = [
