@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 // import { Button } from 'react-materialize';
-import { BarChart } from 'react-chartkick';
+import { PieChart } from 'react-chartkick';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
+
+// make the donus smaller
 
 class ProgressBar extends Component {
   render() {
@@ -16,7 +18,7 @@ class ProgressBar extends Component {
             />
           })
         }
-        </div>
+      </div>
     );
   }
 }

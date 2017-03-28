@@ -61,8 +61,8 @@ class App extends Component {
       progress_bar : [
         { 
           user_id: 1,
-          incomplete_tasks: 100, 
-          completed_tasks: 0
+          incomplete_tasks: 50, 
+          completed_tasks: 50
         },
         {
           user_id: 2,
