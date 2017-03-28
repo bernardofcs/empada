@@ -78,7 +78,7 @@ class App extends Component {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
       }
-    }, 450)
+    }, 500)
     const mysocket = new WebSocket("ws://localhost:3001")
     this.socket = mysocket;
   }
