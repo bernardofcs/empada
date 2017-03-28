@@ -66,12 +66,17 @@ class App extends Component {
         },
         {
           user_id: 2,
-          incomplete_tasks: 100, 
-          completed_tasks: 0
+          incomplete_tasks: 80, 
+          completed_tasks: 20
         }
       ]
     }
   }
+
+  // updateProgressBar = () => {
+  //   // new_progressbars = 
+  //   this.setState(progress_bar: new_progressbars)
+  // }
 
   updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
@@ -84,6 +89,7 @@ class App extends Component {
 
     let array = []; 
     
+    // grabs the length of the user_id array chosen from earlier
     progressBars.forEach((el, i) => {
       el.forEach((elm) => {
         if (Number(elm.task_id) === Number(e.target.value)) {
@@ -97,6 +103,7 @@ class App extends Component {
 
     let percentOfTasksToChange = 0;
 
+    // creates the percentage amount to add adn remove from the completed and incomplete values
     this.state.progress_bar.forEach((elm) => {
       if (Number(elm.user_id) === Number(e.target.value)) {
         let amount = elm.incomplete_tasks/pbLength
