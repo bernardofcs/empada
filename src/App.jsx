@@ -46,6 +46,14 @@ class App extends Component {
           task_id: 2, 
         },
         {
+          user_id: 1,
+          task_id: 3, 
+        },
+        {
+          user_id: 1,
+          task_id: 4, 
+        },
+        {
           user_id: 2,
           task_id: 3
         }
@@ -78,25 +86,48 @@ class App extends Component {
     // })
   updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
-
+    
     let progressBars = this.state.progress_bar.map((id) => {
       return (this.state.assigned_people.filter((t) =>
         t.user_id === id.user_id))
     })
 
-    let progressBarCurrentLength = progressBars.forEach((el, i) => {
+    let array = []; 
+
+    progressBars.forEach((el, i) => {
       el.forEach((elm) => {
         if (Number(elm.user_id) === Number(e.target.value)) {
-          console.log(el.length)
+          array.push(el.length)
         }
       })
     })
 
-    this.state.progress_bar.forEach((i) => {
-      if (Number(i.user_id) === Number(e.target.value)) {
-        console.log(progressBarCurrentLength)
+    let pbLength = array.pop(); 
+
+    let percentOfTasksToChange = 0;
+
+    this.state.progress_bar.forEach((elm) => {
+      if (Number(elm.user_id) === Number(e.target.value)) {
+        let amount = elm.incomplete_tasks/pbLength
+        percentOfTasksToChange += amount; 
       }
     })
+
+    let completedTasksNewState = 0; 
+    let incompleteTasksNewState = 0; 
+
+    this.state.progress_bar.forEach((elem) => {
+      if (Number(elem.user_id) === Number(e.target.value)) {
+        let completedChange = elem.completed_tasks + percentOfTasksToChange;
+        completedTasksNewState += completedChange;
+
+        let incompleteChange = elem.incomplete_tasks - percentOfTasksToChange;
+        incompleteTasksNewState += incompleteChange; 
+      }
+    })
+
+    console.log(completedTasksNewState);
+    console.log(incompleteTasksNewState);
   }
 
   handleEndTask = (e) => {
