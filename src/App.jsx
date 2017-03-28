@@ -50,7 +50,7 @@ class App extends Component {
         {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '11:00:00',assigned_end_time: '18:00:00'}
       ]
     };
-    this.toggle = this.toggle.bind(this);
+    this.eventCreationSelectToggle = this.eventCreationSelectToggle.bind(this);
     this.newStartTime = this.newStartTime.bind(this)
     this.newEndTime = this.newEndTime.bind(this)
     this.newTask = this.newTask.bind(this);
@@ -63,14 +63,14 @@ class App extends Component {
   }
 
   addNewAssignedUser = (event) => {
-    this.socket.send(JSON.stringify({
-      data: {
-        name: this.state.eventCreation.newAssignedPerson,
-        id: this.state.assigned_people.length+1,
-        email: this.state.eventCreation.newAssignedEmail
-      },
-      type: "eventCreation-addNewAssignedPerson"
-    }));
+    // this.socket.send(JSON.stringify({
+    //   data: {
+    //     name: this.state.eventCreation.newAssignedPerson,
+    //     id: this.state.assigned_people.length+1,
+    //     email: this.state.eventCreation.newAssignedEmail
+    //   },
+    //   type: "eventCreation-addNewAssignedPerson"
+    // }));
     this.setState({assigned_people: this.state.assigned_people
       .concat({
         name: this.state.eventCreation.newAssignedPerson,
@@ -94,7 +94,7 @@ class App extends Component {
 
   updateTimeline = () => {
     let timelineData = this.state.tasks.map( (t) => {
-      console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
+      // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
       return [this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]
     });
     
@@ -180,26 +180,34 @@ class App extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     // console.log('submitted')
-   console.log(this.state.insert)
+  //  console.log(this.state.insert)
    this.socket.send(this.state.insert)
   }
 
   handleChange = (e) => {
     e.preventDefault();
-    console.log(e.target.value)
+    // console.log(e.target.value)
     this.setState({insert: e.target.value})
   }
 
 
-  toggle(e) {
-    if (e.target.className === "collection-item active"){
-      e.target.className = "collection-item";
-    } else {
-      e.target.className="collection-item active";
-    }
+  eventCreationSelectToggle = (e) => {
     let newSelected = Object.assign({},this.state.eventCreation);
-    newSelected.selected.name = e.target.innerHTML;
-    newSelected.selected.id = e.target.getAttribute('data-id');
+    const newId =  e.target.getAttribute('data-id');
+    console.log(e.target)
+    console.log(newId)
+    if (newId === this.state.eventCreation.selected.id){
+      newSelected.selected.name = "";
+      newSelected.selected.id = NaN;
+    } else if (isNaN(this.state.eventCreation.selected.id)){
+      console.log(newSelected)
+      // console.log(newId)
+      console.log(this.state.assigned_people)
+      newSelected.selected.name = this.state.assigned_people.filter((p)=> p.id == newId)[0].name;
+      newSelected.selected.id = newId;
+    } else {
+
+    }
     this.setState({
       eventCreation: newSelected
     }); 
@@ -208,22 +216,21 @@ class App extends Component {
     // console.log("componentDidMount <App />");
   const mysocket = new WebSocket("ws://localhost:3001");
   this.socket = mysocket;
+  this.socket.onconnect = (event) => {
+    console.log(`Connected! : ${event}`);
+  }
   this.socket.onmessage = (event) => {
     console.log(`From server: ${event.data}`);
     // this.newMessageFromServer(event.data);
   }
   this.updateTimeline();
   }
-  
   componentDidUpdate(previousProps, previousState) {
   // only update chart if the data has changed
   if(previousState.tasks.length != this.state.tasks.length){
     this.updateTimeline();
   }
 
-  if (previousState.eventCreation.selected.id !== this.state.eventCreation.selected.id) {
-    
-  }
 
 }
 
@@ -236,7 +243,7 @@ class App extends Component {
         <div className="event-wrapper">
           <div className="event-creation-form">
             <EventCreationForm {...this.state} 
-              toggle={this.toggle} 
+              eventCreationSelectToggle={this.eventCreationSelectToggle} 
               assigned_people={this.state.assigned_people} 
               tasks={this.state.tasks} 
               eventCreation={this.state.eventCreation}
@@ -258,6 +265,7 @@ class App extends Component {
             <Timeline data={this.state.timelineData} />
           </div>
         </div>
+        <div><button className="waves-effect waves-light btn-large">CREATE PROJECT <i className="material-icons right">track_changes</i></button></div>
       </div>
     );
   }

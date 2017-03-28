@@ -1,7 +1,7 @@
 import React from 'react';
 
 function NewTaskFields (props) {
-   console.log(props)
+  //  console.log(props)
   if (props.eventCreation.selected.name !== ""){
     return ( 
 
@@ -15,6 +15,6 @@ function NewTaskFields (props) {
     );
   }
 
-  return <tr><h5>Select an assigned person</h5></tr>
+  return <tr><td><h5>Select an assigned person</h5></td></tr>
 };
 module.exports = NewTaskFields;

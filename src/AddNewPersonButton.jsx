@@ -5,9 +5,9 @@ function AddNewPersonButton (props) {
   if (props.eventCreation.newAssignedPerson !== ""){
     return ( 
       <button 
-        className="waves-effect waves-light btn-large" 
+        className="waves-effect waves-light btn" 
         onClick={props.addNewAssignedUser}>
-          Add {props.eventCreation.newAssignedPerson} to your event!
+          Add { props.eventCreation.newAssignedPerson} to your event!
       </button>
     );
   }
