@@ -55,7 +55,7 @@ class App extends Component {
         },
         {
           user_id: 2,
-          task_id: 3
+          task_id: 5
         }
       ],
       progress_bar : [
@@ -73,31 +73,21 @@ class App extends Component {
     }
   }
 
-    
-    // if (progressBar.)
-    // let chartArrayValues = progressBar.map((chartArray) => {
-    //   return chartArray.length 
-    // })
-
-    // progressBar.map((chartArray) => {
-    //   if (chartArray.user_id === e.target.id) {
-    //     chartArray.completed_tasks
-    //   }
-    // })
-
   updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
     
+    // grabs and matches the user_id from progress_bar and assigned_people
     let progressBars = this.state.progress_bar.map((id) => {
       return (this.state.assigned_people.filter((t) =>
         t.user_id === id.user_id))
     })
 
     let array = []; 
-
+    
     progressBars.forEach((el, i) => {
       el.forEach((elm) => {
-        if (Number(elm.user_id) === Number(e.target.value)) {
+        if (Number(elm.task_id) === Number(e.target.value)) {
+          console.log(elm)
           array.push(el.length)
         }
       })
@@ -118,6 +108,7 @@ class App extends Component {
     let completedTasksNewState = 0; 
     let incompleteTasksNewState = 0; 
 
+    // need to implement the progressBars because it has access to the task_id
     this.state.progress_bar.forEach((elem) => {
       if (Number(elem.user_id) === Number(e.target.value)) {
         let completedChange = elem.completed_tasks + percentOfTasksToChange;
@@ -208,7 +199,7 @@ class App extends Component {
 
       switch (data.type) {
         case 'update-progress-bar':
-          this.concat.setState({
+          this.setState({
             completed_tasks: data.completed_tasks,
             incomplete_tasks: data.incomplete_tasks
           })
