@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../styles/App.css';
 import Auth0Lock from 'auth0-lock'
 import { Timeline } from 'react-chartkick';
 import ReactInterval from 'react-interval';
-// import { Col } from 'react-materialize'
+import TaskDashboard from './TaskDashboard.js'
+import { Button, Modal } from 'react-materialize';
+import ProgressBar from './ProgressBar.js';
 
 /*
 Users:
@@ -21,13 +23,56 @@ project:
 */
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       tasks: [],
       modalIsOpen: false,
       grace_period: 300000,
-      newsfeed: []
+      newsfeed: [],
+      list_of_tasks : [
+        {
+          start_time: Date.now(),
+          assigned_start_time: new Date().toLocaleTimeString(),
+          description: 'description',
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_time: Date.now(),
+          id: 1,
+          user_id: 1
+        },
+        {
+          start_time: Date.now(),
+          assigned_start_time: new Date().toLocaleTimeString(),
+          description: 'another description',
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_time: Date.now(),
+          id: 2,
+          user_id: 1
+        },
+        {
+          start_time: Date.now(),
+          assigned_start_time: new Date().toLocaleTimeString(),
+          description: 'a third description',
+          assigned_end_time: new Date().toLocaleTimeString(),
+          end_time: Date.now(),
+          id: 3,
+          user_id: 2
+        }
+      ],
+      progress_bar : [
+        {
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },
+        {
+          user_id: 2,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        }
+      ],
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -191,6 +236,63 @@ class App extends Component {
     })})
   }
 
+  updateCompletedAndIncompleteTasks = (e) => {
+    e.preventDefault();
+
+    const task = this.state.list_of_tasks.filter((t) => {
+      return t.id === Number(e.target.value);
+    })
+
+    const userId = task[0].user_id
+    let userProgressArr = this.state.progress_bar.filter((t) => {
+      return t.user_id === userId;
+    })
+
+    const userTasks = this.state.list_of_tasks.filter((t) => {
+      return t.user_id === userId;
+    })
+
+    let userProgress = userProgressArr[0];
+    userProgress.total_tasks = userTasks.length;
+    let percentOfTasksToChange = Math.round(100/userProgress.total_tasks);
+    userProgress.completed_tasks += percentOfTasksToChange;
+    userProgress.incomplete_tasks -= percentOfTasksToChange;
+    const oldProgressBar = this.state.progress_bar;
+
+    let newProgressBar = oldProgressBar.filter((t) => {
+      return t.user_id !== userId
+    })
+
+    newProgressBar.push(userProgress);
+
+    e.target.className += " disabled";
+
+    let message = {
+      type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
+      progress_bar: newProgressBar,
+      end_time: Date.now(),
+      project_id: 12,
+      id: 2,
+    }
+    console.log('start task button pressed');
+    this.socket.send(JSON.stringify(message));
+  }
+
+  handleStartTask = (e) => {
+    e.preventDefault();
+
+    e.target.className += " disabled";
+
+    let message = {
+      type: 'start-time-for-contractor-tasks',
+      start_time: Date.now(),
+      project_id: 12,
+      id: 2
+    }
+    console.log('start task button pressed');
+    this.socket.send(JSON.stringify(message));
+  }
+
   componentWillMount = () => {
     console.log("componentWillMount <App />");
     this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
@@ -232,25 +334,24 @@ class App extends Component {
     });
   }
 
-  componentDidMount = () => {
-    this.updateNewsFeed();
+  componentDidMount() {
     // console.log("componentDidMount <App />");
+    this.updateNewsFeed();
+
     setTimeout(() => {
-      if(!localStorage.profile){
+      if (!localStorage.profile) {
         this.showLock();
-      }else{
+      } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
       }
     }, 500)
-    const mysocket = new WebSocket("ws://localhost:3001")
-    this.socket = mysocket;
+
+    this.socket = new WebSocket("ws://localhost:3001");
 
     this.socket.onopen = () => {
-      console.log('Connected to server!')
+      console.log('Connected to server!');
     }
-
-    // everything below this point till the next major comment is timeline related
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -373,6 +474,8 @@ class App extends Component {
         }
       };
 
+      console.log(tasks);
+
       const colorMap = {
         // should contain a map of category -> color for every category
         'early start'     : '#139A43',
@@ -386,9 +489,25 @@ class App extends Component {
         arr[3] = `${arr[0]} - ${arr[3]}`;
       });
 
-      if (data.type === 'tasks') {
-        this.setState({'tasks': tasks});
-      };
+      console.log('data.type.type');
+      console.log(data.type.type);
+
+      switch (data.type) {
+        case 'update-progress-bar':
+          let newstate = this.state;
+          newstate.progress_bar = data.progress_bar;
+          this.setState(newstate);
+          break;
+
+        case 'tasks':
+          console.log('got inside tasks in the switch');
+          this.setState({'tasks': tasks});
+          break;
+
+        default:
+          console.error('Failed to send back');
+      }
+
     };
   }
 
@@ -408,6 +527,7 @@ class App extends Component {
     let libraryData = {timeline: {groupByRowLabel: true}};
     const { newsfeed } = this.state;
 
+
     return (
       <div className="App">
         <div className="App-header">
@@ -421,6 +541,24 @@ class App extends Component {
         </div>
 
         <br />
+
+        <Modal
+          header='Modal Header'
+          trigger={
+            <Button waves='light'>MODAL</Button>
+          }>
+          <TaskDashboard
+            handleStartTask={this.handleStartTask}
+            listOfTasks={this.state.list_of_tasks}
+            updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+          />
+        </Modal>
+        <ProgressBar
+          taskName={this.state.name}
+          completedTasks={this.state.completed_tasks}
+          incompleteTasks={this.state.incomplete_tasks}
+          progressBar={this.state.progress_bar}
+        />
 
         <div className="row">
           <div className="col s4 offset-s8">
@@ -437,6 +575,18 @@ class App extends Component {
             </div>
           </div>
         </div>
+
+
+        {/*<div className='timeline-container'>
+          <div className='timeline'>
+            <BarChart
+            data={this.state.data}
+            max={100}
+            stacked={true}
+          />
+          </div>
+        </div>*/}
+
       </div>
     );
   }
