@@ -6,7 +6,7 @@ import ReactInterval from 'react-interval';
 import TaskDashboard from './TaskDashboard.js'
 import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
-
+import EventCreationForm from './EventCreationForm.jsx';
 /*
 Users:
 - started a task
@@ -26,6 +26,47 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      eventCreation: {
+        selected: {name: "", id: NaN},
+        startDate: "",
+        endDate: "",
+        name: "",
+        description: "",
+        newTask: "",
+        newDescription: "",
+        newStartTime: "",
+        newEndTime: "",
+        newAssignedPerson: "",
+        newAssignedEmail: "",
+        assigned_people: [
+          {
+            name: 'Jimmy',
+            id: 1,
+            email: "jimmy@email.com"
+          },
+          {
+            name: 'Johnny',
+            id: 2,
+            email: "Johnny@email.com"
+          },
+          {
+            name: 'Sally',
+            id: 3,
+            email: "sally@email.com"
+          }
+        ],
+        tasks: [
+          // {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '08:00:00',assigned_end_time: '10:00:00'},
+          // {id: 2, user_id: 1, name: 'buy cups', description: 'go to dollar store',assigned_start_time: '15:00:00',assigned_end_time: '17:00:00'},
+          // {id: 3, user_id: 2, name: 'bring music', description: 'check out spotify',assigned_start_time: '09:00:00',assigned_end_time: '11:00:00'},
+          // {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '11:00:00',assigned_end_time: '18:00:00'}
+        ],
+        timelineData: [
+          // ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
+          // ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
+          // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
+        ]
+      },
       tasks: [],
       modalIsOpen: false,
       grace_period: 300000,
@@ -333,11 +374,17 @@ class App extends Component {
       });
     });
   }
+  componentDidUpdate(previousProps, previousState) {
+    if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
+      console.log('detected timeline updated')
+      this.clearTaskFields();
+    }
+  }
 
   componentDidMount() {
     // console.log("componentDidMount <App />");
     this.updateNewsFeed();
-
+    this.updateTimeline();
     setTimeout(() => {
       if (!localStorage.profile) {
         this.showLock();
@@ -356,138 +403,6 @@ class App extends Component {
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      const tasks = [];
-      const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
-      for (let key of Object.keys(data.data)) {
-        const task = data.data[key];
-        // console.log(`creating task bars: ${task.task_name}`);
-
-        if (task.start_date < task.assigned_start_date
-          && task.end_date < task.assigned_end_date
-          && task.assigned_start_date < task.end_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.assigned_start_date,
-            timing[0]
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.end_date,
-            timing[2]
-
-          ],
-          [
-            task.task_name,
-            task.end_date,
-            task.assigned_end_date,
-            timing[3]
-          ])
-        } else if (task.start_date < task.assigned_start_date
-          && task.end_date > task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.assigned_start_date,
-            timing[0]
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.assigned_end_date,
-            timing[2]
-          ],
-          [
-            task.task_name,
-            task.assigned_end_date,
-            task.end_date,
-            timing[4]
-          ])
-        } else if (task.start_date > task.assigned_start_date
-          && task.end_date < task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.assigned_start_date,
-            task.start_date,
-            timing[1]
-          ],
-          [
-            task.task_name,
-            task.start_date,
-            task.end_date,
-            timing[2]
-          ],
-          [
-            task.task_name,
-            task.end_date,
-            task.assigned_end_date,
-            timing[3]
-          ])
-        } else if (task.start_date > task.assigned_start_date
-          && task.end_date > task.assigned_end_date
-          && task.start_date < task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.assigned_start_date,
-            task.start_date,
-            timing[1]
-          ],
-          [
-            task.task_name,
-            task.start_date,
-            task.assigned_end_date,
-            timing[2]
-          ],
-          [
-            task.task_name,
-            task.assigned_end_date,
-            task.end_date,
-            timing[4]
-          ])
-        } else if (task.end_date < task.assigned_start_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.end_date,
-            timing[3]
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.assigned_end_date,
-            timing[3]
-          ])
-        } else if (task.start_date > task.assigned_end_date) {
-          tasks.push([
-            task.task_name,
-            task.start_date,
-            task.end_date,
-            timing[1]
-          ],
-          [
-            task.task_name,
-            task.assigned_start_date,
-            task.assigned_end_date,
-            timing[1]
-          ])
-        }
-      };
-
-      console.log(tasks);
-
-      const colorMap = {
-        // should contain a map of category -> color for every category
-        'early start'     : '#139A43',
-        'late start'      : '#F26430',
-        'as scheduled'    : '#279AF1',
-        'completed early' : '#139A43',
-        'completed late'  : '#F26430'
-      };
-      tasks.map((arr) => {
-        arr.push(colorMap[arr[3]]);
-        arr[3] = `${arr[0]} - ${arr[3]}`;
-      });
 
       console.log('data.type.type');
       console.log(data.type.type);
@@ -501,6 +416,138 @@ class App extends Component {
 
         case 'tasks':
           console.log('got inside tasks in the switch');
+          const tasks = [];
+          const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
+          for (let key of Object.keys(data.data)) {
+            const task = data.data[key];
+            // console.log(`creating task bars: ${task.task_name}`);
+
+            if (task.start_date < task.assigned_start_date
+              && task.end_date < task.assigned_end_date
+              && task.assigned_start_date < task.end_date) {
+              tasks.push([
+                task.task_name,
+                task.start_date,
+                task.assigned_start_date,
+                timing[0]
+              ],
+              [
+                task.task_name,
+                task.assigned_start_date,
+                task.end_date,
+                timing[2]
+
+              ],
+              [
+                task.task_name,
+                task.end_date,
+                task.assigned_end_date,
+                timing[3]
+              ])
+            } else if (task.start_date < task.assigned_start_date
+              && task.end_date > task.assigned_end_date) {
+              tasks.push([
+                task.task_name,
+                task.start_date,
+                task.assigned_start_date,
+                timing[0]
+              ],
+              [
+                task.task_name,
+                task.assigned_start_date,
+                task.assigned_end_date,
+                timing[2]
+              ],
+              [
+                task.task_name,
+                task.assigned_end_date,
+                task.end_date,
+                timing[4]
+              ])
+            } else if (task.start_date > task.assigned_start_date
+              && task.end_date < task.assigned_end_date) {
+              tasks.push([
+                task.task_name,
+                task.assigned_start_date,
+                task.start_date,
+                timing[1]
+              ],
+              [
+                task.task_name,
+                task.start_date,
+                task.end_date,
+                timing[2]
+              ],
+              [
+                task.task_name,
+                task.end_date,
+                task.assigned_end_date,
+                timing[3]
+              ])
+            } else if (task.start_date > task.assigned_start_date
+              && task.end_date > task.assigned_end_date
+              && task.start_date < task.assigned_end_date) {
+              tasks.push([
+                task.task_name,
+                task.assigned_start_date,
+                task.start_date,
+                timing[1]
+              ],
+              [
+                task.task_name,
+                task.start_date,
+                task.assigned_end_date,
+                timing[2]
+              ],
+              [
+                task.task_name,
+                task.assigned_end_date,
+                task.end_date,
+                timing[4]
+              ])
+            } else if (task.end_date < task.assigned_start_date) {
+              tasks.push([
+                task.task_name,
+                task.start_date,
+                task.end_date,
+                timing[3]
+              ],
+              [
+                task.task_name,
+                task.assigned_start_date,
+                task.assigned_end_date,
+                timing[3]
+              ])
+            } else if (task.start_date > task.assigned_end_date) {
+              tasks.push([
+                task.task_name,
+                task.start_date,
+                task.end_date,
+                timing[1]
+              ],
+              [
+                task.task_name,
+                task.assigned_start_date,
+                task.assigned_end_date,
+                timing[1]
+              ])
+            }
+          };
+
+          console.log(tasks);
+
+          const colorMap = {
+            // should contain a map of category -> color for every category
+            'early start'     : '#139A43',
+            'late start'      : '#F26430',
+            'as scheduled'    : '#279AF1',
+            'completed early' : '#139A43',
+            'completed late'  : '#F26430'
+          };
+          tasks.map((arr) => {
+            arr.push(colorMap[arr[3]]);
+            arr[3] = `${arr[0]} - ${arr[3]}`;
+          });
           this.setState({'tasks': tasks});
           break;
 
@@ -515,6 +562,162 @@ class App extends Component {
     console.log(this.state.profile.email)
     const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
     this.socket.send(JSON.stringify(loginObj))
+  }
+
+
+  submitEvent = () => {
+    var payload = Object.assign({}, this.state);
+    payload.type = 'eventCreation-newProject';
+    this.socket.send(JSON.stringify(payload));
+  }
+  addNewAssignedUser = (event) => {
+    var newUser = Object.assign({},this.state.eventCreation)
+    newUser.assigned_people.push({
+      name: this.state.eventCreation.newAssignedPerson,
+      id: this.state.eventCreation.assigned_people.length+1,
+      email: this.state.eventCreation.newAssignedEmail
+    })
+    newUser.newAssignedEmail = '';
+    newUser.newAssignedPerson = '';
+    this.setState({eventCreation: newUser});
+  }
+  handleAssignedEmail = (event) => {
+    let newEmail = Object.assign({},this.state.eventCreation);
+    newEmail.newAssignedEmail = event.target.value;
+    this.setState({eventCreation: newEmail});
+  }
+  handleAssignedPerson = (event) => {
+    let newPerson = Object.assign({},this.state.eventCreation);
+    newPerson.newAssignedPerson = event.target.value;
+    this.setState({eventCreation: newPerson});
+  }
+  updateTimeline = () => {
+    const date = this.state.eventCreation.startDate;
+    var timelineData = this.state.eventCreation.tasks.map( (t) => {
+      // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
+      return [this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(t.user_id,10) )[0].name, new Date(date+' '+t.assigned_start_time), new Date(date+' '+t.assigned_end_time) ];
+    });
+    console.log(timelineData);
+    var newTimelineData = Object.assign({},this.state.eventCreation)
+    newTimelineData.timelineData = timelineData;
+    this.setState({ eventCreation: newTimelineData });
+    // this.clearTaskFields();
+  }
+  clearTaskFields = () => {
+    const defaultValues = {
+      newTask: '',
+      newDescription: '',
+      newStartTime: '',
+      newEndTime: ''
+    }
+    var clearTasks = Object.assign({},this.state.eventCreation,defaultValues)
+    this.setState({eventCreation: clearTasks});
+  }
+  addTask = () => {
+    //add a new task to the task state, and add data to timeline.
+    var newTasks = Object.assign({},this.state.eventCreation)
+    if ( 
+      newTasks.newTask !== '' && 
+      newTasks.newDescription !== ''&& 
+      newTasks.newStartTime !== ''&& 
+      newTasks.newEndTime!== '' ) {
+      const t_values = this.state.eventCreation;
+      newTasks.tasks.push({
+        id: this.state.eventCreation.tasks.length+1,
+        user_id: t_values.selected.id,
+        name: t_values.newTask,
+        description: t_values.newDescription,
+        assigned_start_time: t_values.newStartTime,
+        assigned_end_time: t_values.newEndTime
+      })
+      newTasks.newTask = '';
+      newTasks.newDescription = '';
+      newTasks.newStartTime = '';
+      newTasks.newEndTime= '';
+      this.setState({eventCreation: newTasks });
+      this.updateTimeline();    
+    }
+  }
+  newEventName = (event) => {
+    //watch for values added to new task name
+    // console.log(event.target.value);
+    let newName = Object.assign({},this.state.eventCreation);
+    newName.name = event.target.value;
+    this.setState({eventCreation: newName});
+  }
+  newEventDescription = (event) => {
+    //watch for values added to new task description
+    // console.log(event.target.value);
+    let newEventDescription = Object.assign({},this.state.eventCreation);
+    newEventDescription.description = event.target.value;
+    this.setState({eventCreation: newEventDescription});
+  }
+  newEventEndDate = (event) => {
+    //watch for values added to new task start time
+    // console.log(event.target.value);
+    let newEventDate = Object.assign({},this.state.eventCreation);
+    newEventDate.endDate = event.target.value;
+    this.setState({eventCreation: newEventDate});
+  }
+  newEventStartDate = (event) => {
+    //watch for values added to new task start time
+    // console.log(event.target.value);
+    let newEventDate = Object.assign({},this.state.eventCreation);
+    newEventDate.startDate = event.target.value;
+    this.setState({eventCreation: newEventDate});
+  }
+  newTask = (event) => {
+    //watch for values added to new task name
+    // console.log(event.target.value);
+    let newTask = Object.assign({},this.state.eventCreation);
+    newTask.newTask = event.target.value;
+    this.setState({eventCreation: newTask});
+  }
+  newDescription = (event) => {
+    //watch for values added to new task description
+    // console.log(event.target.value);
+    let newDescription = Object.assign({},this.state.eventCreation);
+    newDescription.newDescription = event.target.value;
+    this.setState({eventCreation: newDescription});
+  }
+  newStartTime = (event) => {
+    //watch for values added to new task start time
+    // console.log(event.target.value);
+    let newST = Object.assign({},this.state.eventCreation);
+    newST.newStartTime = event.target.value;
+    this.setState({eventCreation: newST});
+  }
+  newEndTime = (event) => {
+    //watch for values added to new task end time
+    // console.log(event.target.value);
+    let newET = Object.assign({},this.state.eventCreation);
+    newET.newEndTime = event.target.value;
+    this.setState({eventCreation: newET});
+  }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.socket.send(this.state.insert)
+  }
+  handleChange = (e) => {
+    e.preventDefault();
+    // console.log(e.target.value)
+    this.setState({insert: e.target.value})
+  }
+  eventCreationSelectToggle = (e) => {
+    let newSelected = Object.assign({},this.state.eventCreation);
+    const newId =  e.target.getAttribute('data-id');
+    if (newId === this.state.eventCreation.selected.id){
+      newSelected.selected.name = "";
+      newSelected.selected.id = NaN;
+    } else {
+      newSelected.selected.name = "";
+      newSelected.selected.id = NaN;
+      newSelected.selected.name = this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(newId,10))[0].name;
+      newSelected.selected.id = newId;
+    }
+    this.setState({
+      eventCreation: newSelected
+    }); 
   }
 
   render() {
@@ -547,6 +750,7 @@ class App extends Component {
           trigger={
             <Button waves='light'>MODAL</Button>
           }>
+          
           <TaskDashboard
             handleStartTask={this.handleStartTask}
             listOfTasks={this.state.list_of_tasks}
@@ -559,7 +763,30 @@ class App extends Component {
           incompleteTasks={this.state.incomplete_tasks}
           progressBar={this.state.progress_bar}
         />
-
+<div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
+          <div className="event-creation-form">
+            <EventCreationForm 
+              {...this.state} 
+              submitEvent={this.submitEvent}
+              eventCreationSelectToggle={this.eventCreationSelectToggle} 
+              addTask={this.addTask} 
+              clearTaskFields={this.clearTaskFields}
+              onNewTask={this.newTask}
+              onNewDescription={this.newDescription}
+              onNewStartTime={this.newStartTime}
+              onNewEndTime={this.newEndTime}
+              newEventStartDate={this.newEventStartDate}
+              newEventEndDate={this.newEventEndDate}
+              newEventDescription={this.newEventDescription}
+              newEventName={this.newEventName}
+              updateTimeline={this.updateTimeline}
+              handleAssignedPerson={this.handleAssignedPerson}
+              addNewAssignedUser={this.addNewAssignedUser}
+              handleAssignedEmail={this.handleAssignedEmail}
+              />
+          </div>
         <div className="row">
           <div className="col s4 offset-s8">
             <ul className="collapsible popout" data-collapsible="accordion">
@@ -586,7 +813,6 @@ class App extends Component {
           />
           </div>
         </div>*/}
-
       </div>
     );
   }
