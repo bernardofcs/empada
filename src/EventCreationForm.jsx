@@ -11,9 +11,14 @@ class EventCreationForm extends Component {
         <div className="row">
           <div className="col s4">
             <div className="card-panel">
+            Event Name:
               <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
+              Event Description:
               <input type="text" placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
-              <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.date} onChange={this.props.newEventDate}/>
+              Event Start Date:
+              <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.startDate} onChange={this.props.newEventStartDate}/>
+              Event End Date:
+              <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.endDate} onChange={this.props.newEventEndDate}/>
             </div>
             <div className="card-panel">
               <AddNewPersonButton {...this.props} />
@@ -51,11 +56,13 @@ class EventCreationForm extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <NewTaskFields {...this.props} functions={{
-                    newTask: this.props.newTask,
-                    newDescription: this.props.newDescription,
-                    newStartTime: this.props.newStartTime,
-                    newEndTime: this.props.newEndTime
+                  <NewTaskFields 
+                  {...this.props} 
+                  functions={{
+                    onNewTask: this.props.onNewTask,
+                    onNewDescription: this.props.onNewDescription,
+                    onNewStartTime: this.props.onNewStartTime,
+                    onNewEndTime: this.props.onNewEndTime
                   }} />
                   {this.props.eventCreation.tasks
                     .filter((t)=> {
@@ -64,10 +71,10 @@ class EventCreationForm extends Component {
                       // console.log(this.props.eventCreation.selected.id);
                       return parseInt(t.user_id,10) === parseInt(this.props.eventCreation.selected.id,10);
                     })
-                    .map((t)=> {
+                    .map((t,i)=> {
                       // console.log('mapping')
                       return (
-                        <tr>
+                        <tr key={i}>
                           <td data-task-id={t.id}>{t.name}</td>
                           <td data-task-id={t.id}>{t.description}</td>
                           <td data-task-id={t.id}>{t.assigned_start_time}</td>
@@ -80,6 +87,7 @@ class EventCreationForm extends Component {
             </div>
           </div>
         </div>
+        <div><button onClick={this.props.submitEvent} className="waves-effect waves-light btn-large">CREATE PROJECT <i className="material-icons right">track_changes</i></button></div>
     </div>
     );
   }
