@@ -19,11 +19,26 @@ export default StyleSheet.create({
   },
   'timeline-container': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
-    'width': [{ 'unit': '%H', 'value': 0.8 }],
-    // overflow: auto;
+    'width': [{ 'unit': '%H', 'value': 0.8 }]
   },
-  'timeline': {
-    // width: 1000px;
+  // .progress-donut-container {
+  margin: 1em 5em 1em 10em;
+  width: 12em;
+  border: 1px solid black;
+  transition: 300ms;
+}
+
+.progress-donut-container-inner {
+  margin: 1em 5em 1em 10em;
+  width: 12em;
+  border: 1px solid lightblue;
+  transition: 300ms;
+}
+  'pie-chart-name': {
+    // position: relative;
+  top: 7.3em;
+  right: 10em;
+  z-index: 1;
   },
   'Table': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],

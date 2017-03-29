@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import TaskDashboard from './TaskDashboard.js'
 // import logo from './logo.svg';
-import { Input } from 'react-materialize';
+// import { Input } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
-import { Timeline } from 'react-chartkick';
+// import { Timeline } from 'react-chartkick';
 
 class App extends Component {
   constructor(props) {
@@ -158,13 +158,6 @@ class App extends Component {
   }  
 
   render() {
-    let sample_data = [
-      ["Washington",  new Date(1789,  4, 19),  new Date(1789,  9,  3)],
-      ["Washington",  new Date(1789,  9,  3),  new Date(1790,  1,  3)],
-      ["Washington",  new Date(1790,  1,  3),  new Date(1790,  3,  3)]
-    ];
-    console.log(sample_data)
-    let libraryData = {};
     return (
       <div className="App">
         <div className="App-header">
@@ -177,17 +170,20 @@ class App extends Component {
           listOfTasks={this.state.list_of_tasks}
           updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
         />
-        <div className='timeline-container'>
+        {/*<div className='timeline-container'>
           <div className='timeline'>
             <Timeline data={sample_data} library={libraryData} stacked={true} />
           </div>
-        </div>
-        <Input
-          placeholder="Create a new contractor"
-          label="Create a new contractor"
-          onSubmit={this.handleAddContractorToProgressBar}
-          name={'this input is for testing purposes only'}
-        />
+        </div>*/}
+        {/*<div className='timeline-container'>
+          <div className='timeline'>
+            <BarChart 
+            data={this.state.data}
+            max={100}
+            stacked={true}
+          />
+          </div>
+        </div>*/}
         <ProgressBar 
           taskName={this.state.name}
           completedTasks={this.state.completed_tasks}

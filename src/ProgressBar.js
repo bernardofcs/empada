@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Button } from 'react-materialize';
+import { Row } from 'react-materialize';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
 
@@ -8,7 +8,7 @@ import '../styles/App.css'
 class ProgressBar extends Component {
   render() {
     return (
-      <div className='timeline-container'>
+      <Row className='progress-donut-container'>
         { 
           this.props.progressBar.map((field, i) => {
             return <ProgressBarFields 
@@ -17,7 +17,7 @@ class ProgressBar extends Component {
             />
           })
         }
-      </div>
+      </Row>
     );
   }
 }

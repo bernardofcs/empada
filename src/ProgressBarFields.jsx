@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Button } from 'react-materialize';
+import { Col } from 'react-materialize';
 import { PieChart } from 'react-chartkick';
 import '../styles/App.css'
 
@@ -8,16 +8,19 @@ import '../styles/App.css'
 class ProgressBarFields extends Component {
   render() {
     return (
-      <div>
-        <p>{this.props.field.user_id}</p>
+      <Col s={1.5}>
+        <p className="pie-chart-name">{this.props.field.user_id}</p>
         <PieChart data={[
             ['Completed Tasks', this.props.field.completed_tasks],
             ['Incomplete Tasks', this.props.field.incomplete_tasks]]}
           max={100}
           donut={true}
           stacked={true}
+          legend={false}
+          width={"12em"}
+          height={"12em"}
         />
-      </div>
+      </Col>
     );
   }
 }
