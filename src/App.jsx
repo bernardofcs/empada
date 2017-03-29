@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import Auth0Lock from 'auth0-lock'
 import { Timeline } from 'react-chartkick';
-import ReactInterval from 'react-interval';
 import TaskDashboard from './TaskDashboard.js'
 import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
+import DashboardTimeline from './DashboardTimeline.jsx';
+import Newsfeed from './Newsfeed.jsx';
+
 /*
 Users:
 - started a task
@@ -113,7 +115,7 @@ class App extends Component {
           completed_tasks: 0,
           total_tasks: undefined,
         }
-      ],
+      ]
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -132,68 +134,10 @@ class App extends Component {
     // this.showLock()
   }
 
-  updateNewsFeed = () => {
-    let fromDb = [
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9),
-        assigned_time: new Date(2016, 11, 1, 9),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'completed_task',
-        action_time: new Date(2016, 11, 1, 9, 10),
-        assigned_time: new Date(2016, 11, 1, 9, 0),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9, 1),
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_started', //'task_not_completed'
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 15)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_completed',
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_expected',
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      }
-    ]
-    // this.state.newsfeed
 
-    return this.setState({newsfeed: fromDb.map((item, index) => {
-      let notif_type;
+  renderNewsfeed = () => {
+    return this.state.newsfeed.map((item, index) => {
+      let notif_type = [];
       switch(item.type) {
         case 'assigned_user_action':
           if (item.action === 'started_task') {
@@ -274,7 +218,70 @@ class App extends Component {
         default:
           throw new Error(`Unknown event type in newsfeed: ${item.type}`);
       }
-    })})
+    })
+  }
+
+  updateNewsfeed = () => {
+    let fromDb = [
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'started_task', //'completed_task', 'progress_bar'
+        action_time: new Date(2016, 11, 1, 9),
+        assigned_time: new Date(2016, 11, 1, 9),
+        notification_time: new Date(2016, 11, 1, 9)
+      },
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'completed_task',
+        action_time: new Date(2016, 11, 1, 9, 10),
+        assigned_time: new Date(2016, 11, 1, 9, 0),
+        notification_time: new Date(2016, 11, 1, 9, 10)
+      },
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'started_task', //'completed_task', 'progress_bar'
+        action_time: new Date(2016, 11, 1, 9, 1),
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9, 10)
+      },
+      {
+        type:   'task_timing',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'task_not_started', //'task_not_completed'
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9, 15)
+      },
+      {
+        type:   'task_timing',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'task_not_completed',
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9)
+      },
+      {
+        type:   'project_progress',
+        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
+        percantage: '50',
+        notification_time: new Date(2016, 11, 1, 10)
+      },
+      {
+        type:   'project_progress',
+        action: 'percent_expected',
+        percantage: '50',
+        notification_time: new Date(2016, 11, 1, 10)
+      }
+    ]
+    // this.state.newsfeed
+
+    return this.setState({newsfeed: fromDb});
   }
 
   updateCompletedAndIncompleteTasks = (e) => {
@@ -374,6 +381,7 @@ class App extends Component {
       });
     });
   }
+
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       console.log('detected timeline updated')
@@ -383,8 +391,9 @@ class App extends Component {
 
   componentDidMount() {
     // console.log("componentDidMount <App />");
-    this.updateNewsFeed();
+    this.updateNewsfeed();
     this.updateTimeline();
+
     setTimeout(() => {
       if (!localStorage.profile) {
         this.showLock();
@@ -403,10 +412,6 @@ class App extends Component {
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-
-      console.log('data.type.type');
-      console.log(data.type.type);
-
       switch (data.type) {
         case 'update-progress-bar':
           let newstate = this.state;
@@ -420,121 +425,118 @@ class App extends Component {
           const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
           for (let key of Object.keys(data.data)) {
             const task = data.data[key];
-            // console.log(`creating task bars: ${task.task_name}`);
 
-            if (task.start_date < task.assigned_start_date
-              && task.end_date < task.assigned_end_date
-              && task.assigned_start_date < task.end_date) {
+            if (task.start_time < task.assigned_start_time
+              && task.end_time < task.assigned_end_time
+              && task.assigned_start_time < task.end_time) {
               tasks.push([
-                task.task_name,
-                task.start_date,
-                task.assigned_start_date,
+                task.name,
+                task.start_time,
+                task.assigned_start_time,
                 timing[0]
               ],
               [
-                task.task_name,
-                task.assigned_start_date,
-                task.end_date,
+                task.name,
+                task.assigned_start_time,
+                task.end_time,
                 timing[2]
 
               ],
               [
-                task.task_name,
-                task.end_date,
-                task.assigned_end_date,
+                task.name,
+                task.end_time,
+                task.assigned_end_time,
                 timing[3]
               ])
-            } else if (task.start_date < task.assigned_start_date
-              && task.end_date > task.assigned_end_date) {
+            } else if (task.start_time < task.assigned_start_time
+              && task.end_time > task.assigned_end_time) {
               tasks.push([
-                task.task_name,
-                task.start_date,
-                task.assigned_start_date,
+                task.name,
+                task.start_time,
+                task.assigned_start_time,
                 timing[0]
               ],
               [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
+                task.name,
+                task.assigned_start_time,
+                task.assigned_end_time,
                 timing[2]
               ],
               [
-                task.task_name,
-                task.assigned_end_date,
-                task.end_date,
+                task.name,
+                task.assigned_end_time,
+                task.end_time,
                 timing[4]
               ])
-            } else if (task.start_date > task.assigned_start_date
-              && task.end_date < task.assigned_end_date) {
+            } else if (task.start_time > task.assigned_start_time
+              && task.end_time < task.assigned_end_time) {
               tasks.push([
-                task.task_name,
-                task.assigned_start_date,
-                task.start_date,
+                task.name,
+                task.assigned_start_time,
+                task.start_time,
                 timing[1]
               ],
               [
-                task.task_name,
-                task.start_date,
-                task.end_date,
+                task.name,
+                task.start_time,
+                task.end_time,
                 timing[2]
               ],
               [
-                task.task_name,
-                task.end_date,
-                task.assigned_end_date,
+                task.name,
+                task.end_time,
+                task.assigned_end_time,
                 timing[3]
               ])
-            } else if (task.start_date > task.assigned_start_date
-              && task.end_date > task.assigned_end_date
-              && task.start_date < task.assigned_end_date) {
+            } else if (task.start_time > task.assigned_start_time
+              && task.end_time > task.assigned_end_time
+              && task.start_time < task.assigned_end_time) {
               tasks.push([
-                task.task_name,
-                task.assigned_start_date,
-                task.start_date,
+                task.name,
+                task.assigned_start_time,
+                task.start_time,
                 timing[1]
               ],
               [
-                task.task_name,
-                task.start_date,
-                task.assigned_end_date,
+                task.name,
+                task.start_time,
+                task.assigned_end_time,
                 timing[2]
               ],
               [
-                task.task_name,
-                task.assigned_end_date,
-                task.end_date,
+                task.name,
+                task.assigned_end_time,
+                task.end_time,
                 timing[4]
               ])
-            } else if (task.end_date < task.assigned_start_date) {
+            } else if (task.end_time < task.assigned_start_time) {
               tasks.push([
-                task.task_name,
-                task.start_date,
-                task.end_date,
+                task.name,
+                task.start_time,
+                task.end_time,
                 timing[3]
               ],
               [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
+                task.name,
+                task.assigned_start_time,
+                task.assigned_end_time,
                 timing[3]
               ])
-            } else if (task.start_date > task.assigned_end_date) {
+            } else if (task.start_time > task.assigned_end_time) {
               tasks.push([
-                task.task_name,
-                task.start_date,
-                task.end_date,
+                task.name,
+                task.start_time,
+                task.end_time,
                 timing[1]
               ],
               [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
+                task.name,
+                task.assigned_start_time,
+                task.assigned_end_time,
                 timing[1]
               ])
             }
           };
-
-          console.log(tasks);
 
           const colorMap = {
             // should contain a map of category -> color for every category
@@ -547,6 +549,7 @@ class App extends Component {
           tasks.map((arr) => {
             arr.push(colorMap[arr[3]]);
             arr[3] = `${arr[0]} - ${arr[3]}`;
+            return arr
           });
           this.setState({'tasks': tasks});
           break;
@@ -564,12 +567,12 @@ class App extends Component {
     this.socket.send(JSON.stringify(loginObj))
   }
 
-
   submitEvent = () => {
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
   }
+
   addNewAssignedUser = (event) => {
     var newUser = Object.assign({},this.state.eventCreation)
     newUser.assigned_people.push({
@@ -581,16 +584,19 @@ class App extends Component {
     newUser.newAssignedPerson = '';
     this.setState({eventCreation: newUser});
   }
+
   handleAssignedEmail = (event) => {
     let newEmail = Object.assign({},this.state.eventCreation);
     newEmail.newAssignedEmail = event.target.value;
     this.setState({eventCreation: newEmail});
   }
+
   handleAssignedPerson = (event) => {
     let newPerson = Object.assign({},this.state.eventCreation);
     newPerson.newAssignedPerson = event.target.value;
     this.setState({eventCreation: newPerson});
   }
+
   updateTimeline = () => {
     const date = this.state.eventCreation.startDate;
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
@@ -603,6 +609,7 @@ class App extends Component {
     this.setState({ eventCreation: newTimelineData });
     // this.clearTaskFields();
   }
+
   clearTaskFields = () => {
     const defaultValues = {
       newTask: '',
@@ -613,13 +620,14 @@ class App extends Component {
     var clearTasks = Object.assign({},this.state.eventCreation,defaultValues)
     this.setState({eventCreation: clearTasks});
   }
+
   addTask = () => {
     //add a new task to the task state, and add data to timeline.
     var newTasks = Object.assign({},this.state.eventCreation)
-    if ( 
-      newTasks.newTask !== '' && 
-      newTasks.newDescription !== ''&& 
-      newTasks.newStartTime !== ''&& 
+    if (
+      newTasks.newTask !== '' &&
+      newTasks.newDescription !== ''&&
+      newTasks.newStartTime !== ''&&
       newTasks.newEndTime!== '' ) {
       const t_values = this.state.eventCreation;
       newTasks.tasks.push({
@@ -635,9 +643,10 @@ class App extends Component {
       newTasks.newStartTime = '';
       newTasks.newEndTime= '';
       this.setState({eventCreation: newTasks });
-      this.updateTimeline();    
+      this.updateTimeline();
     }
   }
+
   newEventName = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
@@ -645,6 +654,7 @@ class App extends Component {
     newName.name = event.target.value;
     this.setState({eventCreation: newName});
   }
+
   newEventDescription = (event) => {
     //watch for values added to new task description
     // console.log(event.target.value);
@@ -652,6 +662,7 @@ class App extends Component {
     newEventDescription.description = event.target.value;
     this.setState({eventCreation: newEventDescription});
   }
+
   newEventEndDate = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -659,6 +670,7 @@ class App extends Component {
     newEventDate.endDate = event.target.value;
     this.setState({eventCreation: newEventDate});
   }
+
   newEventStartDate = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -666,6 +678,7 @@ class App extends Component {
     newEventDate.startDate = event.target.value;
     this.setState({eventCreation: newEventDate});
   }
+
   newTask = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
@@ -673,6 +686,7 @@ class App extends Component {
     newTask.newTask = event.target.value;
     this.setState({eventCreation: newTask});
   }
+
   newDescription = (event) => {
     //watch for values added to new task description
     // console.log(event.target.value);
@@ -680,6 +694,7 @@ class App extends Component {
     newDescription.newDescription = event.target.value;
     this.setState({eventCreation: newDescription});
   }
+
   newStartTime = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -687,6 +702,7 @@ class App extends Component {
     newST.newStartTime = event.target.value;
     this.setState({eventCreation: newST});
   }
+
   newEndTime = (event) => {
     //watch for values added to new task end time
     // console.log(event.target.value);
@@ -694,15 +710,18 @@ class App extends Component {
     newET.newEndTime = event.target.value;
     this.setState({eventCreation: newET});
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.socket.send(this.state.insert)
   }
+
   handleChange = (e) => {
     e.preventDefault();
     // console.log(e.target.value)
     this.setState({insert: e.target.value})
   }
+
   eventCreationSelectToggle = (e) => {
     let newSelected = Object.assign({},this.state.eventCreation);
     const newId =  e.target.getAttribute('data-id');
@@ -717,20 +736,10 @@ class App extends Component {
     }
     this.setState({
       eventCreation: newSelected
-    }); 
+    });
   }
 
   render() {
-    const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
-    let sample_data = [
-      ["Ammar", new Date(2016, 11, 1, 8,  1), new Date(2016, 11, 1, 8, 30), timing[0], '#a23c7a'],
-      ["Ammar", new Date(2016, 11, 1, 8, 30), new Date(2016, 11, 1, 9,  1), timing[2], '#40a67d'],
-      ["Ammar", new Date(2016, 11, 1, 9,  1), new Date(2016, 11, 1, 9, 30), timing[3], '#5581b4']
-    ];
-    let libraryData = {timeline: {groupByRowLabel: true}};
-    const { newsfeed } = this.state;
-
-
     return (
       <div className="App">
         <div className="App-header">
@@ -750,69 +759,63 @@ class App extends Component {
           trigger={
             <Button waves='light'>MODAL</Button>
           }>
-          
+
           <TaskDashboard
             handleStartTask={this.handleStartTask}
             listOfTasks={this.state.list_of_tasks}
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
           />
         </Modal>
+
         <ProgressBar
           taskName={this.state.name}
           completedTasks={this.state.completed_tasks}
           incompleteTasks={this.state.incomplete_tasks}
           progressBar={this.state.progress_bar}
         />
-<div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
-          <div className="event-creation-form">
-            <EventCreationForm 
-              {...this.state} 
-              submitEvent={this.submitEvent}
-              eventCreationSelectToggle={this.eventCreationSelectToggle} 
-              addTask={this.addTask} 
-              clearTaskFields={this.clearTaskFields}
-              onNewTask={this.newTask}
-              onNewDescription={this.newDescription}
-              onNewStartTime={this.newStartTime}
-              onNewEndTime={this.newEndTime}
-              newEventStartDate={this.newEventStartDate}
-              newEventEndDate={this.newEventEndDate}
-              newEventDescription={this.newEventDescription}
-              newEventName={this.newEventName}
-              updateTimeline={this.updateTimeline}
-              handleAssignedPerson={this.handleAssignedPerson}
-              addNewAssignedUser={this.addNewAssignedUser}
-              handleAssignedEmail={this.handleAssignedEmail}
-              />
-          </div>
+
+        <div className='timeline'>
+          <Timeline data={this.state.eventCreation.timelineData} />
+        </div>
+
+        <div className="event-creation-form">
+          <EventCreationForm
+            {...this.state}
+            submitEvent={this.submitEvent}
+            eventCreationSelectToggle={this.eventCreationSelectToggle}
+            addTask={this.addTask}
+            clearTaskFields={this.clearTaskFields}
+            onNewTask={this.newTask}
+            onNewDescription={this.newDescription}
+            onNewStartTime={this.newStartTime}
+            onNewEndTime={this.newEndTime}
+            newEventStartDate={this.newEventStartDate}
+            newEventEndDate={this.newEventEndDate}
+            newEventDescription={this.newEventDescription}
+            newEventName={this.newEventName}
+            updateTimeline={this.updateTimeline}
+            handleAssignedPerson={this.handleAssignedPerson}
+            addNewAssignedUser={this.addNewAssignedUser}
+            handleAssignedEmail={this.handleAssignedEmail}
+          />
+        </div>
+
+        <br />
+
         <div className="row">
-          <div className="col s4 offset-s8">
-            <ul className="collapsible popout" data-collapsible="accordion">
-              {newsfeed}
-              <ReactInterval timeout={30000} enabled={true} callback={this.updateNewsFeed} />
-            </ul>
+          <div className='col s9'>
+            <DashboardTimeline tasks={this.state.tasks} />
           </div>
 
-          <div className='col s12 timeline-container'>
-            <div className='timeline'>
-              {/*<Timeline data={sample_data} library={libraryData} />*/}
-              <Timeline data={this.state.tasks} library={libraryData} />
-            </div>
+          <div className="col s3">
+            <Newsfeed
+              newsfeed={this.state.newsfeed}
+              updateNewsfeed={this.updateNewsfeed}
+              renderNewsfeed={this.renderNewsfeed}
+            />
           </div>
         </div>
 
-
-        {/*<div className='timeline-container'>
-          <div className='timeline'>
-            <BarChart
-            data={this.state.data}
-            max={100}
-            stacked={true}
-          />
-          </div>
-        </div>*/}
       </div>
     );
   }

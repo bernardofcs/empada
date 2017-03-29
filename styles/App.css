@@ -28,14 +28,18 @@
   padding: 1rem;
 }
 
-.timeline-container {
-  margin: auto;
-  width: 80%;
+.timeline {
+  /*width: 50%;*/
+  /*width: 1000px;*/
+  /*margin: auto;*/
   /*overflow: auto;*/
 }
 
-.timeline {
+.dashboardTimeline {
+  /*width: 50%;*/
   /*width: 1000px;*/
+  /*margin: auto;*/
+  /*overflow: auto;*/
 }
 
 .pie-chart-name {
