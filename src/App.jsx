@@ -189,13 +189,13 @@ class App extends Component {
             listOfTasks={this.state.list_of_tasks}
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
           />
-          <ProgressBar 
-            taskName={this.state.name}
-            completedTasks={this.state.completed_tasks}
-            incompleteTasks={this.state.incomplete_tasks}
-            progressBar={this.state.progress_bar}
-          />
         </Modal>
+        <ProgressBar 
+          taskName={this.state.name}
+          completedTasks={this.state.completed_tasks}
+          incompleteTasks={this.state.incomplete_tasks}
+          progressBar={this.state.progress_bar}
+        />
       </div>
     );
   }
