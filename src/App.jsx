@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import TaskDashboard from './TaskDashboard.js'
 // import logo from './logo.svg';
-// import { Input } from 'react-materialize';
+import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 // import { Timeline } from 'react-chartkick';
 
@@ -165,11 +165,6 @@ class App extends Component {
           <h2>Welcome to EMPADA</h2>
         </div>
         <br />
-        <TaskDashboard 
-          handleStartTask={this.handleStartTask}
-          listOfTasks={this.state.list_of_tasks}
-          updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
-        />
         {/*<div className='timeline-container'>
           <div className='timeline'>
             <Timeline data={sample_data} library={libraryData} stacked={true} />
@@ -184,12 +179,23 @@ class App extends Component {
           />
           </div>
         </div>*/}
-        <ProgressBar 
-          taskName={this.state.name}
-          completedTasks={this.state.completed_tasks}
-          incompleteTasks={this.state.incomplete_tasks}
-          progressBar={this.state.progress_bar}
-        />
+        <Modal
+          header='Modal Header'
+          trigger={
+            <Button waves='light'>MODAL</Button>
+          }>
+          <TaskDashboard 
+            handleStartTask={this.handleStartTask}
+            listOfTasks={this.state.list_of_tasks}
+            updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+          />
+          <ProgressBar 
+            taskName={this.state.name}
+            completedTasks={this.state.completed_tasks}
+            incompleteTasks={this.state.incomplete_tasks}
+            progressBar={this.state.progress_bar}
+          />
+        </Modal>
       </div>
     );
   }
