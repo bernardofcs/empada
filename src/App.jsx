@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import TaskDashboard from './TaskDashboard.js'
-// import logo from './logo.svg';
 import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 // import { Timeline } from 'react-chartkick';
@@ -51,7 +50,43 @@ class App extends Component {
           incomplete_tasks: 100,
           completed_tasks: 0,
           total_tasks: undefined,
-        }
+        },
+        { 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },{ 
+          user_id: 1,
+          incomplete_tasks: 100,
+          completed_tasks: 0,
+          total_tasks: undefined,
+        },
       ],
     }
   }
@@ -136,26 +171,7 @@ class App extends Component {
       }
       console.log()
     }
-  }
-
-  componentDidUpdate() {
-    this.socket.onmessage = (event) => {
-      console.log('entered did update');
-      const data = JSON.parse(event.data);
-      console.log(data);
-
-      switch (data.type) {
-        case 'update-progress-bar':
-          let newstate = this.state;
-          newstate.progress_bar = data.progress_bar
-          this.setState(newstate);
-        break;
-
-        default:
-          console.error('Failed to send back');
-      }
-    }
-  }  
+  } 
 
   render() {
     return (

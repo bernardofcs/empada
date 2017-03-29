@@ -23,25 +23,22 @@
   width: 80%;
 }
 
-/*.progress-donut-container {
-  margin: 1em 5em 1em 10em;
-  width: 12em;
-  border: 1px solid black;
+.progress-donut-container {
+  border: 1px solid lightblue;
+  margin: auto; 
+  height: 7.4em; 
   transition: 300ms;
 }
 
-.progress-donut-container-inner {
-  margin: 1em 5em 1em 10em;
-  width: 12em;
-  border: 1px solid lightblue;
-  transition: 300ms;
-}*/
+.progress-donut-chart {
+  position: relative;
+  top: -1.5em; 
+}
 
 .pie-chart-name {
-  /*position: relative;
-  top: 7.3em;
-  right: 10em;
-  z-index: 1;*/
+  position: relative; 
+  bottom: -1em; 
+  z-index: 1; 
 }
 
 Table {

@@ -8,7 +8,7 @@ import '../styles/App.css'
 class ProgressBarFields extends Component {
   render() {
     return (
-      <Col s={1.5}>
+      <Col s={1.5} className="progress-donut-chart">
         <p className="pie-chart-name">{this.props.field.user_id}</p>
         <PieChart data={[
             ['Completed Tasks', this.props.field.completed_tasks],
@@ -17,8 +17,8 @@ class ProgressBarFields extends Component {
           donut={true}
           stacked={true}
           legend={false}
-          width={"12em"}
-          height={"12em"}
+          width={"5em"}
+          height={"5em"}
         />
       </Col>
     );
