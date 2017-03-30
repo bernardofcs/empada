@@ -14,15 +14,27 @@
   color: white;
 }
 
-.App-intro {
-  font-size: large;
+.collapsible {
+  font-size: 0.7rem;
+}
+
+.collapsible-header p {
+  margin: 0;
+  padding: 1rem;
+  line-height: 1rem;
+}
+
+.collapsible-body {
+  padding: 1rem;
 }
 
 .timeline-container {
   margin: auto;
   width: 80%;
+  /*overflow: auto;*/
 }
 
+<<<<<<< HEAD
 .progress-donut-container {
   border: 1px solid lightblue;
   margin: auto; 
@@ -35,6 +47,12 @@
   top: -1.5em; 
 }
 
+=======
+.timeline {
+  /*width: 1000px;*/
+}
+
+>>>>>>> 45668ae66db40fac1f9de92beacddce23787c785
 .pie-chart-name {
   position: relative; 
   bottom: -1em; 
@@ -43,14 +61,12 @@
 
 Table {
   margin: auto;
-  width: 80%;  
+  width: 80%;
 }
+
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
-/*.disabled {
-  text-decoration: line-through; 
-}*/
