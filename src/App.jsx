@@ -109,7 +109,6 @@ class App extends Component {
       //     total_tasks: undefined
       //     // name: first_name
       //     // project_id
-      //     // task.id
       //   },
       //   {
       //     userId: 2,
@@ -325,24 +324,31 @@ class App extends Component {
   updateCompletedAndIncompleteTasks = (e) => {
     e.preventDefault();
 
-    const task = this.state.list_of_tasks.filter((t) => {
-      return t.id === Number(e.target.value);
+    const progressBarId = this.state.progress_bar.filter((t) => {
+      return t.userId === Number(e.target.value);
     })
 
-    const user_id = task[0].userId
+    const user_id = progressBarId[0].userId;
+    console.log('user Id', progressBarId[0].userId);
+
     let userProgressArr = this.state.progress_bar.filter((t) => {
       return t.userId === user_id;
     })
 
-    const userTasks = this.state.list_of_tasks.filter((t) => {
-      return t.userId === user_id;
-    })
-
     let userProgress = userProgressArr[0];
-    userProgress.total_tasks = userTasks.length;
-    let percentOfTasksToChange = Math.round(100/userProgress.total_tasks);
+
+    let percentOfTasksToChange;
+
+    percentOfTasksToChange = 100/userProgress.total_tasks;
+
     userProgress.completed_tasks += percentOfTasksToChange;
     userProgress.incomplete_tasks -= percentOfTasksToChange;
+
+    if (userProgress.incomplete_tasks < 1 && userProgress.incomplete_tasks > -1) {
+      userProgress.incomplete_tasks = 0
+      userProgress.completed_tasks = 100      
+    }
+
     const oldProgressBar = this.state.progress_bar;
 
     let newProgressBar = oldProgressBar.filter((t) => {
@@ -356,7 +362,7 @@ class App extends Component {
     let message = {
       type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
       progress_bar: newProgressBar,
-      end_time: Date.now(),
+      end_time: new Date(),
       project_id: 12,
       id: 2,
     }
@@ -371,7 +377,7 @@ class App extends Component {
 
     let message = {
       type: 'start-time-for-contractor-tasks',
-      start_time: Date.now(),
+      start_time: new Date(),
       project_id: 12,
       id: 2
     }
@@ -404,6 +410,7 @@ class App extends Component {
     this.socket.onopen = () => {
       console.log('Connected to server!');
       this.socket.send(JSON.stringify({type: 'request-tasks'}));
+      this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
     }
 
     this.socket.onmessage = (event) => {
@@ -426,7 +433,7 @@ class App extends Component {
             return u.id;
           });
 
-          let progress_bar = []; 
+          let progress_bar = [];
 
           task.forEach((t) => {
             if (progress_bar[t.userId])  {
@@ -436,21 +443,47 @@ class App extends Component {
               progress_bar[t.userId].total_tasks = 1;
               progress_bar[t.userId].userId = t.userId;
               progress_bar[t.userId].projectId = t.projectId;
-              progress_bar[t.userId].incomplete_tasks = 100;
-              progress_bar[t.userId].completed_tasks = 0;
               user.forEach((u) => {
                 if (t.userId === u.id) {
                   progress_bar[t.userId].name = u.first_name;
                 }
               })
+
+
+              if (progress_bar[t.userId].incomplete_tasks === undefined) {
+                progress_bar[t.userId].incomplete_tasks = 100;
+                progress_bar[t.userId].completed_tasks = 0;
+              } else {
+                progress_bar[t.userId].incomplete_tasks = this.state[t.userId].incomplete_tasks;
+                progress_bar[t.userId].completed_tasks = this.state[t.userId].completed_tasks;
+              }
             }
           })
 
           console.log('progress_bar', progress_bar);
 
-          this.setState(progress_bar);
+          let newProgressBarState = {
+            progress_bar: progress_bar
+          }
+
+          this.setState(newProgressBarState);
 
           break;
+
+          case 'update-list-of-tasks':
+            console.log(data);
+            let listOfTasks = data.tasks.filter((t) => {
+              return t.id; 
+            });
+            console.log('listOfTasks', listOfTasks); 
+
+            let newListState = {
+              list_of_tasks: listOfTasks
+            }
+
+          this.setState(newListState);
+
+          break; 
 
         case 'tasks':
           console.log('got inside tasks in the switch');
@@ -571,8 +604,6 @@ class App extends Component {
             }
           };
 
-          // console.log(tasks);
-
           const colorMap = {
             // should contain a map of category -> color for every category
             'early start'     : '#139A43',
@@ -591,6 +622,7 @@ class App extends Component {
         default:
           console.error('Failed to send back');
       }
+      console.log(this.state);
     }
   }
 
@@ -809,9 +841,6 @@ class App extends Component {
           />
         </Modal>
         <ProgressBar
-          taskName={this.state.name}
-          completedTasks={this.state.completed_tasks}
-          incompleteTasks={this.state.incomplete_tasks}
           progressBar={this.state.progress_bar}
         />
         <div className='timeline'>
@@ -819,7 +848,7 @@ class App extends Component {
           </div>
           <div className="event-creation-form">
             <EventCreationForm 
-              {...this.state} 
+              {...this.state}
               submitEvent={this.submitEvent}
               eventCreationSelectToggle={this.eventCreationSelectToggle} 
               addTask={this.addTask} 
@@ -854,7 +883,6 @@ class App extends Component {
           </div>
         </div>
 
-
         {/*<div className='timeline-container'>
           <div className='timeline'>
             <BarChart
@@ -870,4 +898,3 @@ class App extends Component {
 }
 
 export default App;
-

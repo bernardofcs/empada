@@ -34,28 +34,21 @@
   /*overflow: auto;*/
 }
 
-<<<<<<< HEAD
 .progress-donut-container {
   border: 1px solid lightblue;
   margin: auto; 
-  height: 7.4em; 
+  height: 7.9em; 
   transition: 300ms;
 }
 
 .progress-donut-chart {
   position: relative;
-  top: -1.5em; 
+  top: -1.8em; 
 }
 
-=======
-.timeline {
-  /*width: 1000px;*/
-}
-
->>>>>>> 45668ae66db40fac1f9de92beacddce23787c785
 .pie-chart-name {
   position: relative; 
-  bottom: -1em; 
+  bottom: -1.6em; 
   z-index: 1; 
 }
 
@@ -63,8 +56,6 @@ Table {
   margin: auto;
   width: 80%;
 }
-
-
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

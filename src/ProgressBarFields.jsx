@@ -9,7 +9,7 @@ class ProgressBarFields extends Component {
   render() {
     return (
       <Col s={1.5} className="progress-donut-chart">
-        <p className="pie-chart-name">{this.props.field.user_id}</p>
+        <p className="pie-chart-name">{this.props.field.name}</p>
         <PieChart data={[
             ['Completed Tasks', this.props.field.completed_tasks],
             ['Incomplete Tasks', this.props.field.incomplete_tasks]]}
@@ -17,8 +17,8 @@ class ProgressBarFields extends Component {
           donut={true}
           stacked={true}
           legend={false}
-          width={"5em"}
-          height={"5em"}
+          width={"6em"}
+          height={"6em"}
         />
       </Col>
     );
