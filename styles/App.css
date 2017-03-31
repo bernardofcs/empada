@@ -43,14 +43,16 @@
 
 .progress-donut-chart {
   position: relative;
-  top: -1.8em; 
+  top: -1.8em;
+  transition: 300ms; 
 }
 
 .pie-chart-name {
   position: relative; 
   bottom: -1.6em; 
   z-index: 1; 
-}
+  transition: 300ms; 
+} 
 
 Table {
   margin: auto;
