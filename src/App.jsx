@@ -135,76 +135,78 @@ class App extends Component {
     // this.showLock()
   }
 
-
   renderNewsfeed = (data) => {
     // this.setState({ allTasks: data });
 
-    let fromDb = [
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9),
-        assigned_time: new Date(2016, 11, 1, 9),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'completed_task',
-        action_time: new Date(2016, 11, 1, 9, 10),
-        assigned_time: new Date(2016, 11, 1, 9, 0),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9, 1),
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_started', //'task_not_completed'
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 15)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_completed',
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_expected',
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      }
-    ]
+    // let fromDb = [
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9),
+    //     assigned_time: new Date(2016, 11, 1, 9),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'completed_task',
+    //     action_time: new Date(2016, 11, 1, 9, 10),
+    //     assigned_time: new Date(2016, 11, 1, 9, 0),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9, 1),
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_started', //'task_not_completed'
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 15)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_completed',
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_expected',
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   }
+    // ]
 
-    const test_newsfeed = [];
+    const newsfeed = [];
     for (let item of this.state.allTasks) {
-      console.log(item);
+      item.assigned_start_time = item.assigned_start_time ? new Date(item.assigned_start_time) : null;
+      item.assigned_end_time = item.assigned_end_time ? new Date(item.assigned_end_time) : null;
+      item.start_time = item.start_time ? new Date(item.start_time) : null;
+      item.end_time = item.end_time ? new Date(item.end_time) : null;
 
       if (item.start_time) {
-        test_newsfeed.push({
+        newsfeed.push({
           type:   'assigned_user_action',
-          user:   'test_user',
+          user:   item.user.first_name,
           task:   item.name,
           action: 'started_task',
           action_time: item.start_time,
@@ -214,9 +216,9 @@ class App extends Component {
       }
 
       if (item.end_time) {
-        test_newsfeed.push({
+        newsfeed.push({
           type:   'assigned_user_action',
-          user:   'test_user',
+          user:   item.user.first_name,
           task:   item.name,
           action: 'completed_task',
           action_time: item.end_time,
@@ -225,11 +227,15 @@ class App extends Component {
         })
       }
 
-      if (item.assigned_start_time < item.start_time
-        || (item.assigned_start_time && !(item.start_time))) {
-        test_newsfeed.push({
+      if (new Date(item.assigned_start_time.getTime() + this.state.grace_period) < item.start_time
+        || (
+          (new Date() - item.assigned_start_time > this.state.grace_period)
+          && !(item.start_time)
+          )
+        ) {
+        newsfeed.push({
           type:   'task_timing',
-          user:   'test_user',
+          user:   item.user.first_name,
           task:   item.name,
           action: 'task_not_started', //'task_not_completed'
           assigned_time: item.assigned_start_time,
@@ -237,11 +243,15 @@ class App extends Component {
         })
       }
 
-      if (item.assigned_end_time < item.end_time
-        || (item.assigned_end_time && !(item.end_time))) {
-        test_newsfeed.push({
+      if (new Date(item.assigned_end_time.getTime() + this.state.grace_period) < item.end_time
+        || (
+          (new Date() - item.assigned_end_time > this.state.grace_period)
+          && !(item.end_time)
+          )
+        ) {
+        newsfeed.push({
           type:   'task_timing',
-          user:   'test_user',
+          user:   item.user.first_name,
           task:   item.name,
           action: 'task_not_completed',
           assigned_time: item.assigned_end_time,
@@ -250,95 +260,97 @@ class App extends Component {
       }
     };
 
-
-    // const newsfeed = fromDb.map((item, index) => {
-    const newsfeed = test_newsfeed.map((item, index) => {
-      let notif_type = [];
-      switch(item.type) {
-        case 'assigned_user_action':
-          if (item.action === 'started_task') {
-            notif_type = ['Started', 'start'];
-          } else if (item.action === 'completed_task') {
-            notif_type = ['Completed', 'completion'];
-          }
-
-          if (item.action_time > item.assigned_time
-            && (item.action_time - item.assigned_time) > this.state.grace_period) { //difference of less than 5 minutes gets no notification
-            notif_type.push('red','late', 'thumb_down');
-          } else if (item.action_time < item.assigned_time
-            && (item.assigned_time - item.action_time) > this.state.grace_period) {
-            notif_type.push('green','early', 'thumb_up');
-          } else {
-            notif_type.push('blue','on time', 'alarm_on'); // alternative icon: 'schedule'
-          }
-
-          return (
-            <li>
-              <div className="collapsible-header">
-                <span className={`new badge ${notif_type[2]}`} data-badge-caption={`${notif_type[3]}`}></span>
-                <i className="material-icons">{`${notif_type[4]}`}</i>
-                <p>{`${item.user} has ${item.action}`}</p>
-              </div>
-              <div className="collapsible-body left-align">
-                <dl>
-                  <dt><b>Task:</b> {item.task}</dt>
-                  <dt><b>{`${notif_type[0]}`} at:</b> {`${item.action_time}`}</dt>
-                  <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
-                </dl>
-              </div>
-            </li>
-          );
-
-        case 'task_timing':
-          if (item.action === 'task_not_started') {
-            notif_type = ['Started', 'start'];
-          } else if (item.action === 'task_not_completed') {
-            notif_type = ['Completed', 'completion'];
-          }
-          notif_type.push('late', 'thumb_down');
-
-          return (
-            <li>
-              <div className="collapsible-header">
-                <span className="new badge red" data-badge-caption={`${notif_type[2]}`}></span>
-                <i className="material-icons">{`${notif_type[3]}`}</i>
-                <p>{`${item.user} has not ${notif_type[0].toLowerCase()} ${item.task}`}</p>
-              </div>
-              <div className="collapsible-body left-align">
-                <dl>
-                  <dt><b>Task:</b> {item.task}</dt>
-                  <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
-                </dl>
-              </div>
-            </li>
-          );
-
-        case 'project_progress':
-          notif_type = [];
-          if (item.action === 'percent_completed') {
-            notif_type.push('', 'blue', 'on time', 'alarm_on');
-          } else if (item.action === 'percent_expected') {
-            notif_type.push('expected to be ', 'red', 'late', 'thumb_down');
-          }
-
-          return (
-            <li>
-              <div className="collapsible-header">
-                <span className={`new badge ${notif_type[1]}`} data-badge-caption={`${notif_type[2]}`}></span>
-                <i className="material-icons">{`${notif_type[3]}`}</i>
-                <p>{`${item.percent} of project ${notif_type[0]}complete.`}</p>
-              </div>
-            </li>
-          );
-
-        default:
-          throw new Error(`Unknown event type in newsfeed: ${item.type}`);
-      }
+    newsfeed.sort((a, b) => {
+      return a.notification_time < b.notification_time;
     })
 
+    // const newsfeed = fromDb.map((item, index) => {
+    this.setState({
+      newsfeed: newsfeed.map((item, index) => {
+        let notif_type = [];
+        switch(item.type) {
+          case 'assigned_user_action':
+            if (item.action === 'started_task') {
+              notif_type = ['Started', 'start'];
+            } else if (item.action === 'completed_task') {
+              notif_type = ['Completed', 'completion'];
+            }
 
-    // return this.state.newsfeed.map((item, index) => {
-    this.setState({newsfeed: newsfeed})
+            if (item.action_time > item.assigned_time
+              && (item.action_time - item.assigned_time) > this.state.grace_period) { //difference of less than 5 minutes gets no notification
+              notif_type.push('red','late', 'thumb_down');
+            } else if (item.action_time < item.assigned_time
+              && (item.assigned_time - item.action_time) > this.state.grace_period) {
+              notif_type.push('green','early', 'thumb_up');
+            } else {
+              notif_type.push('blue','on time', 'alarm_on'); // alternative icon: 'schedule'
+            }
+
+            return (
+              <li>
+                <div className="collapsible-header">
+                  <span className={`new badge ${notif_type[2]}`} data-badge-caption={`${notif_type[3]}`}></span>
+                  <i className="material-icons">{`${notif_type[4]}`}</i>
+                  <p>{`${item.user} has ${item.action}`}</p>
+                </div>
+                <div className="collapsible-body left-align">
+                  <dl>
+                    <dt><b>Task:</b> {item.task}</dt>
+                    <dt><b>{`${notif_type[0]}`} at:</b> {`${item.action_time}`}</dt>
+                    <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
+                  </dl>
+                </div>
+              </li>
+            );
+
+          case 'task_timing':
+            if (item.action === 'task_not_started') {
+              notif_type = ['Started', 'start'];
+            } else if (item.action === 'task_not_completed') {
+              notif_type = ['Completed', 'completion'];
+            }
+            notif_type.push('late', 'thumb_down');
+
+            return (
+              <li>
+                <div className="collapsible-header">
+                  <span className="new badge red" data-badge-caption={`${notif_type[2]}`}></span>
+                  <i className="material-icons">{`${notif_type[3]}`}</i>
+                  <p>{`${item.user} has not ${notif_type[0].toLowerCase()} ${item.task}`}</p>
+                </div>
+                <div className="collapsible-body left-align">
+                  <dl>
+                    <dt><b>Task:</b> {item.task}</dt>
+                    <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
+                  </dl>
+                </div>
+              </li>
+            );
+
+          case 'project_progress':
+            notif_type = [];
+            if (item.action === 'percent_completed') {
+              notif_type.push('', 'blue', 'on time', 'alarm_on');
+            } else if (item.action === 'percent_expected') {
+              notif_type.push('expected to be ', 'red', 'late', 'thumb_down');
+            }
+
+            return (
+              <li>
+                <div className="collapsible-header">
+                  <span className={`new badge ${notif_type[1]}`} data-badge-caption={`${notif_type[2]}`}></span>
+                  <i className="material-icons">{`${notif_type[3]}`}</i>
+                  <p>{`${item.percent} of project ${notif_type[0]}complete.`}</p>
+                </div>
+              </li>
+            );
+
+          default:
+            throw new Error(`Unknown event type in newsfeed: ${item.type}`);
+        }
+      })
+    })
+
   }
 
   updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate'})) }
@@ -350,13 +362,17 @@ class App extends Component {
     const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
     for (let key of Object.keys(this.state.allTasks)) {
       const task = this.state.allTasks[key];
+      console.log('task inside timelineTaskFormatting');
+      console.log(task);
+
+      const temp = {};
 
       if (task.start_time < task.assigned_start_time
         && task.end_time < task.assigned_end_time
         && task.assigned_start_time < task.end_time) {
         tasks.push([
           task.name,
-          task.start_time,
+          temp.start_time,
           task.assigned_start_time,
           timing[0]
         ],
@@ -585,7 +601,7 @@ class App extends Component {
           break;
 
         case 'progress-bar-update':
-          console.log(data);
+          // console.log(data);
           let task = data.tasks.filter((t) => {
             return t.id;
           });
@@ -632,7 +648,7 @@ class App extends Component {
           break;
 
           case 'update-list-of-tasks':
-            console.log(data);
+            // console.log(data);
             let listOfTasks = data.tasks.filter((t) => {
               return t.id;
             });
@@ -704,9 +720,13 @@ class App extends Component {
     const date = this.state.eventCreation.startDate;
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
       // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
-      return [this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(t.user_id,10) )[0].name, new Date(date+' '+t.assigned_start_time), new Date(date+' '+t.assigned_end_time) ];
+      return [this.state.eventCreation.assigned_people.filter( (p) =>
+        parseInt(p.id,10) === parseInt(t.user_id,10))[0].name,
+         new Date( date + ' ' + t.assigned_start_time ),
+          new Date( date + ' ' + t.assigned_end_time ),
+          '',''];
     });
-    console.log(timelineData);
+    // console.log(timelineData);
     var newTimelineData = Object.assign({},this.state.eventCreation)
     newTimelineData.timelineData = timelineData;
     this.setState({ eventCreation: newTimelineData });
