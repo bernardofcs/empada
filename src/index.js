@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import '../styles/index.css';
 import { Route, BrowserRouter as Router, Link } from 'react-router-dom'
-import EventCreationForm from './EventCreationForm.jsx';
+import EventCreationForm from './EventCreationForm';
 
 
 const app = document.getElementById('root')
+
+
 
 const Nav = () => (
   <div>
@@ -24,9 +26,10 @@ const Nav = () => (
 ReactDOM.render( 
   <Router>
     <div> 
-      <Route exact path='/' component={Nav} />
-      <Route exact path ='/' component={App} />
-      <Route exact path='/createProject' component={() =>(<EventCreationForm 
+      <Route exact path='/' component={Nav} /> 
+      <Route exact path='/' component={App} /> 
+      {/*<Route exacth path='/createProject' component={EventCreationForm} /> */}
+      {/*<Route exact path='/createProject' component={() =>(<EventCreationForm 
           {...this.state}
           submitEvent={this.submitEvent}
           eventCreationSelectToggle={this.eventCreationSelectToggle} 
@@ -43,7 +46,7 @@ ReactDOM.render(
           updateTimeline={this.updateTimeline}
           handleAssignedPerson={this.handleAssignedPerson}
           addNewAssignedUser={this.addNewAssignedUser}
-          handleAssignedEmail={this.handleAssignedEmail} />)}/>
+          handleAssignedEmail={this.handleAssignedEmail} />)}/>*/}  
     </div>
   </Router>,
   app

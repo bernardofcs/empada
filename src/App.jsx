@@ -7,6 +7,9 @@ import TaskDashboard from './TaskDashboard.js'
 import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
+// import { Route, BrowserRouter as Router, Link } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Link } from 'react-router-dom'
+
 /*
 Users:
 - started a task
@@ -729,10 +732,34 @@ class App extends Component {
     ];
     let libraryData = {timeline: {groupByRowLabel: true}};
     const { newsfeed } = this.state;
+    <Router>
+      <Route exact path='/createProject' component={() =>(<EventCreationForm 
+          {...this.state}
+          submitEvent={this.submitEvent}
+          eventCreationSelectToggle={this.eventCreationSelectToggle} 
+          addTask={this.addTask} 
+          clearTaskFields={this.clearTaskFields}
+          onNewTask={this.newTask}
+          onNewDescription={this.newDescription}
+          onNewStartTime={this.newStartTime}
+          onNewEndTime={this.newEndTime}
+          newEventStartDate={this.newEventStartDate}
+          newEventEndDate={this.newEventEndDate}
+          newEventDescription={this.newEventDescription}
+          newEventName={this.newEventName}
+          updateTimeline={this.updateTimeline}
+          handleAssignedPerson={this.handleAssignedPerson}
+          addNewAssignedUser={this.addNewAssignedUser}
+          handleAssignedEmail={this.handleAssignedEmail} />)}/>
+        <Route exact path='/somewhere' component={TaskDashboard} handleStartTask={this.handleStartTask}
+            listOfTasks={this.state.list_of_tasks}
+            updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+          /> />
+      </Router>
 
-
+    
     return (
-      <div className="App">
+      <div className="App">      
         <div className="App-header">
           <h2>Welcome to EMPADA</h2>
           <div className="login-box">
@@ -744,7 +771,7 @@ class App extends Component {
         </div>
 
         <br />
-
+        
         <Modal
           header='Modal Header'
           trigger={
