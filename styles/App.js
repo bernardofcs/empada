@@ -38,12 +38,14 @@ export default StyleSheet.create({
   },
   'progress-donut-chart': {
     'position': 'relative',
-    'top': [{ 'unit': 'em', 'value': -1.8 }]
+    'top': [{ 'unit': 'em', 'value': -1.8 }],
+    'transition': '300ms'
   },
   'pie-chart-name': {
     'position': 'relative',
     'bottom': [{ 'unit': 'em', 'value': -1.6 }],
-    'zIndex': '1'
+    'zIndex': '1',
+    'transition': '300ms'
   },
   'Table': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],

@@ -25,7 +25,7 @@ ReactDOM.render(
   <Router>
     <div> 
       <Route exact path='/' component={Nav} />
-      <Route exact path ='/' component={App} />
+      <Route exact path='/' component={App} />
       <Route exact path='/createProject' component={() =>(<EventCreationForm 
           {...this.state}
           submitEvent={this.submitEvent}
