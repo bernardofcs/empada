@@ -12,7 +12,8 @@ class Newsfeed extends Component {
         <ReactInterval timeout={30000} enabled={true} callback={this.props.updateNewsfeed} />
 
         <ul className="collapsible popout" data-collapsible="accordion">
-          {this.props.renderNewsfeed()}
+          {this.props.newsfeed}
+          {/*this.props.renderNewsfeed*/}
         </ul>
       </div>
     );

@@ -69,7 +69,8 @@ class App extends Component {
           // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
         ]
       },
-      tasks: [],
+      dashboardTimelineTasks: [],
+      allTasks: [],
       modalIsOpen: false,
       grace_period: 300000,
       newsfeed: [],
@@ -135,8 +136,123 @@ class App extends Component {
   }
 
 
-  renderNewsfeed = () => {
-    return this.state.newsfeed.map((item, index) => {
+  renderNewsfeed = (data) => {
+    // this.setState({ allTasks: data });
+
+    let fromDb = [
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'started_task', //'completed_task', 'progress_bar'
+        action_time: new Date(2016, 11, 1, 9),
+        assigned_time: new Date(2016, 11, 1, 9),
+        notification_time: new Date(2016, 11, 1, 9)
+      },
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'completed_task',
+        action_time: new Date(2016, 11, 1, 9, 10),
+        assigned_time: new Date(2016, 11, 1, 9, 0),
+        notification_time: new Date(2016, 11, 1, 9, 10)
+      },
+      {
+        type:   'assigned_user_action',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'started_task', //'completed_task', 'progress_bar'
+        action_time: new Date(2016, 11, 1, 9, 1),
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9, 10)
+      },
+      {
+        type:   'task_timing',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'task_not_started', //'task_not_completed'
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9, 15)
+      },
+      {
+        type:   'task_timing',
+        user:   'assigned_user',
+        task:   'assigned_task',
+        action: 'task_not_completed',
+        assigned_time: new Date(2016, 11, 1, 9, 10),
+        notification_time: new Date(2016, 11, 1, 9)
+      },
+      {
+        type:   'project_progress',
+        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
+        percantage: '50',
+        notification_time: new Date(2016, 11, 1, 10)
+      },
+      {
+        type:   'project_progress',
+        action: 'percent_expected',
+        percantage: '50',
+        notification_time: new Date(2016, 11, 1, 10)
+      }
+    ]
+
+    const test_newsfeed = [];
+    for (let item of this.state.allTasks) {
+      console.log(item);
+
+      if (item.start_time) {
+        test_newsfeed.push({
+          type:   'assigned_user_action',
+          user:   'test_user',
+          task:   item.name,
+          action: 'started_task',
+          action_time: item.start_time,
+          assigned_time: item.assigned_start_time,
+          notification_time: item.start_time
+        })
+      }
+
+      if (item.end_time) {
+        test_newsfeed.push({
+          type:   'assigned_user_action',
+          user:   'test_user',
+          task:   item.name,
+          action: 'completed_task',
+          action_time: item.end_time,
+          assigned_time: item.assigned_end_time,
+          notification_time: item.end_time
+        })
+      }
+
+      if (item.assigned_start_time < item.start_time
+        || (item.assigned_start_time && !(item.start_time))) {
+        test_newsfeed.push({
+          type:   'task_timing',
+          user:   'test_user',
+          task:   item.name,
+          action: 'task_not_started', //'task_not_completed'
+          assigned_time: item.assigned_start_time,
+          notification_time: item.assigned_start_time + this.state.grace_period
+        })
+      }
+
+      if (item.assigned_end_time < item.end_time
+        || (item.assigned_end_time && !(item.end_time))) {
+        test_newsfeed.push({
+          type:   'task_timing',
+          user:   'test_user',
+          task:   item.name,
+          action: 'task_not_completed',
+          assigned_time: item.assigned_end_time,
+          notification_time: item.assigned_end_time + this.state.grace_period
+        })
+      }
+    };
+
+
+    // const newsfeed = fromDb.map((item, index) => {
+    const newsfeed = test_newsfeed.map((item, index) => {
       let notif_type = [];
       switch(item.type) {
         case 'assigned_user_action':
@@ -219,69 +335,149 @@ class App extends Component {
           throw new Error(`Unknown event type in newsfeed: ${item.type}`);
       }
     })
+
+
+    // return this.state.newsfeed.map((item, index) => {
+    this.setState({newsfeed: newsfeed})
   }
 
-  updateNewsfeed = () => {
-    let fromDb = [
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9),
-        assigned_time: new Date(2016, 11, 1, 9),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'completed_task',
-        action_time: new Date(2016, 11, 1, 9, 10),
-        assigned_time: new Date(2016, 11, 1, 9, 0),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9, 1),
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_started', //'task_not_completed'
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 15)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_completed',
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_expected',
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      }
-    ]
-    // this.state.newsfeed
+  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate'})) }
 
-    return this.setState({newsfeed: fromDb});
+  timelineTaskFormatting = (data) => {
+    this.setState({allTasks: data});
+
+    const tasks = [];
+    const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
+    for (let key of Object.keys(this.state.allTasks)) {
+      const task = this.state.allTasks[key];
+
+      if (task.start_time < task.assigned_start_time
+        && task.end_time < task.assigned_end_time
+        && task.assigned_start_time < task.end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.assigned_start_time,
+          timing[0]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.end_time,
+          timing[2]
+
+        ],
+        [
+          task.name,
+          task.end_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time < task.assigned_start_time
+        && task.end_time > task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.assigned_start_time,
+          timing[0]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.assigned_end_time,
+          task.end_time,
+          timing[4]
+        ])
+      } else if (task.start_time > task.assigned_start_time
+        && task.end_time < task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.assigned_start_time,
+          task.start_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.end_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time > task.assigned_start_time
+        && task.end_time > task.assigned_end_time
+        && task.start_time < task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.assigned_start_time,
+          task.start_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.start_time,
+          task.assigned_end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.assigned_end_time,
+          task.end_time,
+          timing[4]
+        ])
+      } else if (task.end_time < task.assigned_start_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[3]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time > task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[1]
+        ])
+      }
+    };
+
+    const colorMap = {
+      // should contain a map of category -> color for every category
+      'early start'     : '#139A43',
+      'late start'      : '#F26430',
+      'as scheduled'    : '#279AF1',
+      'completed early' : '#139A43',
+      'completed late'  : '#F26430'
+    };
+    tasks.map((arr) => {
+      arr.push(colorMap[arr[3]]);
+      arr[3] = `${arr[0]} - ${arr[3]}`;
+      return arr
+    });
+
+    this.setState({'dashboardTimelineTasks': tasks});
   }
 
   updateCompletedAndIncompleteTasks = (e) => {
@@ -390,9 +586,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-    this.updateNewsfeed();
+    console.log("componentDidMount <App />");
     this.updateTimeline();
+    // this.updateNewsfeed();
 
     setTimeout(() => {
       if (!localStorage.profile) {
@@ -419,145 +615,19 @@ class App extends Component {
           this.setState(newstate);
           break;
 
-        case 'tasks':
-          console.log('got inside tasks in the switch');
-          const tasks = [];
-          const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
-          for (let key of Object.keys(data.data)) {
-            const task = data.data[key];
-
-            if (task.start_time < task.assigned_start_time
-              && task.end_time < task.assigned_end_time
-              && task.assigned_start_time < task.end_time) {
-              tasks.push([
-                task.name,
-                task.start_time,
-                task.assigned_start_time,
-                timing[0]
-              ],
-              [
-                task.name,
-                task.assigned_start_time,
-                task.end_time,
-                timing[2]
-
-              ],
-              [
-                task.name,
-                task.end_time,
-                task.assigned_end_time,
-                timing[3]
-              ])
-            } else if (task.start_time < task.assigned_start_time
-              && task.end_time > task.assigned_end_time) {
-              tasks.push([
-                task.name,
-                task.start_time,
-                task.assigned_start_time,
-                timing[0]
-              ],
-              [
-                task.name,
-                task.assigned_start_time,
-                task.assigned_end_time,
-                timing[2]
-              ],
-              [
-                task.name,
-                task.assigned_end_time,
-                task.end_time,
-                timing[4]
-              ])
-            } else if (task.start_time > task.assigned_start_time
-              && task.end_time < task.assigned_end_time) {
-              tasks.push([
-                task.name,
-                task.assigned_start_time,
-                task.start_time,
-                timing[1]
-              ],
-              [
-                task.name,
-                task.start_time,
-                task.end_time,
-                timing[2]
-              ],
-              [
-                task.name,
-                task.end_time,
-                task.assigned_end_time,
-                timing[3]
-              ])
-            } else if (task.start_time > task.assigned_start_time
-              && task.end_time > task.assigned_end_time
-              && task.start_time < task.assigned_end_time) {
-              tasks.push([
-                task.name,
-                task.assigned_start_time,
-                task.start_time,
-                timing[1]
-              ],
-              [
-                task.name,
-                task.start_time,
-                task.assigned_end_time,
-                timing[2]
-              ],
-              [
-                task.name,
-                task.assigned_end_time,
-                task.end_time,
-                timing[4]
-              ])
-            } else if (task.end_time < task.assigned_start_time) {
-              tasks.push([
-                task.name,
-                task.start_time,
-                task.end_time,
-                timing[3]
-              ],
-              [
-                task.name,
-                task.assigned_start_time,
-                task.assigned_end_time,
-                timing[3]
-              ])
-            } else if (task.start_time > task.assigned_end_time) {
-              tasks.push([
-                task.name,
-                task.start_time,
-                task.end_time,
-                timing[1]
-              ],
-              [
-                task.name,
-                task.assigned_start_time,
-                task.assigned_end_time,
-                timing[1]
-              ])
-            }
-          };
-
-          const colorMap = {
-            // should contain a map of category -> color for every category
-            'early start'     : '#139A43',
-            'late start'      : '#F26430',
-            'as scheduled'    : '#279AF1',
-            'completed early' : '#139A43',
-            'completed late'  : '#F26430'
-          };
-          tasks.map((arr) => {
-            arr.push(colorMap[arr[3]]);
-            arr[3] = `${arr[0]} - ${arr[3]}`;
-            return arr
-          });
-          this.setState({'tasks': tasks});
+        case 'allTasks':
+          console.log('allTasks type detected in componentDidMount');
+          this.timelineTaskFormatting(data.data);
+          this.renderNewsfeed(data.data);
           break;
+
+        // case 'newsfeed':
+        //   this.renderNewsfeed(data);
+        //   break;
 
         default:
           console.error('Failed to send back');
       }
-
     };
   }
 
@@ -804,7 +874,7 @@ class App extends Component {
 
         <div className="row">
           <div className='col s9'>
-            <DashboardTimeline tasks={this.state.tasks} />
+            <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
           </div>
 
           <div className="col s3">
