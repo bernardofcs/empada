@@ -27,15 +27,15 @@ class EventCreationForm extends Component {
               <div className="collection">
                   {this.props.eventCreation.assigned_people.map( (p, i) => {
                     return (
-                      <a 
+                      <a
                         key={i}
-                        href="#!" 
-                        data-id={p.id} 
+                        href="#!"
+                        data-id={p.id}
                         className={
-                          parseInt(this.props.eventCreation.selected.id, 10) === parseInt(p.id,10) ? 
-                          "collection-item active" : 
-                          "collection-item" 
-                        } 
+                          parseInt(this.props.eventCreation.selected.id, 10) === parseInt(p.id,10) ?
+                          "collection-item active" :
+                          "collection-item"
+                        }
                         onClick={this.props.eventCreationSelectToggle}>
                         {p.name}({p.email})
                       </a>);
@@ -56,8 +56,8 @@ class EventCreationForm extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <NewTaskFields 
-                  {...this.props} 
+                  <NewTaskFields
+                  {...this.props}
                   functions={{
                     onNewTask: this.props.onNewTask,
                     onNewDescription: this.props.onNewDescription,
