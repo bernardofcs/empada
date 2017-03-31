@@ -278,65 +278,55 @@ class App extends Component {
     })})
   }
 
-  updateCompletedAndIncompleteTasks = (e) => {
-    e.preventDefault();
+  updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
+    const targetUserId = +value;
+    const { progress_bar = [], list_of_tasks = [] } = this.state;
 
-    const progressBarId = this.state.progress_bar.filter((t) => {
-      return t.userId === Number(e.target.value);
-    })
+    const userProgress = progress_bar
+      .filter((v) => v)
+      .find(({ userId }) => userId === targetUserId);
 
-    const user_id = progressBarId[0].userId;
-    console.log('user Id', progressBarId[0].userId);
+    if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
-    let userProgressArr = this.state.progress_bar.filter((t) => {
-      return t.userId === user_id;
-    })
+      const progIdx = progress_bar.indexOf(userProgress);
 
-    let userProgress = userProgressArr[0];
+      const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
 
-    let percentOfTasksToChange;
+      console.log('task id', taskStart.id)
+      console.log('user id start time', taskStart.userId)
 
-    percentOfTasksToChange = 100/userProgress.total_tasks;
+      const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
-    userProgress.completed_tasks += percentOfTasksToChange;
-    userProgress.incomplete_tasks -= percentOfTasksToChange;
+      const newProgressBar = progress_bar.slice();
+      newProgressBar[progIdx] = {
+        ...userProgress,
+        completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+        incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+      };
 
-    if (userProgress.incomplete_tasks < 1 && userProgress.incomplete_tasks > -1) {
-      userProgress.incomplete_tasks = 0
-      userProgress.completed_tasks = 100      
+      // targetUserId.target.className += " disabled";
+
+      this.socket.send(JSON.stringify({
+        type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
+        progress_bar: newProgressBar,
+        end_time: Date.now(),
+        id: taskStart.id
+      }));
     }
-
-    const oldProgressBar = this.state.progress_bar;
-
-    let newProgressBar = oldProgressBar.filter((t) => {
-      return t.userId !== user_id
-    })
-
-    newProgressBar.push(userProgress);
-
-    e.target.className += " disabled";
-
-    let message = {
-      type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
-      progress_bar: newProgressBar,
-      end_time: new Date(),
-      project_id: 12,
-      id: 2,
-    }
-    console.log('end task button pressed');
-    this.socket.send(JSON.stringify(message));
-  }
+      console.log('end task button pressed');
+   }
 
   handleStartTask = (e) => {
     e.preventDefault();
 
     e.target.className += " disabled";
 
+    console.log('task id', e.target.value)
+
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
-      project_id: 12,
-      id: 2
+      id: e.target.value
     }
     console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
@@ -417,10 +407,12 @@ class App extends Component {
             }
           })
 
-          console.log('progress_bar', progress_bar);
+          const pBar = progress_bar.filter((v) => v);
+
+          console.log('progress_bar', pBar);
 
           let newProgressBarState = {
-            progress_bar: progress_bar
+            progress_bar: pBar
           }
 
           this.setState(newProgressBarState);

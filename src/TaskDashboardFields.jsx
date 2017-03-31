@@ -10,9 +10,9 @@ function timeInHours(date) {
   let minutes = t.getUTCMinutes();
 
   if (hours > 12) {
-    return `${PMHours}:${minutes}${minutes} PM`;
+    return minutes < 10 ? `${PMHours}:0${minutes} PM` : `${PMHours}:${minutes} PM`;
   } else {
-    return `${AMHours}:${minutes}${minutes} AM`; 
+    return minutes < 10 ? `${AMHours}:0${minutes} AM` : `${AMHours}:${minutes} AM`;
   }
 }
 
@@ -23,6 +23,7 @@ class TaskDashboardFields extends Component {
         <td>
           <Button 
             waves='light' 
+            value={this.props.task.id}
             onClick={this.props.handleStartTask}>
             Begin Task
           </Button>
@@ -38,7 +39,7 @@ class TaskDashboardFields extends Component {
         </td>
         <td>
           <Button 
-            waves='light' 
+            waves='light'
             value={this.props.task.userId}
             onClick={this.props.updateCompletedAndIncompleteTasks}>
             End Task
