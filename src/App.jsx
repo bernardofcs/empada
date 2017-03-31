@@ -72,51 +72,8 @@ class App extends Component {
       modalIsOpen: false,
       grace_period: 300000,
       newsfeed: [],
-      list_of_tasks : [
-        // {
-        //   start_time: Date.now(),
-        //   assigned_start_time: new Date().toLocaleTimeString(),
-        //   description: 'description',
-        //   assigned_end_time: new Date().toLocaleTimeString(),
-        //   end_time: Date.now(),
-        //   id: 1,
-        //   userId: 1
-        // },
-        // {
-        //   start_time: Date.now(),
-        //   assigned_start_time: new Date().toLocaleTimeString(),
-        //   description: 'another description',
-        //   assigned_end_time: new Date().toLocaleTimeString(),
-        //   end_time: Date.now(),
-        //   id: 2,
-        //   userId: 1
-        // },
-        // {
-        //   start_time: Date.now(),
-        //   assigned_start_time: new Date().toLocaleTimeString(),
-        //   description: 'a third description',
-        //   assigned_end_time: new Date().toLocaleTimeString(),
-        //   end_time: Date.now(),
-        //   id: 3,
-        //   userId: 2
-        // }
-      ],
-      progress_bar : [
-      //   {
-      //     userId: 1,
-      //     incomplete_tasks: 100,
-      //     completed_tasks: 0,
-      //     total_tasks: undefined
-      //     // name: first_name
-      //     // project_id
-      //   },
-      //   {
-      //     userId: 2,
-      //     incomplete_tasks: 100,
-      //     completed_tasks: 0,
-      //     total_tasks: undefined,
-      //   },
-      ],
+      list_of_tasks : [],
+      progress_bar : []
     }
 
     // this.openModal = this.openModal.bind(this);
