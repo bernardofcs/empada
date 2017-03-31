@@ -8,6 +8,7 @@ import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
 import Newsfeed from './Newsfeed.jsx';
+import Nav from './Nav.jsx'
 
 /*
 Users:
@@ -28,6 +29,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentWindow: 'EventCreationForm',
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
@@ -82,6 +84,10 @@ class App extends Component {
     // this.afterOpenModal = this.afterOpenModal.bind(this);
     // this.closeModal = this.closeModal.bind(this);
   }
+
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm'})}
+  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
+  displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -854,6 +860,7 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
 
         <br />
 
@@ -870,14 +877,19 @@ class App extends Component {
           />
         </Modal>
 
-        <ProgressBar
-          progressBar={this.state.progress_bar}
-        />
+        {this.state.currentWindow === 'Dashboard' &&
+        <div>
+          <ProgressBar
+            progressBar={this.state.progress_bar}
+          />
 
-        <div className='timeline'>
-          <Timeline data={this.state.eventCreation.timelineData} />
+          <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
         </div>
-
+        }
+        
+        {this.state.currentWindow === 'EventCreationForm' &&
         <div className="event-creation-form">
           <EventCreationForm
             {...this.state}
@@ -899,9 +911,11 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        }
 
         <br />
 
+        {this.state.currentWindow === 'NewsFeed' &&
         <div className="row">
           <div className='col s9'>
             <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
@@ -915,6 +929,7 @@ class App extends Component {
             />
           </div>
         </div>
+        } 
 
       </div>
     );
