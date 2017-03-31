@@ -392,7 +392,7 @@ class App extends Component {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
       }
-    }, 500)
+    }, 5000)
 
     this.socket = new WebSocket("ws://localhost:3001");
 
@@ -402,10 +402,7 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-
-      console.log('data.type.type');
-      console.log(data.type.type);
+      console.log(data);
 
       switch (data.type) {
         case 'update-progress-bar':
