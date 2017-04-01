@@ -40,7 +40,7 @@ class TaskDashboardFields extends Component {
         <td>
           <Button 
             waves='light'
-            value={this.props.task.userId}
+            value={this.props.task.id}
             onClick={this.props.updateCompletedAndIncompleteTasks}>
             End Task
           </Button>

@@ -199,7 +199,7 @@ class App extends Component {
 
     const test_newsfeed = [];
     for (let item of this.state.allTasks) {
-      console.log(item);
+      // console.log(item);
 
       if (item.start_time) {
         test_newsfeed.push({
@@ -481,8 +481,12 @@ class App extends Component {
   }
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
-    const targetUserId = +value;
+    const targetId = +value;
     const { progress_bar = [], list_of_tasks = [] } = this.state;
+
+    const targetTask = list_of_tasks.find((task) => task.id === targetId);
+    const targetUserId = targetTask.userId
+    // change all values that need the targetUserId to match it, will be most of the targetId's below
 
     const userProgress = progress_bar
       .filter((v) => v)
@@ -492,9 +496,11 @@ class App extends Component {
 
       const progIdx = progress_bar.indexOf(userProgress);
 
+      // const taskStart = list_of_tasks.find(({ id }) => userId === targetId);
+      
       const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
 
-      console.log('task id', taskStart.id)
+      console.log('task id', targetId)
       console.log('user id start time', taskStart.userId)
 
       const percentOfTasksToChange = 100 / userProgress.total_tasks;
@@ -512,7 +518,7 @@ class App extends Component {
         type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
         progress_bar: newProgressBar,
         end_time: new Date(),
-        id: taskStart.id
+        id: targetId
       }));
     }
     console.log('end task button pressed');
