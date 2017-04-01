@@ -947,7 +947,7 @@ class App extends Component {
           <span>
               {this.props.children}
           </span>
-          <Alert stack={{limit: 3}} />
+          <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
         </div>
 
       </div>
