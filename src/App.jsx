@@ -75,7 +75,9 @@ class App extends Component {
       grace_period: 300000,
       newsfeed: [],
       list_of_tasks : [],
-      progress_bar : []
+      progress_bar : [],
+      clickedStartButton : [],
+      clickedEndButton : []
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -484,50 +486,54 @@ class App extends Component {
     const targetId = +value;
     const { progress_bar = [], list_of_tasks = [] } = this.state;
 
-    const targetTask = list_of_tasks.find((task) => task.id === targetId);
-    const targetUserId = targetTask.userId
-    // change all values that need the targetUserId to match it, will be most of the targetId's below
+      const targetTask = list_of_tasks.find((task) => task.id === targetId);
+      const targetUserId = targetTask.userId
+      // change all values that need the targetUserId to match it, will be most of the targetId's below
 
-    const userProgress = progress_bar
-      .filter((v) => v)
-      .find(({ userId }) => userId === targetUserId);
+      // if (targetTask.start_time === null) {
+      //   console.error("You must begin a task before you can end it!");
+      //   return alert("You must begin a task before you can end it!");
+      // } else {
 
-    if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+      const userProgress = progress_bar
+        .filter((v) => v)
+        .find(({ userId }) => userId === targetUserId);
 
-      const progIdx = progress_bar.indexOf(userProgress);
+      if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
-      // const taskStart = list_of_tasks.find(({ id }) => userId === targetId);
-      
-      const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
+        const progIdx = progress_bar.indexOf(userProgress);
+        
+        const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
 
-      console.log('task id', targetId)
-      console.log('user id start time', taskStart.userId)
+        console.log('task id', targetId)
+        console.log('user id start time', taskStart.userId)
 
-      const percentOfTasksToChange = 100 / userProgress.total_tasks;
+        const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
-      const newProgressBar = progress_bar.slice();
-      newProgressBar[progIdx] = {
-        ...userProgress,
-        completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
-        incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
-      };
+        const newProgressBar = progress_bar.slice();
+        newProgressBar[progIdx] = {
+          ...userProgress,
+          completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+          incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+        };
 
-      // targetUserId.target.className += " disabled";
+        // targetUserId.target.className += " disabled";
 
-      this.socket.send(JSON.stringify({
-        type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
-        progress_bar: newProgressBar,
-        end_time: new Date(),
-        id: targetId
-      }));
-    }
+        this.socket.send(JSON.stringify({
+          type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
+          progress_bar: newProgressBar,
+          end_time: new Date(),
+          id: targetId
+        }));
+      }
+    // }
     console.log('end task button pressed');
    }
 
   handleStartTask = (e) => {
     e.preventDefault();
 
-    e.target.className += " disabled";
+    // e.target.className += " disabled";
 
     console.log('task id', e.target.value)
 
@@ -574,6 +580,16 @@ class App extends Component {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
+        case "start-time-button-clicked":
+          console.log('clicked start time')
+          this.setState({ clickedButtons: [...this.state.clickedStartButton, +data.id] });
+          break;
+
+        case "end-time-button-clicked":
+          console.log('clicked end time')
+          this.setState({ clickedButtons: [...this.state.clickedEndButton, +data.id] });
+          break;
+
         case 'update-progress-bar':
           let newstate = this.state;
           newstate.progress_bar = data.progress_bar;
@@ -864,6 +880,8 @@ class App extends Component {
             handleStartTask={this.handleStartTask}
             listOfTasks={this.state.list_of_tasks}
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+            clickedStart={this.state.clickedStartButton}
+            clickedEnd={this.state.clickedEndButton}
           />
         </Modal>
 

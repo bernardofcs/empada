@@ -29,6 +29,8 @@ class TaskDashboard extends Component {
                   task={task}
                   handleStartTask={this.props.handleStartTask}
                   updateCompletedAndIncompleteTasks={this.props.updateCompletedAndIncompleteTasks}
+                  clickedStart={this.props.clickedStart.indexOf(task.id) > -1}
+                  clickedEnd={this.props.clickedEnd.indexOf(task.id) > -1}
                   key={task.id}
                 />
               })

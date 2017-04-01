@@ -24,6 +24,7 @@ class TaskDashboardFields extends Component {
           <Button 
             waves='light' 
             value={this.props.task.id}
+            className={this.props.clickedStart ? 'disabled' : null}
             onClick={this.props.handleStartTask}>
             Begin Task
           </Button>
@@ -41,6 +42,7 @@ class TaskDashboardFields extends Component {
           <Button 
             waves='light'
             value={this.props.task.id}
+            className={this.props.clickedEnd ? 'disabled' : null}    
             onClick={this.props.updateCompletedAndIncompleteTasks}>
             End Task
           </Button>
