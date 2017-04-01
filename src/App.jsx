@@ -484,16 +484,17 @@ class App extends Component {
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
-    const { progress_bar = [], list_of_tasks = [] } = this.state;
+    const { progress_bar = [], list_of_tasks = [], clickedStartButton = [] } = this.state;
 
       const targetTask = list_of_tasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
-      // change all values that need the targetUserId to match it, will be most of the targetId's below
+      const buttonClicked = clickedStartButton.find((id) => id === targetId);
+      console.log('clicked button', buttonClicked)
 
-      // if (targetTask.start_time === null) {
-      //   console.error("You must begin a task before you can end it!");
-      //   return alert("You must begin a task before you can end it!");
-      // } else {
+      if (buttonClicked !== targetId) {
+        console.error("You must begin a task before you can end it!");
+        return alert("You must begin a task before you can end it!");
+      } else {
 
       const userProgress = progress_bar
         .filter((v) => v)
@@ -517,8 +518,6 @@ class App extends Component {
           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
         };
 
-        // targetUserId.target.className += " disabled";
-
         this.socket.send(JSON.stringify({
           type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
           progress_bar: newProgressBar,
@@ -526,14 +525,12 @@ class App extends Component {
           id: targetId
         }));
       }
-    // }
+    }
     console.log('end task button pressed');
    }
 
   handleStartTask = (e) => {
     e.preventDefault();
-
-    // e.target.className += " disabled";
 
     console.log('task id', e.target.value)
 
