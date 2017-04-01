@@ -582,12 +582,12 @@ class App extends Component {
       switch (data.type) {
         case "start-time-button-clicked":
           console.log('clicked start time')
-          this.setState({ clickedButtons: [...this.state.clickedStartButton, +data.id] });
+          this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
         case "end-time-button-clicked":
           console.log('clicked end time')
-          this.setState({ clickedButtons: [...this.state.clickedEndButton, +data.id] });
+          this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
           break;
 
         case 'update-progress-bar':
@@ -672,9 +672,8 @@ class App extends Component {
         default:
           console.error('Failed to send back');
       }
-      // console.log(this.state);
+      console.log(this.state);
     }
-
   }
 
   handleLogin = () => {
