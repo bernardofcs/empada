@@ -494,7 +494,6 @@ class App extends Component {
 
       const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
 
-
       console.log('task id', taskStart.id)
       console.log('user id start time', taskStart.userId)
 
@@ -512,11 +511,11 @@ class App extends Component {
       this.socket.send(JSON.stringify({
         type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
         progress_bar: newProgressBar,
-        end_time: Date.now(),
+        end_time: new Date(),
         id: taskStart.id
       }));
     }
-      console.log('end task button pressed');
+    console.log('end task button pressed');
    }
 
   handleStartTask = (e) => {
@@ -600,7 +599,6 @@ class App extends Component {
                   progress_bar[t.userId].name = u.first_name;
                 }
               })
-
 
               if (progress_bar[t.userId].incomplete_tasks === undefined) {
                 progress_bar[t.userId].incomplete_tasks = 100;

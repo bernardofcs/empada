@@ -24,7 +24,7 @@ class TaskDashboard extends Component {
 
           <tbody>
             {
-              this.props.listOfTasks.map((task, i) => {
+              this.props.listOfTasks.map((task) => {
                 return <TaskDashboardFields
                   task={task}
                   handleStartTask={this.props.handleStartTask}
