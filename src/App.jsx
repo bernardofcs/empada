@@ -8,6 +8,16 @@ import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
 import Newsfeed from './Newsfeed.jsx';
+import AlertContainer from 'react-alert';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
+import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
+import 'react-s-alert/dist/s-alert-css-effects/flip.css';
+import 'react-s-alert/dist/s-alert-css-effects/genie.css';
+import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 /*
 Users:
@@ -68,6 +78,13 @@ class App extends Component {
           // ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
           // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
         ]
+      },
+      alertOptions :{
+        offset: 14,
+        position: 'bottom left',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
       },
       dashboardTimelineTasks: [],
       allTasks: [],
@@ -136,7 +153,6 @@ class App extends Component {
     localStorage.removeItem("profile")
     // this.showLock()
   }
-
 
   renderNewsfeed = (data) => {
     // this.setState({ allTasks: data });
@@ -484,16 +500,16 @@ class App extends Component {
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
-    const { progress_bar = [], list_of_tasks = [], clickedStartButton = [] } = this.state;
+    const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
 
-      const targetTask = list_of_tasks.find((task) => task.id === targetId);
+      const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
       console.log('clicked button', buttonClicked)
 
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
-        return alert("You must begin a task before you can end it!");
+        Alert.error("You must begin a task before you can end it!");
       } else {
 
       const userProgress = progress_bar
@@ -504,7 +520,7 @@ class App extends Component {
 
         const progIdx = progress_bar.indexOf(userProgress);
         
-        const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
+        const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
         console.log('task id', targetId)
         console.log('user id start time', taskStart.userId)
@@ -874,7 +890,7 @@ class App extends Component {
 
           <TaskDashboard
             handleStartTask={this.handleStartTask}
-            listOfTasks={this.state.list_of_tasks}
+            listOfTasks={this.state.allTasks}
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
             clickedStart={this.state.clickedStartButton}
             clickedEnd={this.state.clickedEndButton}
@@ -925,6 +941,13 @@ class App extends Component {
               renderNewsfeed={this.renderNewsfeed}
             />
           </div>
+        </div>
+
+        <div>
+          <span>
+              {this.props.children}
+          </span>
+          <Alert stack={{limit: 3}} />
         </div>
 
       </div>
