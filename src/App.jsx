@@ -378,11 +378,11 @@ class App extends Component {
         temp.end_time = new Date();
       } else if (!(temp.start_time)) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           task.assigned_end_time,
           timing[5],
-          task.name
+          task.user.first_name
         ]);
         continue;
       }
@@ -396,126 +396,126 @@ class App extends Component {
         && temp.end_time < task.assigned_end_time
         && task.assigned_start_time < temp.end_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           temp.start_time,
           task.assigned_start_time,
           timing[0],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           temp.end_time,
           timing[2],
-          task.name
+          task.user.first_name
 
         ],
         [
-          task.user.first_name,
+          task.name,
           temp.end_time,
           task.assigned_end_time,
           timing[3],
-          task.name
+          task.user.first_name
         ])
       } else if (temp.start_time < task.assigned_start_time
         && temp.end_time > task.assigned_end_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           temp.start_time,
           task.assigned_start_time,
           timing[0],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           task.assigned_end_time,
           timing[2],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_end_time,
           temp.end_time,
           timing[4],
-          task.name
+          task.user.first_name
         ])
       } else if (temp.start_time > task.assigned_start_time
         && temp.end_time < task.assigned_end_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           temp.start_time,
           timing[1],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           temp.start_time,
           temp.end_time,
           timing[2],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           temp.end_time,
           task.assigned_end_time,
           timing[3],
-          task.name
+          task.user.first_name
         ])
       } else if (temp.start_time > task.assigned_start_time
         && temp.end_time > task.assigned_end_time
         && temp.start_time < task.assigned_end_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           temp.start_time,
           timing[1],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           temp.start_time,
           task.assigned_end_time,
           timing[2],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_end_time,
           temp.end_time,
           timing[4],
-          task.name
+          task.user.first_name
         ])
       } else if (temp.end_time < task.assigned_start_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           temp.start_time,
           temp.end_time,
           timing[3],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           task.assigned_end_time,
           timing[3],
-          task.name
+          task.user.first_name
         ])
       } else if (temp.start_time > task.assigned_end_time) {
         tasks.push([
-          task.user.first_name,
+          task.name,
           temp.start_time,
           temp.end_time,
           timing[5],
-          task.name
+          task.user.first_name
         ],
         [
-          task.user.first_name,
+          task.name,
           task.assigned_start_time,
           task.assigned_end_time,
           timing[1],
-          task.name
+          task.user.first_name
         ])
       }
     };
