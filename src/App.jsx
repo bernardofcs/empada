@@ -1016,6 +1016,9 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
         </Fade>
         }
 
@@ -1041,9 +1044,7 @@ class App extends Component {
           />
 
 
-          <div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
+          
         </div>
         </Fade>
         }
