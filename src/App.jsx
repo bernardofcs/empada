@@ -9,6 +9,7 @@ import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
 import Newsfeed from './Newsfeed.jsx';
 import Nav from './Nav.jsx'
+import { default as Fade } from 'react-fade'
 
 /*
 Users:
@@ -30,6 +31,8 @@ class App extends Component {
     super(props);
     this.state = {
       currentWindow: 'EventCreationForm',
+      eventCreationFormFade: false,
+      dashboardFade: false,
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
@@ -877,19 +880,10 @@ class App extends Component {
           />
         </Modal>
 
-        {this.state.currentWindow === 'Dashboard' &&
-        <div>
-          <ProgressBar
-            progressBar={this.state.progress_bar}
-          />
-
-          <div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
-        </div>
-        }
+        
         
         {this.state.currentWindow === 'EventCreationForm' &&
+        <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
         <div className="event-creation-form">
           <EventCreationForm
             {...this.state}
@@ -911,11 +905,12 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        </Fade>
         }
 
         <br />
-
-        {this.state.currentWindow === 'NewsFeed' &&
+        {this.state.currentWindow === 'Dashboard' &&
+        <Fade out={this.state.dashboardFade} duration={0.7} style={{visibility: 'visible'}} >
         <div className="row">
           <div className='col s9'>
             <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
@@ -929,9 +924,19 @@ class App extends Component {
             />
           </div>
         </div>
-        } 
+        <div>
+          <ProgressBar
+            progressBar={this.state.progress_bar}
+          />
 
+          <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
+        </div>
+        </Fade>
+        }
       </div>
+
     );
   }
 }
