@@ -11,13 +11,9 @@ import Newsfeed from './Newsfeed.jsx';
 import AlertContainer from 'react-alert';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
-import 'react-s-alert/dist/s-alert-css-effects/slide.css';
-import 'react-s-alert/dist/s-alert-css-effects/scale.css';
-import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
-import 'react-s-alert/dist/s-alert-css-effects/flip.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
-import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
-import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
+import Nav from './Nav.jsx';
+import { default as Fade } from 'react-fade';
 
 /*
 Users:
@@ -38,6 +34,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentWindow: 'EventCreationForm',
+      eventCreationFormFade: false,
+      dashboardFade: false,
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
@@ -102,6 +101,10 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm'})}
+  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
+  displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
+
   componentWillMount = () => {
     console.log("componentWillMount <App />");
     this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
@@ -157,63 +160,63 @@ class App extends Component {
   renderNewsfeed = (data) => {
     // this.setState({ allTasks: data });
 
-    let fromDb = [
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9),
-        assigned_time: new Date(2016, 11, 1, 9),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'completed_task',
-        action_time: new Date(2016, 11, 1, 9, 10),
-        assigned_time: new Date(2016, 11, 1, 9, 0),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9, 1),
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_started', //'task_not_completed'
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 15)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_completed',
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_expected',
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      }
-    ]
+    // let fromDb = [
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9),
+    //     assigned_time: new Date(2016, 11, 1, 9),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'completed_task',
+    //     action_time: new Date(2016, 11, 1, 9, 10),
+    //     assigned_time: new Date(2016, 11, 1, 9, 0),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9, 1),
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_started', //'task_not_completed'
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 15)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_completed',
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_expected',
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   }
+    // ]
 
     const test_newsfeed = [];
     for (let item of this.state.allTasks) {
@@ -579,7 +582,7 @@ class App extends Component {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
       }
-    }, 500)
+    }, 5000)
 
     this.socket = new WebSocket("ws://localhost:3001");
 
@@ -591,6 +594,7 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
 
       switch (data.type) {
         case "start-time-button-clicked":
@@ -729,7 +733,11 @@ class App extends Component {
     const date = this.state.eventCreation.startDate;
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
       // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
-      return [this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(t.user_id,10) )[0].name, new Date(date+' '+t.assigned_start_time), new Date(date+' '+t.assigned_end_time) ];
+      return [this.state.eventCreation.assigned_people.filter((p)=> +p.id === +t.user_id)[0].name,
+       new Date(date+' '+t.assigned_start_time), 
+       new Date(date+' '+t.assigned_end_time),
+       '',
+       '' ];
     });
     console.log(timelineData);
     var newTimelineData = Object.assign({},this.state.eventCreation)
@@ -867,6 +875,27 @@ class App extends Component {
     });
   }
 
+  eventCreationDeleteUser = (index) => {
+    console.log('delete this user')
+    console.log(this.state.eventCreation.assigned_people[index]);
+    let deleteUser = Object.assign({},this.state.eventCreation);
+    let assigned_people = [...this.state.eventCreation.assigned_people];
+    assigned_people.splice(index, 1);
+    deleteUser.assigned_people = assigned_people;
+    this.setState({eventCreation: deleteUser});
+    
+  }
+
+  eventCreationDeleteTask = (index) => {
+    console.log('delete this task')
+    console.log(this.state.eventCreation.tasks[index]);
+    let deleteTask = Object.assign({},this.state.eventCreation);
+    let tasks = [...this.state.eventCreation.tasks];
+    tasks.splice(index, 1);
+    deleteTask.tasks = tasks;
+    this.setState({eventCreation: deleteTask});
+  }
+
   render() {
     return (
       <div className="App">
@@ -879,6 +908,7 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
 
         <br />
 
@@ -897,17 +927,13 @@ class App extends Component {
           />
         </Modal>
 
-        <ProgressBar
-          progressBar={this.state.progress_bar}
-        />
-
-        <div className='timeline'>
-          <Timeline data={this.state.eventCreation.timelineData} />
-        </div>
-
+        {this.state.currentWindow === 'EventCreationForm' &&
+        <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
         <div className="event-creation-form">
           <EventCreationForm
             {...this.state}
+            eventCreationDeleteUser={this.eventCreationDeleteUser}
+            eventCreationDeleteTask ={this.eventCreationDeleteTask}
             submitEvent={this.submitEvent}
             eventCreationSelectToggle={this.eventCreationSelectToggle}
             addTask={this.addTask}
@@ -926,9 +952,12 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        </Fade>
+        }
 
         <br />
-
+        {this.state.currentWindow === 'Dashboard' &&
+        <Fade out={this.state.dashboardFade} duration={0.7} style={{visibility: 'visible'}} >
         <div className="row">
           <div className='col s9'>
             <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
@@ -942,15 +971,26 @@ class App extends Component {
             />
           </div>
         </div>
-
         <div>
-          <span>
-              {this.props.children}
-          </span>
-          <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
-        </div>
+          <ProgressBar
+            progressBar={this.state.progress_bar}
+          />
 
+
+          <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
+        </div>
+        </Fade>
+        }
+
+      <div>
+        <span>
+            {this.props.children}
+        </span>
+        <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
       </div>
+    </div>
     );
   }
 }
