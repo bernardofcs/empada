@@ -556,7 +556,7 @@ class App extends Component {
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
-      id: e.target.value
+      id: +e.target.value
     }
     console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
