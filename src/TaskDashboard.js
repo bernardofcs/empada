@@ -7,7 +7,7 @@ class TaskDashboard extends Component {
   render() {
     return (
       <Row>
-        <Collection header="List of Tasks">
+        <Collection header="Task List">
         </Collection>
 
         <Table>
@@ -15,21 +15,21 @@ class TaskDashboard extends Component {
           <thead>
             <tr>
               <th data-field="Start Task">Start Task</th>
-              <th data-field="Start Time">Start Time</th>
+              <th data-field="Scheduled Start Time">Start Time</th>
               <th data-field="Description">Description</th>
-              <th data-field="End Time">End Time</th>
+              <th data-field="Scheduled End Time">End Time</th>
               <th data-field="End Task">End Task</th>
             </tr>
           </thead>
 
           <tbody>
             {
-              this.props.listOfTasks.map((task, i) => {
-                return <TaskDashboardFields 
-                  task={task} 
+              this.props.listOfTasks.map((task) => {
+                return <TaskDashboardFields
+                  task={task}
                   handleStartTask={this.props.handleStartTask}
                   updateCompletedAndIncompleteTasks={this.props.updateCompletedAndIncompleteTasks}
-                  key={i}
+                  key={task.id}
                 />
               })
             }

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import Auth0Lock from 'auth0-lock'
 import { Timeline } from 'react-chartkick';
-import ReactInterval from 'react-interval';
 import TaskDashboard from './TaskDashboard.js'
 import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
+import DashboardTimeline from './DashboardTimeline.jsx';
+import Newsfeed from './Newsfeed.jsx';
+
 /*
 Users:
 - started a task
@@ -67,58 +69,59 @@ class App extends Component {
           // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
         ]
       },
-      tasks: [],
+      dashboardTimelineTasks: [],
+      allTasks: [],
       modalIsOpen: false,
       grace_period: 300000,
       newsfeed: [],
-      list_of_tasks : [
-        {
-          start_time: Date.now(),
-          assigned_start_time: new Date().toLocaleTimeString(),
-          description: 'description',
-          assigned_end_time: new Date().toLocaleTimeString(),
-          end_time: Date.now(),
-          id: 1,
-          user_id: 1
-        },
-        {
-          start_time: Date.now(),
-          assigned_start_time: new Date().toLocaleTimeString(),
-          description: 'another description',
-          assigned_end_time: new Date().toLocaleTimeString(),
-          end_time: Date.now(),
-          id: 2,
-          user_id: 1
-        },
-        {
-          start_time: Date.now(),
-          assigned_start_time: new Date().toLocaleTimeString(),
-          description: 'a third description',
-          assigned_end_time: new Date().toLocaleTimeString(),
-          end_time: Date.now(),
-          id: 3,
-          user_id: 2
-        }
-      ],
-      progress_bar : [
-        {
-          user_id: 1,
-          incomplete_tasks: 100,
-          completed_tasks: 0,
-          total_tasks: undefined,
-        },
-        {
-          user_id: 2,
-          incomplete_tasks: 100,
-          completed_tasks: 0,
-          total_tasks: undefined,
-        }
-      ],
+      list_of_tasks : [],
+      progress_bar : []
     };
 
     // this.openModal = this.openModal.bind(this);
     // this.afterOpenModal = this.afterOpenModal.bind(this);
     // this.closeModal = this.closeModal.bind(this);
+  }
+
+  componentWillMount = () => {
+    console.log("componentWillMount <App />");
+    this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
+      theme: {
+        primaryColor: '#26e'
+      },
+      languageDictionary: {
+        title: 'Authenticate'
+      },
+      closable: false,
+      additionalSignUpFields: [{
+        name: "given_name",
+        placeholder: "Enter your first name",
+        // icon: "https://example.com/name_icon.png",
+        validator: (value) => {
+          return value.length > 1
+        }
+      },{
+        name: "family_name",
+        placeholder: "Enter your last name",
+        // icon: "https://example.com/name_icon.png",
+        validator: (value) => {
+          return value.length > 1
+        }
+      }]
+    });
+
+    this.lock.on("authenticated", (authResult) => {
+      localStorage.setItem("accessToken", authResult.accessToken);
+      this.lock.getProfile(authResult.idToken, (err, profile) => {
+        if (err) {
+          console.log("Error loading the Profile", err);
+          return;
+        }
+        localStorage.setItem("profile", JSON.stringify(profile));
+        this.setState({profile: profile});
+        this.handleLogin()
+      });
+    });
   }
 
   showLock = () => {
@@ -132,68 +135,125 @@ class App extends Component {
     // this.showLock()
   }
 
-  updateNewsFeed = () => {
-    let fromDb = [
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9),
-        assigned_time: new Date(2016, 11, 1, 9),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'completed_task',
-        action_time: new Date(2016, 11, 1, 9, 10),
-        assigned_time: new Date(2016, 11, 1, 9, 0),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'assigned_user_action',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'started_task', //'completed_task', 'progress_bar'
-        action_time: new Date(2016, 11, 1, 9, 1),
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 10)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_started', //'task_not_completed'
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9, 15)
-      },
-      {
-        type:   'task_timing',
-        user:   'assigned_user',
-        task:   'assigned_task',
-        action: 'task_not_completed',
-        assigned_time: new Date(2016, 11, 1, 9, 10),
-        notification_time: new Date(2016, 11, 1, 9)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      },
-      {
-        type:   'project_progress',
-        action: 'percent_expected',
-        percantage: '50',
-        notification_time: new Date(2016, 11, 1, 10)
-      }
-    ]
-    // this.state.newsfeed
 
-    return this.setState({newsfeed: fromDb.map((item, index) => {
-      let notif_type;
+  renderNewsfeed = (data) => {
+    // this.setState({ allTasks: data });
+
+    // let fromDb = [
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9),
+    //     assigned_time: new Date(2016, 11, 1, 9),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'completed_task',
+    //     action_time: new Date(2016, 11, 1, 9, 10),
+    //     assigned_time: new Date(2016, 11, 1, 9, 0),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'assigned_user_action',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'started_task', //'completed_task', 'progress_bar'
+    //     action_time: new Date(2016, 11, 1, 9, 1),
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 10)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_started', //'task_not_completed'
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9, 15)
+    //   },
+    //   {
+    //     type:   'task_timing',
+    //     user:   'assigned_user',
+    //     task:   'assigned_task',
+    //     action: 'task_not_completed',
+    //     assigned_time: new Date(2016, 11, 1, 9, 10),
+    //     notification_time: new Date(2016, 11, 1, 9)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   },
+    //   {
+    //     type:   'project_progress',
+    //     action: 'percent_expected',
+    //     percantage: '50',
+    //     notification_time: new Date(2016, 11, 1, 10)
+    //   }
+    // ]
+
+    const test_newsfeed = [];
+    for (let item of this.state.allTasks) {
+      console.log(item);
+
+      if (item.start_time) {
+        test_newsfeed.push({
+          type:   'assigned_user_action',
+          user:   'test_user',
+          task:   item.name,
+          action: 'started_task',
+          action_time: item.start_time,
+          assigned_time: item.assigned_start_time,
+          notification_time: item.start_time
+        })
+      }
+
+      if (item.end_time) {
+        test_newsfeed.push({
+          type:   'assigned_user_action',
+          user:   'test_user',
+          task:   item.name,
+          action: 'completed_task',
+          action_time: item.end_time,
+          assigned_time: item.assigned_end_time,
+          notification_time: item.end_time
+        })
+      }
+
+      if (item.assigned_start_time < item.start_time
+        || (item.assigned_start_time && !(item.start_time))) {
+        test_newsfeed.push({
+          type:   'task_timing',
+          user:   'test_user',
+          task:   item.name,
+          action: 'task_not_started', //'task_not_completed'
+          assigned_time: item.assigned_start_time,
+          notification_time: item.assigned_start_time + this.state.grace_period
+        })
+      }
+
+      if (item.assigned_end_time < item.end_time
+        || (item.assigned_end_time && !(item.end_time))) {
+        test_newsfeed.push({
+          type:   'task_timing',
+          user:   'test_user',
+          task:   item.name,
+          action: 'task_not_completed',
+          assigned_time: item.assigned_end_time,
+          notification_time: item.assigned_end_time + this.state.grace_period
+        })
+      }
+    };
+
+
+    // const newsfeed = fromDb.map((item, index) => {
+    const newsfeed = test_newsfeed.map((item, index) => {
+      let notif_type = [];
       switch(item.type) {
         case 'assigned_user_action':
           if (item.action === 'started_task') {
@@ -274,106 +334,207 @@ class App extends Component {
         default:
           throw new Error(`Unknown event type in newsfeed: ${item.type}`);
       }
-    })})
+    })
+
+
+    // return this.state.newsfeed.map((item, index) => {
+    this.setState({newsfeed: newsfeed})
   }
 
-  updateCompletedAndIncompleteTasks = (e) => {
-    e.preventDefault();
+  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate'})) }
 
-    const task = this.state.list_of_tasks.filter((t) => {
-      return t.id === Number(e.target.value);
-    })
+  timelineTaskFormatting = (data) => {
+    this.setState({allTasks: data});
 
-    const userId = task[0].user_id
-    let userProgressArr = this.state.progress_bar.filter((t) => {
-      return t.user_id === userId;
-    })
+    const tasks = [];
+    const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
+    for (let key of Object.keys(this.state.allTasks)) {
+      const task = this.state.allTasks[key];
 
-    const userTasks = this.state.list_of_tasks.filter((t) => {
-      return t.user_id === userId;
-    })
+      if (task.start_time < task.assigned_start_time
+        && task.end_time < task.assigned_end_time
+        && task.assigned_start_time < task.end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.assigned_start_time,
+          timing[0]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.end_time,
+          timing[2]
 
-    let userProgress = userProgressArr[0];
-    userProgress.total_tasks = userTasks.length;
-    let percentOfTasksToChange = Math.round(100/userProgress.total_tasks);
-    userProgress.completed_tasks += percentOfTasksToChange;
-    userProgress.incomplete_tasks -= percentOfTasksToChange;
-    const oldProgressBar = this.state.progress_bar;
+        ],
+        [
+          task.name,
+          task.end_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time < task.assigned_start_time
+        && task.end_time > task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.assigned_start_time,
+          timing[0]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.assigned_end_time,
+          task.end_time,
+          timing[4]
+        ])
+      } else if (task.start_time > task.assigned_start_time
+        && task.end_time < task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.assigned_start_time,
+          task.start_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.end_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time > task.assigned_start_time
+        && task.end_time > task.assigned_end_time
+        && task.start_time < task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.assigned_start_time,
+          task.start_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.start_time,
+          task.assigned_end_time,
+          timing[2]
+        ],
+        [
+          task.name,
+          task.assigned_end_time,
+          task.end_time,
+          timing[4]
+        ])
+      } else if (task.end_time < task.assigned_start_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[3]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[3]
+        ])
+      } else if (task.start_time > task.assigned_end_time) {
+        tasks.push([
+          task.name,
+          task.start_time,
+          task.end_time,
+          timing[1]
+        ],
+        [
+          task.name,
+          task.assigned_start_time,
+          task.assigned_end_time,
+          timing[1]
+        ])
+      }
+    };
 
-    let newProgressBar = oldProgressBar.filter((t) => {
-      return t.user_id !== userId
-    })
+    const colorMap = {
+      // should contain a map of category -> color for every category
+      'early start'     : '#139A43',
+      'late start'      : '#F26430',
+      'as scheduled'    : '#279AF1',
+      'completed early' : '#139A43',
+      'completed late'  : '#F26430'
+    };
+    tasks.map((arr) => {
+      arr.push(colorMap[arr[3]]);
+      arr[3] = `${arr[0]} - ${arr[3]}`;
+      return arr
+    });
 
-    newProgressBar.push(userProgress);
+    this.setState({'dashboardTimelineTasks': tasks});
+  }
 
-    e.target.className += " disabled";
+  updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
+    const targetUserId = +value;
+    const { progress_bar = [], list_of_tasks = [] } = this.state;
 
-    let message = {
-      type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
-      progress_bar: newProgressBar,
-      end_time: Date.now(),
-      project_id: 12,
-      id: 2,
+    const userProgress = progress_bar
+      .filter((v) => v)
+      .find(({ userId }) => userId === targetUserId);
+
+    if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+
+      const progIdx = progress_bar.indexOf(userProgress);
+
+      const taskStart = list_of_tasks.find(({ userId }) => userId === targetUserId);
+
+      console.log('task id', taskStart.id)
+      console.log('user id start time', taskStart.userId)
+
+      const percentOfTasksToChange = 100 / userProgress.total_tasks;
+
+      const newProgressBar = progress_bar.slice();
+      newProgressBar[progIdx] = {
+        ...userProgress,
+        completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+        incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+      };
+
+      // targetUserId.target.className += " disabled";
+
+      this.socket.send(JSON.stringify({
+        type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
+        progress_bar: newProgressBar,
+        end_time: new Date(),
+        id: taskStart.id
+      }));
     }
-    console.log('start task button pressed');
-    this.socket.send(JSON.stringify(message));
-  }
+    console.log('end task button pressed');
+   }
 
   handleStartTask = (e) => {
     e.preventDefault();
 
     e.target.className += " disabled";
 
+    console.log('task id', e.target.value)
+
     let message = {
       type: 'start-time-for-contractor-tasks',
-      start_time: Date.now(),
-      project_id: 12,
-      id: 2
+      start_time: new Date(),
+      id: e.target.value
     }
     console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
-  componentWillMount = () => {
-    console.log("componentWillMount <App />");
-    this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
-      theme: {
-        primaryColor: '#26e'
-      },
-      languageDictionary: {
-        title: 'Authenticate'
-      },
-      closable: false,
-      additionalSignUpFields: [{
-        name: "given_name",
-        placeholder: "Enter your first name",
-        // icon: "https://example.com/name_icon.png",
-        validator: (value) => {
-          return value.length > 1
-        }
-      },{
-        name: "family_name",
-        placeholder: "Enter your last name",
-        // icon: "https://example.com/name_icon.png",
-        validator: (value) => {
-          return value.length > 1
-        }
-      }]
-    });
 
-    this.lock.on("authenticated", (authResult) => {
-      localStorage.setItem("accessToken", authResult.accessToken);
-      this.lock.getProfile(authResult.idToken, (err, profile) => {
-        if (err) {
-          console.log("Error loading the Profile", err);
-          return;
-        }
-        localStorage.setItem("profile", JSON.stringify(profile));
-        this.setState({profile: profile});
-        this.handleLogin()
-      });
-    });
-  }
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       console.log('detected timeline updated')
@@ -382,9 +543,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-    this.updateNewsFeed();
+    console.log("componentDidMount <App />");
     this.updateTimeline();
+    // this.updateNewsfeed();
+
     setTimeout(() => {
       if (!localStorage.profile) {
         this.showLock();
@@ -398,11 +560,13 @@ class App extends Component {
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
+      this.socket.send(JSON.stringify({type: 'request-tasks'}));
+      this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
     }
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
+
 
       switch (data.type) {
         case 'update-progress-bar':
@@ -411,148 +575,85 @@ class App extends Component {
           this.setState(newstate);
           break;
 
-        case 'tasks':
-          console.log('got inside tasks in the switch');
-          const tasks = [];
-          const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
-          for (let key of Object.keys(data.data)) {
-            const task = data.data[key];
-            // console.log(`creating task bars: ${task.task_name}`);
-
-            if (task.start_date < task.assigned_start_date
-              && task.end_date < task.assigned_end_date
-              && task.assigned_start_date < task.end_date) {
-              tasks.push([
-                task.task_name,
-                task.start_date,
-                task.assigned_start_date,
-                timing[0]
-              ],
-              [
-                task.task_name,
-                task.assigned_start_date,
-                task.end_date,
-                timing[2]
-
-              ],
-              [
-                task.task_name,
-                task.end_date,
-                task.assigned_end_date,
-                timing[3]
-              ])
-            } else if (task.start_date < task.assigned_start_date
-              && task.end_date > task.assigned_end_date) {
-              tasks.push([
-                task.task_name,
-                task.start_date,
-                task.assigned_start_date,
-                timing[0]
-              ],
-              [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
-                timing[2]
-              ],
-              [
-                task.task_name,
-                task.assigned_end_date,
-                task.end_date,
-                timing[4]
-              ])
-            } else if (task.start_date > task.assigned_start_date
-              && task.end_date < task.assigned_end_date) {
-              tasks.push([
-                task.task_name,
-                task.assigned_start_date,
-                task.start_date,
-                timing[1]
-              ],
-              [
-                task.task_name,
-                task.start_date,
-                task.end_date,
-                timing[2]
-              ],
-              [
-                task.task_name,
-                task.end_date,
-                task.assigned_end_date,
-                timing[3]
-              ])
-            } else if (task.start_date > task.assigned_start_date
-              && task.end_date > task.assigned_end_date
-              && task.start_date < task.assigned_end_date) {
-              tasks.push([
-                task.task_name,
-                task.assigned_start_date,
-                task.start_date,
-                timing[1]
-              ],
-              [
-                task.task_name,
-                task.start_date,
-                task.assigned_end_date,
-                timing[2]
-              ],
-              [
-                task.task_name,
-                task.assigned_end_date,
-                task.end_date,
-                timing[4]
-              ])
-            } else if (task.end_date < task.assigned_start_date) {
-              tasks.push([
-                task.task_name,
-                task.start_date,
-                task.end_date,
-                timing[3]
-              ],
-              [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
-                timing[3]
-              ])
-            } else if (task.start_date > task.assigned_end_date) {
-              tasks.push([
-                task.task_name,
-                task.start_date,
-                task.end_date,
-                timing[1]
-              ],
-              [
-                task.task_name,
-                task.assigned_start_date,
-                task.assigned_end_date,
-                timing[1]
-              ])
-            }
-          };
-
-          console.log(tasks);
-
-          const colorMap = {
-            // should contain a map of category -> color for every category
-            'early start'     : '#139A43',
-            'late start'      : '#F26430',
-            'as scheduled'    : '#279AF1',
-            'completed early' : '#139A43',
-            'completed late'  : '#F26430'
-          };
-          tasks.map((arr) => {
-            arr.push(colorMap[arr[3]]);
-            arr[3] = `${arr[0]} - ${arr[3]}`;
+        case 'progress-bar-update':
+          console.log(data);
+          let task = data.tasks.filter((t) => {
+            return t.id;
           });
-          this.setState({'tasks': tasks});
+
+          let user = data.users.filter((u) => {
+            return u.id;
+          });
+
+          let progress_bar = [];
+
+          task.forEach((t) => {
+            if (progress_bar[t.userId])  {
+              progress_bar[t.userId].total_tasks += 1;
+            } else {
+              progress_bar[t.userId] = {};
+              progress_bar[t.userId].total_tasks = 1;
+              progress_bar[t.userId].userId = t.userId;
+              progress_bar[t.userId].projectId = t.projectId;
+              user.forEach((u) => {
+                if (t.userId === u.id) {
+                  progress_bar[t.userId].name = u.first_name;
+                }
+              })
+
+              if (progress_bar[t.userId].incomplete_tasks === undefined) {
+                progress_bar[t.userId].incomplete_tasks = 100;
+                progress_bar[t.userId].completed_tasks = 0;
+              } else {
+                progress_bar[t.userId].incomplete_tasks = this.state[t.userId].incomplete_tasks;
+                progress_bar[t.userId].completed_tasks = this.state[t.userId].completed_tasks;
+              }
+            }
+          })
+
+          const pBar = progress_bar.filter((v) => v);
+
+          console.log('progress_bar', pBar);
+
+          let newProgressBarState = {
+            progress_bar: pBar
+          }
+
+          this.setState(newProgressBarState);
+
           break;
+
+          case 'update-list-of-tasks':
+            console.log(data);
+            let listOfTasks = data.tasks.filter((t) => {
+              return t.id;
+            });
+            console.log('listOfTasks', listOfTasks);
+
+            let newListState = {
+              list_of_tasks: listOfTasks
+            }
+
+          this.setState(newListState);
+
+          break;
+
+        case 'allTasks':
+          console.log('allTasks type detected in componentDidMount');
+          this.timelineTaskFormatting(data.data);
+          this.renderNewsfeed(data.data);
+          break;
+
+        // case 'newsfeed':
+        //   this.renderNewsfeed(data);
+        //   break;
 
         default:
           console.error('Failed to send back');
       }
+      // console.log(this.state);
+    }
 
-    };
   }
 
   handleLogin = () => {
@@ -561,12 +662,12 @@ class App extends Component {
     this.socket.send(JSON.stringify(loginObj))
   }
 
-
   submitEvent = () => {
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
   }
+
   addNewAssignedUser = (event) => {
     var newUser = Object.assign({},this.state.eventCreation)
     newUser.assigned_people.push({
@@ -578,21 +679,28 @@ class App extends Component {
     newUser.newAssignedPerson = '';
     this.setState({eventCreation: newUser});
   }
+
   handleAssignedEmail = (event) => {
     let newEmail = Object.assign({},this.state.eventCreation);
     newEmail.newAssignedEmail = event.target.value;
     this.setState({eventCreation: newEmail});
   }
+
   handleAssignedPerson = (event) => {
     let newPerson = Object.assign({},this.state.eventCreation);
     newPerson.newAssignedPerson = event.target.value;
     this.setState({eventCreation: newPerson});
   }
+
   updateTimeline = () => {
     const date = this.state.eventCreation.startDate;
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
       // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
-      return [this.state.eventCreation.assigned_people.filter((p)=> parseInt(p.id,10) === parseInt(t.user_id,10) )[0].name, new Date(date+' '+t.assigned_start_time), new Date(date+' '+t.assigned_end_time) ];
+      return [this.state.eventCreation.assigned_people.filter((p)=> +p.id === +t.user_id)[0].name,
+       new Date(date+' '+t.assigned_start_time), 
+       new Date(date+' '+t.assigned_end_time),
+       '',
+       '' ];
     });
     console.log(timelineData);
     var newTimelineData = Object.assign({},this.state.eventCreation)
@@ -600,6 +708,7 @@ class App extends Component {
     this.setState({ eventCreation: newTimelineData });
     // this.clearTaskFields();
   }
+
   clearTaskFields = () => {
     const defaultValues = {
       newTask: '',
@@ -610,13 +719,14 @@ class App extends Component {
     var clearTasks = Object.assign({},this.state.eventCreation,defaultValues)
     this.setState({eventCreation: clearTasks});
   }
+
   addTask = () => {
     //add a new task to the task state, and add data to timeline.
     var newTasks = Object.assign({},this.state.eventCreation)
-    if ( 
-      newTasks.newTask !== '' && 
-      newTasks.newDescription !== ''&& 
-      newTasks.newStartTime !== ''&& 
+    if (
+      newTasks.newTask !== '' &&
+      newTasks.newDescription !== ''&&
+      newTasks.newStartTime !== ''&&
       newTasks.newEndTime!== '' ) {
       const t_values = this.state.eventCreation;
       newTasks.tasks.push({
@@ -632,9 +742,10 @@ class App extends Component {
       newTasks.newStartTime = '';
       newTasks.newEndTime= '';
       this.setState({eventCreation: newTasks });
-      this.updateTimeline();    
+      this.updateTimeline();
     }
   }
+
   newEventName = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
@@ -642,6 +753,7 @@ class App extends Component {
     newName.name = event.target.value;
     this.setState({eventCreation: newName});
   }
+
   newEventDescription = (event) => {
     //watch for values added to new task description
     // console.log(event.target.value);
@@ -649,6 +761,7 @@ class App extends Component {
     newEventDescription.description = event.target.value;
     this.setState({eventCreation: newEventDescription});
   }
+
   newEventEndDate = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -656,6 +769,7 @@ class App extends Component {
     newEventDate.endDate = event.target.value;
     this.setState({eventCreation: newEventDate});
   }
+
   newEventStartDate = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -663,6 +777,7 @@ class App extends Component {
     newEventDate.startDate = event.target.value;
     this.setState({eventCreation: newEventDate});
   }
+
   newTask = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
@@ -670,6 +785,7 @@ class App extends Component {
     newTask.newTask = event.target.value;
     this.setState({eventCreation: newTask});
   }
+
   newDescription = (event) => {
     //watch for values added to new task description
     // console.log(event.target.value);
@@ -677,6 +793,7 @@ class App extends Component {
     newDescription.newDescription = event.target.value;
     this.setState({eventCreation: newDescription});
   }
+
   newStartTime = (event) => {
     //watch for values added to new task start time
     // console.log(event.target.value);
@@ -684,6 +801,7 @@ class App extends Component {
     newST.newStartTime = event.target.value;
     this.setState({eventCreation: newST});
   }
+
   newEndTime = (event) => {
     //watch for values added to new task end time
     // console.log(event.target.value);
@@ -691,15 +809,18 @@ class App extends Component {
     newET.newEndTime = event.target.value;
     this.setState({eventCreation: newET});
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.socket.send(this.state.insert)
   }
+
   handleChange = (e) => {
     e.preventDefault();
     // console.log(e.target.value)
     this.setState({insert: e.target.value})
   }
+
   eventCreationSelectToggle = (e) => {
     let newSelected = Object.assign({},this.state.eventCreation);
     const newId =  e.target.getAttribute('data-id');
@@ -714,20 +835,31 @@ class App extends Component {
     }
     this.setState({
       eventCreation: newSelected
-    }); 
+    });
+  }
+
+  eventCreationDeleteUser = (index) => {
+    console.log('delete this user')
+    console.log(this.state.eventCreation.assigned_people[index]);
+    let deleteUser = Object.assign({},this.state.eventCreation);
+    let assigned_people = [...this.state.eventCreation.assigned_people];
+    assigned_people.splice(index, 1);
+    deleteUser.assigned_people = assigned_people;
+    this.setState({eventCreation: deleteUser});
+    
+  }
+
+  eventCreationDeleteTask = (index) => {
+    console.log('delete this task')
+    console.log(this.state.eventCreation.tasks[index]);
+    let deleteTask = Object.assign({},this.state.eventCreation);
+    let tasks = [...this.state.eventCreation.tasks];
+    tasks.splice(index, 1);
+    deleteTask.tasks = tasks;
+    this.setState({eventCreation: deleteTask});
   }
 
   render() {
-    const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late'];
-    let sample_data = [
-      ["Ammar", new Date(2016, 11, 1, 8,  1), new Date(2016, 11, 1, 8, 30), timing[0], '#a23c7a'],
-      ["Ammar", new Date(2016, 11, 1, 8, 30), new Date(2016, 11, 1, 9,  1), timing[2], '#40a67d'],
-      ["Ammar", new Date(2016, 11, 1, 9,  1), new Date(2016, 11, 1, 9, 30), timing[3], '#5581b4']
-    ];
-    let libraryData = {timeline: {groupByRowLabel: true}};
-    const { newsfeed } = this.state;
-
-
     return (
       <div className="App">
         <div className="App-header">
@@ -747,73 +879,65 @@ class App extends Component {
           trigger={
             <Button waves='light'>MODAL</Button>
           }>
-          
+
           <TaskDashboard
             handleStartTask={this.handleStartTask}
             listOfTasks={this.state.list_of_tasks}
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
           />
         </Modal>
+
         <ProgressBar
-          taskName={this.state.name}
-          completedTasks={this.state.completed_tasks}
-          incompleteTasks={this.state.incomplete_tasks}
           progressBar={this.state.progress_bar}
         />
-<div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
-          <div className="event-creation-form">
-            <EventCreationForm 
-              {...this.state} 
-              submitEvent={this.submitEvent}
-              eventCreationSelectToggle={this.eventCreationSelectToggle} 
-              addTask={this.addTask} 
-              clearTaskFields={this.clearTaskFields}
-              onNewTask={this.newTask}
-              onNewDescription={this.newDescription}
-              onNewStartTime={this.newStartTime}
-              onNewEndTime={this.newEndTime}
-              newEventStartDate={this.newEventStartDate}
-              newEventEndDate={this.newEventEndDate}
-              newEventDescription={this.newEventDescription}
-              newEventName={this.newEventName}
-              updateTimeline={this.updateTimeline}
-              handleAssignedPerson={this.handleAssignedPerson}
-              addNewAssignedUser={this.addNewAssignedUser}
-              handleAssignedEmail={this.handleAssignedEmail}
-              />
-          </div>
+
+        <div className='timeline'>
+          <Timeline data={this.state.eventCreation.timelineData} />
+        </div>
+
+        <div className="event-creation-form">
+          <EventCreationForm
+            {...this.state}
+            eventCreationDeleteUser={this.eventCreationDeleteUser}
+            eventCreationDeleteTask ={this.eventCreationDeleteTask}
+            submitEvent={this.submitEvent}
+            eventCreationSelectToggle={this.eventCreationSelectToggle}
+            addTask={this.addTask}
+            clearTaskFields={this.clearTaskFields}
+            onNewTask={this.newTask}
+            onNewDescription={this.newDescription}
+            onNewStartTime={this.newStartTime}
+            onNewEndTime={this.newEndTime}
+            newEventStartDate={this.newEventStartDate}
+            newEventEndDate={this.newEventEndDate}
+            newEventDescription={this.newEventDescription}
+            newEventName={this.newEventName}
+            updateTimeline={this.updateTimeline}
+            handleAssignedPerson={this.handleAssignedPerson}
+            addNewAssignedUser={this.addNewAssignedUser}
+            handleAssignedEmail={this.handleAssignedEmail}
+          />
+        </div>
+
+        <br />
+
         <div className="row">
-          <div className="col s4 offset-s8">
-            <ul className="collapsible popout" data-collapsible="accordion">
-              {newsfeed}
-              <ReactInterval timeout={30000} enabled={true} callback={this.updateNewsFeed} />
-            </ul>
+          <div className='col s9'>
+            <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
           </div>
 
-          <div className='col s12 timeline-container'>
-            <div className='timeline'>
-              {/*<Timeline data={sample_data} library={libraryData} />*/}
-              <Timeline data={this.state.tasks} library={libraryData} />
-            </div>
+          <div className="col s3">
+            <Newsfeed
+              newsfeed={this.state.newsfeed}
+              updateNewsfeed={this.updateNewsfeed}
+              renderNewsfeed={this.renderNewsfeed}
+            />
           </div>
         </div>
 
-
-        {/*<div className='timeline-container'>
-          <div className='timeline'>
-            <BarChart
-            data={this.state.data}
-            max={100}
-            stacked={true}
-          />
-          </div>
-        </div>*/}
       </div>
     );
   }
 }
 
 export default App;
-

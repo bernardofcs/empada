@@ -14,37 +14,41 @@ export default StyleSheet.create({
     'padding': [{ 'unit': 'px', 'value': 20 }, { 'unit': 'px', 'value': 20 }, { 'unit': 'px', 'value': 20 }, { 'unit': 'px', 'value': 20 }],
     'color': 'white'
   },
-  'App-intro': {
-    'fontSize': [{ 'unit': 'string', 'value': 'large' }]
+  'collapsible': {
+    'fontSize': [{ 'unit': 'rem', 'value': 0.7 }]
+  },
+  'collapsible-header p': {
+    'margin': [{ 'unit': 'px', 'value': 0 }, { 'unit': 'px', 'value': 0 }, { 'unit': 'px', 'value': 0 }, { 'unit': 'px', 'value': 0 }],
+    'padding': [{ 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }],
+    'lineHeight': [{ 'unit': 'rem', 'value': 1 }]
+  },
+  'collapsible-body': {
+    'padding': [{ 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }]
   },
   'timeline-container': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
-    'width': [{ 'unit': '%H', 'value': 0.8 }]
+    'width': [{ 'unit': '%H', 'value': 0.8 }],
+    // overflow: auto;
   },
-  // .progress-donut-container {
-  margin: 1em 5em 1em 10em;
-  width: 12em;
-  border: 1px solid black;
-  transition: 300ms;
-}
-
-.progress-donut-container-inner {
-  margin: 1em 5em 1em 10em;
-  width: 12em;
-  border: 1px solid lightblue;
-  transition: 300ms;
-}
+  'progress-donut-container': {
+    'border': [{ 'unit': 'px', 'value': 1 }, { 'unit': 'string', 'value': 'solid' }, { 'unit': 'string', 'value': 'lightblue' }],
+    'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
+    'height': [{ 'unit': 'em', 'value': 7.9 }],
+    'transition': '300ms'
+  },
+  'progress-donut-chart': {
+    'position': 'relative',
+    'top': [{ 'unit': 'em', 'value': -1.8 }],
+    'transition': '300ms'
+  },
   'pie-chart-name': {
-    // position: relative;
-  top: 7.3em;
-  right: 10em;
-  z-index: 1;
+    'position': 'relative',
+    'bottom': [{ 'unit': 'em', 'value': -1.6 }],
+    'zIndex': '1',
+    'transition': '300ms'
   },
   'Table': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
     'width': [{ 'unit': '%H', 'value': 0.8 }]
-  },
-  // .disabled {
-  text-decoration: line-through; 
-}
+  }
 });

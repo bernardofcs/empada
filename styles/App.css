@@ -28,29 +28,44 @@
   padding: 1rem;
 }
 
-.timeline-container {
-  margin: auto;
-  width: 80%;
+.timeline {
+  /*width: 50%;*/
+  /*width: 1000px;*/
+  /*margin: auto;*/
   /*overflow: auto;*/
 }
 
-.timeline {
+.progress-donut-container {
+  border: 1px solid lightblue;
+  margin: auto;
+  height: 7.9em;
+  transition: 300ms;
+}
+
+.dashboardTimeline {
+  /*width: 50%;*/
   /*width: 1000px;*/
+  /*margin: auto;*/
+  /*overflow: auto;*/
+}
+
+.progress-donut-chart {
+  position: relative;
+  top: -1.8em;
+  transition: 300ms;
 }
 
 .pie-chart-name {
-  /*position: relative;
-  top: 7.3em;
-  right: 10em;
-  z-index: 1;*/
+  position: relative;
+  bottom: -1.6em;
+  z-index: 1;
+  transition: 300ms;
 }
 
 Table {
   margin: auto;
   width: 80%;
 }
-
-
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
