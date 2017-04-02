@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import NewTaskFields from './NewTaskFields.jsx';
 import AddNewPersonButton from './AddNewPersonButton.jsx';
+import DeletePersonButton from './DeletePersonButton.jsx';
+import DeleteTaskButton from './DeleteTaskButton.jsx'
+
 
 class EventCreationForm extends Component {
   render() {
@@ -27,18 +30,25 @@ class EventCreationForm extends Component {
               <div className="collection">
                   {this.props.eventCreation.assigned_people.map( (p, i) => {
                     return (
+
                       <a
-                        key={i}
+                        key={p.id}
                         href="#!"
                         data-id={p.id}
                         className={
-                          parseInt(this.props.eventCreation.selected.id, 10) === parseInt(p.id,10) ?
+                          +this.props.eventCreation.selected.id === +p.id ?
                           "collection-item active" :
                           "collection-item"
                         }
                         onClick={this.props.eventCreationSelectToggle}>
                         {p.name}({p.email})
-                      </a>);
+                        <DeletePersonButton 
+                          // onClick={this.props.eventCreationDeleteUser.bind(this)} 
+                          eventCreationDeleteUser={this.props.eventCreationDeleteUser}
+                          index={i}  />
+                      </a>
+
+                      );
                   })}
               </div>
             </div>
@@ -53,6 +63,7 @@ class EventCreationForm extends Component {
                       <th>Description</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -69,7 +80,7 @@ class EventCreationForm extends Component {
                       // console.log('filtering');
                       // console.log(t.user_id);
                       // console.log(this.props.eventCreation.selected.id);
-                      return parseInt(t.user_id,10) === parseInt(this.props.eventCreation.selected.id,10);
+                      return +t.user_id === +this.props.eventCreation.selected.id;
                     })
                     .map((t,i)=> {
                       // console.log('mapping')
@@ -79,6 +90,13 @@ class EventCreationForm extends Component {
                           <td data-task-id={t.id}>{t.description}</td>
                           <td data-task-id={t.id}>{t.assigned_start_time}</td>
                           <td data-task-id={t.id}>{t.assigned_end_time}</td>
+                          <td>
+                            <DeleteTaskButton 
+                          // onClick={this.props.eventCreationDeleteUser.bind(this)} 
+                            eventCreationDeleteTask={this.props.eventCreationDeleteTask}
+                            index={i}  
+                            />
+                          </td>
                         </tr>
                       );
                     })}

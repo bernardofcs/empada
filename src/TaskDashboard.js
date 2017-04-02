@@ -24,12 +24,14 @@ class TaskDashboard extends Component {
 
           <tbody>
             {
-              this.props.listOfTasks.map((task, i) => {
+              this.props.listOfTasks.map((task) => {
                 return <TaskDashboardFields
                   task={task}
                   handleStartTask={this.props.handleStartTask}
                   updateCompletedAndIncompleteTasks={this.props.updateCompletedAndIncompleteTasks}
-                  key={i}
+                  clickedStart={this.props.clickedStart.indexOf(task.id) > -1}
+                  clickedEnd={this.props.clickedEnd.indexOf(task.id) > -1}
+                  key={task.id}
                 />
               })
             }
