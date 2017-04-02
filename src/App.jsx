@@ -14,6 +14,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import Nav from './Nav.jsx';
 import { default as Fade } from 'react-fade';
+import ProjectSelection from './ProjectSelection.jsx'
 
 /*
 Users:
@@ -34,10 +35,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentUserProjects: [],
+      selectedProject: {},
       currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
       dashboardFade: false,
-      eventCreation: {
+      eventCreation: { 
         selected: {name: "", id: NaN},
         startDate: "",
         endDate: "",
@@ -103,6 +106,7 @@ class App extends Component {
 
   displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
   displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
+  displayProjectSelectinPage = () => this.setState({currentWindow: 'ProjectSelection'})
   // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
 
   componentWillMount = () => {
@@ -963,6 +967,10 @@ class App extends Component {
     this.setState({eventCreation: deleteTask});
   }
 
+  selectProject = (e) => {
+    console.log('lul')
+  }
+
   render() {
     return (
       <div className="App">
@@ -993,6 +1001,16 @@ class App extends Component {
             clickedEnd={this.state.clickedEndButton}
           />
         </Modal>
+
+        {this.state.currentWindow === 'ProjectSelection' && 
+        <Fade out={this.state.projectSelectionFade} duration={0.7} style={{visibility: 'visible'}} >
+          <ProjectSelection 
+            selectedProject={this.state.selectedProject}
+            currentUserProjects={this.state.currentUserProjects} 
+            selectProject={this.selectProject}
+          /> 
+        </Fade>
+        }
 
         {this.state.currentWindow === 'EventCreationForm' &&
         <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
