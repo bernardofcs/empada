@@ -88,7 +88,7 @@ class App extends Component {
       dashboardTimelineTasks: [],
       allTasks: [],
       modalIsOpen: false,
-      grace_period: 300000,
+      grace_period: 0,//300000,
       newsfeed: [],
       list_of_tasks : [],
       progress_bar : [],
@@ -102,9 +102,9 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm'})}
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
   displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
-  displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
+  // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -381,7 +381,7 @@ class App extends Component {
   timelineTaskFormatting = (data) => {
     this.setState({allTasks: data});
 
-    const tasks = [];
+    let tasks = [];
     const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late', 'not started'];
     for (let key of Object.keys(this.state.allTasks)) {
       const task = this.state.allTasks[key];
@@ -393,7 +393,7 @@ class App extends Component {
       task.start_time = task.start_time ? new Date(task.start_time) : null;
       task.end_time = task.end_time ? new Date(task.end_time) : null;
 
-      const temp = {};
+      let temp = {};
       temp.start_time = task.start_time;
       temp.end_time = task.end_time;
 
@@ -410,10 +410,10 @@ class App extends Component {
         continue;
       }
 
-      console.log(temp.start_time);
-      console.log(task.assigned_start_time);
-      console.log(temp.start_time < task.assigned_start_time);
-      console.log(temp.end_time);
+      // console.log(temp.start_time);
+      // console.log(task.assigned_start_time);
+      // console.log(temp.start_time < task.assigned_start_time);
+      // console.log(temp.end_time);
 
       if (temp.start_time < task.assigned_start_time
         && temp.end_time < task.assigned_end_time
@@ -552,15 +552,18 @@ class App extends Component {
       'completed late'  : '#F26430',
       'not started'     : '#F26430'
     };
+    console.log('tasks - pre-organization inside timelineTaskFormatting');
+    console.log(tasks);
+    // debugger;
 
-    tasks.map((arr) => {
+    tasks = tasks.map((arr) => {
+      console.log(arr);
       arr.push(colorMap[arr[3]]);
       arr[3] = `${arr[4]} - ${arr[3]}`;
       arr.splice(4,1);
       return arr
     });
-
-    console.log('tasks:');
+    console.log('tasks - post-organization inside timelineTaskFormatting');
     console.log(tasks);
 
     this.setState({'dashboardTimelineTasks': tasks});
@@ -1109,6 +1112,9 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
         </Fade>
         }
 
@@ -1134,9 +1140,7 @@ class App extends Component {
           />
 
 
-          <div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
+          
         </div>
         </Fade>
         }
