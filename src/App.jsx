@@ -93,7 +93,8 @@ class App extends Component {
       list_of_tasks : [],
       progress_bar : [],
       clickedStartButton : [],
-      clickedEndButton : []
+      clickedEndButton : [], 
+      counter: []
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -624,9 +625,8 @@ class App extends Component {
   checkEndTime = () => {
     const { allTasks = [] } = this.state;
     const endTime = allTasks.filter((task) => task.end_time !== null);
-    console.log(endTime)
     endTime.forEach((e) => {
-      this.setState({ clickedStartButton: [...this.state.clickedEndButton, e.id] });
+      this.setState({ clickedEndButton: [...this.state.clickedEndButton, e.id] });
     })
   }
 
@@ -647,15 +647,20 @@ class App extends Component {
   }
 
   serverStateStore = (e) => {
-    let message = {
-      type: 'server-state-store'
+    if (this.state.counter.length > 1) {
+      let message = {
+        type: 'server-state-store'
+      }
+      this.socket.send(JSON.stringify(message));
     }
-    this.socket.send(JSON.stringify(message));
   }
 
-  endButtonPressed = (e) => {
+  counter = () => {
+    // if (this.state.counter.length > 1) {
+    //   serverStateStore();
+    // }
     let message = {
-      type: 'end-button-pressed'
+      type: 'counter'
     }
     this.socket.send(JSON.stringify(message));
   }
@@ -674,7 +679,7 @@ class App extends Component {
 
     setTimeout(() => {
       this.serverStateStore();
-    }, 1); 
+    }, 2000);
 
     setTimeout(() => {
       if (!localStorage.profile) {
@@ -692,26 +697,34 @@ class App extends Component {
       this.socket.send(JSON.stringify({type: 'request-tasks'}));
       this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
       setTimeout(() => {
+        this.counter();        
         this.checkStartTime();
-      }, 2000);
-      // setTimeout(() => {
-      //   this.checkEndTime();
-      // }, 2500);
+        this.checkEndTime();
+      }, 1800);
     }
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
+        case 'counter':
+          let counterState = this.state;
+          counterState.counter = data.tracker;
+          console.log('aaaaaaaaa', counterState);
+          this.setState(counterState);
+          break;
+
         case "start-time-button-clicked":
           console.log('clicked start time')
           this.serverStateStore();
+          this.checkStartTime();
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
         case "end-time-button-clicked":
           console.log('clicked end time')
           this.serverStateStore();
+          this.checkEndTime();
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
           break;
 
