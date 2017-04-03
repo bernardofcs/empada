@@ -3,7 +3,7 @@ import { Row } from 'react-materialize';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
 
-// make the donus smaller
+// this.props.progressBar.filter(({ projectId }) => projectId === this.props.selectedProject.id)
 
 class ProgressBar extends Component {
   render() {
