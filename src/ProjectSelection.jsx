@@ -17,6 +17,7 @@ class ProjectSelection extends Component {
                   "collection-item"
                 }
                 onClick={this.props.selectProject}>
+                {p.name}
               </a>
               );
             })}
