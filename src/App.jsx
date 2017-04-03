@@ -8,7 +8,7 @@ import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
 import Newsfeed from './Newsfeed.jsx';
-import AlertContainer from 'react-alert';
+// import AlertContainer from 'react-alert';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
@@ -605,7 +605,8 @@ class App extends Component {
           type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
           progress_bar: newProgressBar,
           end_time: new Date(),
-          id: targetId
+          id: targetId, 
+          disabledEndButton: this.state.disabledEndButton
         }));
       }
     }
@@ -620,12 +621,20 @@ class App extends Component {
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
-      id: +e.target.value
+      id: +e.target.value,
+      progress_bar: this.state.progress_bar,
+      disabledStartButton: this.state.disabledStartButton
     }
     console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
+  serverStateStore = (e) => {
+    let message = {
+      type: 'server-state-store',
+    }
+    this.socket.send(JSON.stringify(message));
+  }
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
@@ -640,6 +649,10 @@ class App extends Component {
     // this.updateNewsfeed();
 
     setTimeout(() => {
+      this.serverStateStore();
+    }, 1); 
+
+    setTimeout(() => {
       if (!localStorage.profile) {
         this.showLock();
       } else {
@@ -652,13 +665,12 @@ class App extends Component {
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
-      this.socket.send(JSON.stringify({type: 'request-tasks'}));
       this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
+      this.serverStateStore();
     }
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
 
       switch (data.type) {
         case "start-time-button-clicked":
@@ -675,6 +687,25 @@ class App extends Component {
           let newstate = this.state;
           newstate.progress_bar = data.progress_bar;
           this.setState(newstate);
+          break;
+
+        case 'set-progress-bar-state':
+          let updateProgressBarState = this.state;
+          updateProgressBarState.progress_bar = data.progress_bar;
+          console.log('progress bar', data.progress_bar)
+          this.setState(updateProgressBarState);
+          break;
+
+        case 'set-disabled-start-button-state':
+          let updateStartButtonState = this.state;
+          updateStartButtonState.progress_bar = data.clickedStartButton;
+          this.setState(updateStartButtonState);
+          break;
+
+        case 'set-disabled-end-button-state':
+          let updateEndButtonState = this.state;
+          updateEndButtonState.progress_bar = data.clickedEndButton;
+          this.setState(updateEndButtonState);
           break;
 
         case 'progress-bar-update':
@@ -997,7 +1028,7 @@ class App extends Component {
           <EventCreationForm
             {...this.state}
             eventCreationDeleteUser={this.eventCreationDeleteUser}
-            eventCreationDeleteTask ={this.eventCreationDeleteTask}
+            eventCreationDeleteTask={this.eventCreationDeleteTask}
             submitEvent={this.submitEvent}
             eventCreationSelectToggle={this.eventCreationSelectToggle}
             addTask={this.addTask}

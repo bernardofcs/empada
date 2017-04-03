@@ -13,8 +13,8 @@ class DashboardTimeline extends Component {
     //   ["Ammar", new Date(2016, 11, 1, 9,  1), new Date(2016, 11, 1, 9, 30), timing[3], '#5581b4']
     // ];
     let libraryData = {timeline: {groupByRowLabel: true}};
-    console.log('this.props.tasks:');
-    console.log(this.props.tasks);
+    // console.log('this.props.tasks:');
+    // console.log(this.props.tasks);
 
     return (
       <div className='dashboardTimeline'>
