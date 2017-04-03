@@ -37,7 +37,7 @@ class App extends Component {
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
       selectedProject: {},
-      currentWindow: 'EventCreationForm',
+      currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       dashboardFade: false,
       eventCreation: { 
@@ -108,7 +108,6 @@ class App extends Component {
   displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
   displayDashboardPage = () => { 
     this.setState({currentWindow: 'Dashboard'})
-    this.updateNewsfeed;
   }
   displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
   // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
@@ -695,20 +694,20 @@ class App extends Component {
     this.updateTimeline();
     // this.updateNewsfeed();
 
-    setTimeout(() => {
-      this.serverStateStore();
-    }, 2000);
+    // setTimeout(() => {
+    //   this.serverStateStore();
+    // }, 2000);
 
     setTimeout(() => {
       if (!localStorage.profile) {
-        this.showLock();
+        // this.showLock();
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
         const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
         this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
-    }, 5000)
+    }, 1000)
 
     this.socket = new WebSocket("ws://localhost:3001");
 
@@ -1084,6 +1083,8 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
+        {this.state.profile &&
+        <div>
         <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
 
         <br />
@@ -1177,6 +1178,8 @@ class App extends Component {
         </span>
         <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
       </div>
+      </div>
+        }
     </div>
     );
   }
