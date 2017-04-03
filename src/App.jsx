@@ -97,8 +97,8 @@ class App extends Component {
       clickedEndButton : [], 
       counter: [], 
       selectedProject: {
-        id: 2, 
-        name: 'Dancing'
+        id: 1, 
+        name: 'Wedding'
       }
     };
 
@@ -694,7 +694,7 @@ class App extends Component {
     // this.updateNewsfeed();
 
     setTimeout(() => {
-      this.serverStateStore();
+      // this.serverStateStore();
     }, 2000);
 
     setTimeout(() => {
@@ -792,7 +792,7 @@ class App extends Component {
           let progress_bar = {};
 
           task.forEach((t) => {
-            let key = t.userId + '/' + t.projectId
+            let key = t.userId + '/' + t.projectId;
             if (progress_bar[key] && progress_bar[t.projectId])  {
               progress_bar[key].total_tasks += 1;
             } else {
@@ -1162,7 +1162,6 @@ class App extends Component {
             progressBar={this.state.progress_bar}
             selectedProject={this.state.selectedProject}
           />
-
         </div>
         </Fade>
         }

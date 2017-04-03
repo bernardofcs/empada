@@ -3,14 +3,14 @@ import { Row } from 'react-materialize';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
 
-// this.props.progressBar.filter(({ projectId }) => projectId === this.props.selectedProject.id)
 
 class ProgressBar extends Component {
   render() {
     return (
       <Row className='progress-donut-container'>
         { 
-          this.props.progressBar.map((field, i) => {
+          this.props.progressBar.filter(({ projectId }) => projectId === this.props.selectedProject.id)
+          .map((field, i) => {
             return <ProgressBarFields 
               field={field}
               key={i}
@@ -23,20 +23,3 @@ class ProgressBar extends Component {
 }
 
 export default ProgressBar;
-
-/*class ProgressBar extends Component {
-  render() {
-    return (
-      <div className='timeline-container'>
-        { 
-          this.props.progressBar.map((field, i) => {
-            return <ProgressBarFields 
-              field={field}
-              key={i}
-            />
-          })
-        }
-        </div>
-    );
-  }
-}*/
