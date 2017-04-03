@@ -582,7 +582,8 @@ class App extends Component {
 
       const userProgress = progress_bar
         .filter((v) => v)
-        .find(({ userId }) => userId === targetUserId);
+        .find(({ userId }) => userId === targetUserId)
+        // .find(({ projectId }) => projectId === targetUserId);
 
       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
@@ -656,13 +657,14 @@ class App extends Component {
   }
 
   counter = () => {
-    // if (this.state.counter.length > 1) {
-    //   serverStateStore();
-    // }
     let message = {
       type: 'counter'
     }
     this.socket.send(JSON.stringify(message));
+  }
+
+  updateProgressBar = () => {
+    this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -670,6 +672,12 @@ class App extends Component {
       console.log('detected timeline updated')
       this.clearTaskFields();
     }
+    // setTimeout(() => {
+    //   if (previousState.progress_bar !== this.state.progress_bar) {
+    //     this.updateProgressBar();
+    //     console.log('updated progress_bar state');
+    //   } 
+    // }, 10000);
   }
 
   componentDidMount() {
@@ -691,6 +699,11 @@ class App extends Component {
     }, 5000)
 
     this.socket = new WebSocket("ws://localhost:3001");
+
+    // step 1 - turn this into a function :
+    // this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
+
+    // step 2 - add a call back to the server from wills function that sends back to the server
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
@@ -726,6 +739,10 @@ class App extends Component {
           this.serverStateStore();
           this.checkEndTime();
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
+          break;
+
+        case 'update-progress-bar-with-new-field':
+          this.updateProgressBar();
           break;
 
         case 'update-progress-bar':
