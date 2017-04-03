@@ -613,6 +613,23 @@ class App extends Component {
     console.log('end task button pressed');
    }
 
+  checkStartTime = () => {
+    const { allTasks = [] } = this.state;
+    const startTime = allTasks.filter((task) => task.start_time !== null);
+    startTime.forEach((e) => {
+      this.setState({ clickedStartButton: [...this.state.clickedStartButton, e.id] });
+    })
+  }
+
+  checkEndTime = () => {
+    const { allTasks = [] } = this.state;
+    const endTime = allTasks.filter((task) => task.end_time !== null);
+    console.log(endTime)
+    endTime.forEach((e) => {
+      this.setState({ clickedStartButton: [...this.state.clickedEndButton, e.id] });
+    })
+  }
+
   handleStartTask = (e) => {
     e.preventDefault();
 
@@ -631,7 +648,14 @@ class App extends Component {
 
   serverStateStore = (e) => {
     let message = {
-      type: 'server-state-store',
+      type: 'server-state-store'
+    }
+    this.socket.send(JSON.stringify(message));
+  }
+
+  endButtonPressed = (e) => {
+    let message = {
+      type: 'end-button-pressed'
     }
     this.socket.send(JSON.stringify(message));
   }
@@ -665,8 +689,14 @@ class App extends Component {
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
+      this.socket.send(JSON.stringify({type: 'request-tasks'}));
       this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
-      this.serverStateStore();
+      setTimeout(() => {
+        this.checkStartTime();
+      }, 2000);
+      // setTimeout(() => {
+      //   this.checkEndTime();
+      // }, 2500);
     }
 
     this.socket.onmessage = (event) => {
@@ -675,11 +705,13 @@ class App extends Component {
       switch (data.type) {
         case "start-time-button-clicked":
           console.log('clicked start time')
+          this.serverStateStore();
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
         case "end-time-button-clicked":
           console.log('clicked end time')
+          this.serverStateStore();
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
           break;
 
