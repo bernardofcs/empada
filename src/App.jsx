@@ -976,7 +976,7 @@ class App extends Component {
   }
 
   selectProject = (e) => {
-    this.setState({selectedProject: e.target.innerHTML})
+    this.setState({selectedProject: {name: e.target.innerHTML, id: e.target.getAttribute('data-id');}})
   }
 
   render() {
