@@ -825,6 +825,9 @@ class App extends Component {
         // case 'newsfeed':
         //   this.renderNewsfeed(data);
         //   break;
+        case 'successful-event-creation':
+          Alert.success("Successfully created a new project!");
+          break;
 
         default:
           console.error('Failed to send back');
