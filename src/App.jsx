@@ -35,7 +35,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUserProjects: [],
+      currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
       selectedProject: {},
       currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
@@ -104,9 +104,12 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
-  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
-  displayProjectSelectinPage = () => this.setState({currentWindow: 'ProjectSelection'})
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
+  displayDashboardPage = () => { 
+    this.setState({currentWindow: 'Dashboard'})
+    this.updateNewsfeed;
+  }
+  displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
   // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
 
   componentWillMount = () => {
@@ -136,7 +139,7 @@ class App extends Component {
       }]
     });
 
-    this.lock.on("authenticated", (authResult) => {
+    this.lock.on("authenticated", (authResult) => {                                       //once user logs in -
       localStorage.setItem("accessToken", authResult.accessToken);
       this.lock.getProfile(authResult.idToken, (err, profile) => {
         if (err) {
@@ -652,6 +655,8 @@ class App extends Component {
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
+        const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
+        this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
     }, 5000)
 
@@ -668,6 +673,9 @@ class App extends Component {
 
 
       switch (data.type) {
+        case 'update-project-list':
+          this.setState({ currentUserProjects: data.projects})
+          break;
         case "start-time-button-clicked":
           console.log('clicked start time')
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
@@ -773,7 +781,7 @@ class App extends Component {
   submitEvent = () => {
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
-    this.socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload))
   }
 
   addNewAssignedUser = (event) => {
@@ -968,7 +976,7 @@ class App extends Component {
   }
 
   selectProject = (e) => {
-    console.log('lul')
+    this.setState({selectedProject: e.target.innerHTML})
   }
 
   render() {
@@ -983,7 +991,7 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
-        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
 
         <br />
 
