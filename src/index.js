@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import '../styles/index.css';
-import { Route, BrowserRouter as Router, Link } from 'react-router-dom'
-import EventCreationForm from './EventCreationForm.jsx';
+// import { Route, BrowserRouter as Router } from 'react-router-dom'
 
 
 const app = document.getElementById('root')
@@ -15,10 +14,6 @@ const app = document.getElementById('root')
 // </div>
 
 ReactDOM.render( 
-  <Router>
-    <div> 
-      <Route exact path='/' component={App} />
-    </div>
-  </Router>,
+  <App />,
   app
 );
