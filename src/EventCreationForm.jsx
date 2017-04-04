@@ -15,7 +15,7 @@ class EventCreationForm extends Component {
           <div className="col s4">
             <div className="card-panel">
             Event Name:
-              <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
+             <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
               Event Description:
               <input type="text" placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
               Event Start Date:

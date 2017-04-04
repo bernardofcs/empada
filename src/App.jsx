@@ -736,7 +736,6 @@ class App extends Component {
       console.log('detected timeline updated')
       this.clearTaskFields();
     }
-    var countUpdates = 0;
     if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
       let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
       // console.log(onlyEndDateTasks)
@@ -776,7 +775,8 @@ class App extends Component {
       }
     }, 5000)
 
-    this.socket = new WebSocket("ws://localhost:3001");
+    // this.socket = new WebSocket("ws://localhost:3001");
+    this.socket = new WebSocket('ws://chatserverwebsocketswichopy.herokuapp.com/')
 
     // step 1 - turn this into a function :
     // this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
