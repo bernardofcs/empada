@@ -15,7 +15,6 @@ import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import Nav from './Nav.jsx';
 import { default as Fade } from 'react-fade';
 import ProjectSelection from './ProjectSelection.jsx'
-
 /*
 Users:
 - started a task
@@ -37,10 +36,10 @@ class App extends Component {
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
       selectedProject: {},
-      currentWindow: 'EventCreationForm',
+      currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       dashboardFade: false,
-      eventCreation: { 
+      eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
         endDate: "",
@@ -109,10 +108,8 @@ class App extends Component {
   displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
   displayDashboardPage = () => { 
     this.setState({currentWindow: 'Dashboard'})
-    this.updateNewsfeed;
   }
   displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
-  // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -141,7 +138,7 @@ class App extends Component {
       }]
     });
 
-    this.lock.on("authenticated", (authResult) => {                                       //once user logs in -
+    this.lock.on("authenticated", (authResult) => {
       localStorage.setItem("accessToken", authResult.accessToken);
       this.lock.getProfile(authResult.idToken, (err, profile) => {
         if (err) {
@@ -761,27 +758,18 @@ class App extends Component {
     // this.updateNewsfeed();
 
     setTimeout(() => {
-      this.serverStateStore();
-    }, 2000);
-
-    setTimeout(() => {
       if (!localStorage.profile) {
-        this.showLock();
+        // this.showLock();
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
         const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.email} //add to successful project creation
         this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
-    }, 5000)
+    }, 1000)
 
-    // this.socket = new WebSocket("ws://localhost:3001");
-    this.socket = new WebSocket('ws://chatserverwebsocketswichopy.herokuapp.com/')
-
-    // step 1 - turn this into a function :
-    // this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
-
-    // step 2 - add a call back to the server from wills function that sends back to the server
+    this.socket = new WebSocket("ws://localhost:3001");
+    // this.socket = new WebSocket('ws://chatserverwebsocketswichopy.herokuapp.com/')
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
@@ -804,6 +792,7 @@ class App extends Component {
           console.log('aaaaaaaaa', counterState);
           this.setState(counterState);
           break;
+
         case 'update-project-list':
           this.setState({ currentUserProjects: data.projects})
           break;
@@ -852,40 +841,42 @@ class App extends Component {
         case 'progress-bar-update':
           // console.log(data);
           let task = data.tasks.filter((t) => {
-            return t.id;
+              return t.id;
           });
 
           let user = data.users.filter((u) => {
             return u.id;
           });
 
-          let progress_bar = [];
+          let progress_bar = {};
 
           task.forEach((t) => {
-            if (progress_bar[t.userId])  {
-              progress_bar[t.userId].total_tasks += 1;
+            let key = t.userId + '/' + t.projectId;
+            if (progress_bar[key] && progress_bar[t.projectId])  {
+              progress_bar[key].total_tasks += 1;
             } else {
-              progress_bar[t.userId] = {};
-              progress_bar[t.userId].total_tasks = 1;
-              progress_bar[t.userId].userId = t.userId;
-              progress_bar[t.userId].projectId = t.projectId;
+              progress_bar[key] = {};
+              progress_bar[key].total_tasks = 1;
+              progress_bar[key].userId = t.userId;
+              progress_bar[key].projectId = t.projectId;
               user.forEach((u) => {
                 if (t.userId === u.id) {
-                  progress_bar[t.userId].name = u.first_name;
+                  progress_bar[key].name = u.first_name;
                 }
               })
 
-              if (progress_bar[t.userId].incomplete_tasks === undefined) {
-                progress_bar[t.userId].incomplete_tasks = 100;
-                progress_bar[t.userId].completed_tasks = 0;
+              if (progress_bar[key].incomplete_tasks === undefined) {
+                progress_bar[key].incomplete_tasks = 100;
+                progress_bar[key].completed_tasks = 0;
               } else {
-                progress_bar[t.userId].incomplete_tasks = this.state[t.userId].incomplete_tasks;
-                progress_bar[t.userId].completed_tasks = this.state[t.userId].completed_tasks;
+                progress_bar[key].incomplete_tasks = this.state[t.userId].incomplete_tasks;
+                progress_bar[key].completed_tasks = this.state[t.userId].completed_tasks;
               }
             }
           })
 
-          const pBar = progress_bar.filter((v) => v);
+          // just gets the values the progress_bar map
+          const pBar = Object.keys(progress_bar).map(key => progress_bar[key]);
 
           console.log('progress_bar', pBar);
 
@@ -897,16 +888,16 @@ class App extends Component {
 
           break;
 
-          case 'update-list-of-tasks':
-            // console.log(data);
-            let listOfTasks = data.tasks.filter((t) => {
-              return t.id;
-            });
-            console.log('listOfTasks', listOfTasks);
+        case 'update-list-of-tasks':
+          // console.log(data);
+          let listOfTasks = data.tasks.filter((t) => {
+            return t.id;
+          });
+          console.log('listOfTasks', listOfTasks);
 
-            let newListState = {
-              list_of_tasks: listOfTasks
-            }
+          let newListState = {
+            list_of_tasks: listOfTasks
+          }
 
           this.setState(newListState);
 
@@ -940,7 +931,7 @@ class App extends Component {
   submitEvent = () => {
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
-    this.socket.send(JSON.stringify(payload))
+    this.socket.send(JSON.stringify(payload));
   }
 
   addNewAssignedUser = (event) => {
@@ -1135,7 +1126,7 @@ class App extends Component {
   }
 
   selectProject = (e) => {
-    this.setState({selectedProject: {name: e.target.innerHTML, id: e.target.getAttribute('data-id')}})
+    this.setState({selectedProject: {name: e.target.innerHTML, id: +e.target.getAttribute('data-id')}})
   }
 
   render() {
@@ -1150,6 +1141,9 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
+
+        {this.state.profile &&
+        <div>
         <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
 
         <br />
@@ -1166,6 +1160,7 @@ class App extends Component {
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
             clickedStart={this.state.clickedStartButton}
             clickedEnd={this.state.clickedEndButton}
+            selectedProject={this.state.selectedProject}
           />
         </Modal>
 
@@ -1229,10 +1224,8 @@ class App extends Component {
         <div>
           <ProgressBar
             progressBar={this.state.progress_bar}
+            selectedProject={this.state.selectedProject}
           />
-
-
-          
         </div>
         </Fade>
         }
@@ -1243,6 +1236,8 @@ class App extends Component {
         </span>
         <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
       </div>
+      </div>
+        }
     </div>
     );
   }
