@@ -781,11 +781,27 @@ class App extends Component {
           
           break;
 
-        // case 'newsfeed':
-        //   this.renderNewsfeed(data);
-        //   break;
         case 'successful-event-creation':
           Alert.success("Successfully created a new project!");
+          this.setState({eventCreation: Object.assign({},this.state.eventCreation,{
+            selected: {name: "", id: NaN},
+            startDate: "",
+            endDate: "",
+            name: "",
+            description: "",
+            newTask: "",
+            newDescription: "",
+            newStartTime: "",
+            newEndTime: "",
+            newAssignedPerson: "",
+            newAssignedEmail: "",
+            assigned_people: [],
+            tasks: [],
+            timelineData: []
+          }
+          )})
+          const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.email} //add to successful project creation
+          this.socket.send(JSON.stringify(askForProjectsObj))
           break;
 
         default:
