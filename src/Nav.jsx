@@ -6,7 +6,8 @@ class Nav extends Component {
     <div>
       <button onClick={this.props.displayProjectSelectionPage}>Select Project</button>
       <button onClick={this.props.displayEventCreationFormPage}>Create Project Form</button>      
-      <button onClick={this.props.displayDashboardPage}>Dashboard</button>      
+      <button onClick={this.props.displayDashboardPage}>Dashboard</button>  
+      <button onClick={this.props.displayHomePage}>Home</button>     
     </div>
     ) 
   }

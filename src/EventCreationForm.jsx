@@ -3,7 +3,8 @@ import '../styles/App.css';
 import NewTaskFields from './NewTaskFields.jsx';
 import AddNewPersonButton from './AddNewPersonButton.jsx';
 import DeletePersonButton from './DeletePersonButton.jsx';
-import DeleteTaskButton from './DeleteTaskButton.jsx'
+import DeleteTaskButton from './DeleteTaskButton.jsx';
+// import { Input, Icon } from 'react-materialize';
 
 
 class EventCreationForm extends Component {
@@ -15,7 +16,7 @@ class EventCreationForm extends Component {
           <div className="col s4">
             <div className="card-panel">
             Event Name:
-              <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
+             <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
               Event Description:
               <input type="text" placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
               Event Start Date:

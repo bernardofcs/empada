@@ -67,6 +67,33 @@ Table {
   width: 80%;
 }
 
+.big-icons {
+  font-size: 5em;
+  color: lightcoral;
+  transition: 300ms; 
+}
+
+.big-icons:hover {
+  font-size: 7em;
+  color: lightcoral;
+  transition: 300ms; 
+}
+
+.cards {
+  transition: 300ms; 
+}
+
+.cards:hover {
+  border: 3px solid lightcoral;
+  width: 600px;
+  transition: 300ms; 
+}
+
+MediaBox {
+  position: relative;
+  left: -20em; 
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

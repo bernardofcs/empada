@@ -7,8 +7,9 @@ import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
+import HomePage from './HomePage.jsx';
+import Footerr from './Footer.jsx';
 import Newsfeed from './Newsfeed.jsx';
-// import AlertContainer from 'react-alert';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
@@ -35,10 +36,14 @@ class App extends Component {
     super(props);
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
-      selectedProject: {},
+      selectedProject: {
+        id: 1, 
+        name: 'wedding'
+      },
       currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       dashboardFade: false,
+      homePageFade: false,
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
@@ -92,7 +97,6 @@ class App extends Component {
       modalIsOpen: false,
       grace_period: 0,//300000,
       newsfeed: [],
-      list_of_tasks : [],
       progress_bar : [],
       clickedStartButton : [],
       clickedEndButton : [], 
@@ -104,11 +108,17 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
+  //page changing
+
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
+
   displayDashboardPage = () => { 
     this.setState({currentWindow: 'Dashboard'})
   }
+
   displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
+
+  displayHomePage = () => { this.setState({currentWindow:  'HomePage', dashboardTimelineTasks: []})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -663,13 +673,6 @@ class App extends Component {
     }
   }
 
-  counter = () => {
-    let message = {
-      type: 'counter'
-    }
-    this.socket.send(JSON.stringify(message));
-  }
-
   updateProgressBar = () => {
     this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
   }
@@ -679,12 +682,6 @@ class App extends Component {
       console.log('detected timeline updated')
       this.clearTaskFields();
     }
-    // setTimeout(() => {
-    //   if (previousState.progress_bar !== this.state.progress_bar) {
-    //     this.updateProgressBar();
-    //     console.log('updated progress_bar state');
-    //   } 
-    // }, 10000);
   }
 
   componentDidMount() {
@@ -709,8 +706,7 @@ class App extends Component {
       console.log('Connected to server!');
       this.socket.send(JSON.stringify({type: 'request-tasks'}));
       this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
-      setTimeout(() => {
-        this.counter();        
+      setTimeout(() => {      
         this.checkStartTime();
         this.checkEndTime();
       }, 1800);
@@ -720,15 +716,9 @@ class App extends Component {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
-        case 'counter':
-          let counterState = this.state;
-          counterState.counter = data.tracker;
-          console.log('aaaaaaaaa', counterState);
-          this.setState(counterState);
-          break;
 
         case 'update-project-list':
-          this.setState({ currentUserProjects: data.projects})
+          this.setState({ currentUserProjects: data.projects });
           break;
 
         case "start-time-button-clicked":
@@ -821,22 +811,6 @@ class App extends Component {
           }
 
           this.setState(newProgressBarState);
-
-          break;
-
-        case 'update-list-of-tasks':
-          // console.log(data);
-          let listOfTasks = data.tasks.filter((t) => {
-            return t.id;
-          });
-          console.log('listOfTasks', listOfTasks);
-
-          let newListState = {
-            list_of_tasks: listOfTasks
-          }
-
-          this.setState(newListState);
-
           break;
 
         case 'allTasks':
@@ -1078,7 +1052,8 @@ class App extends Component {
 
         {this.state.profile &&
         <div>
-        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage}
+        displayHomePage={this.displayHomePage} />
 
         <br />
 
@@ -1172,6 +1147,16 @@ class App extends Component {
       </div>
       </div>
         }
+      {this.state.currentWindow === 'HomePage' &&
+        <Fade out={this.state.homePageFade} duration={0.7} style={{visibility: 'visible'}} >
+          <HomePage />
+        </Fade>
+      }
+      <br />
+      <br />
+      <br />
+      <br />
+      <Footerr />
     </div>
     );
   }
