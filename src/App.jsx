@@ -524,48 +524,51 @@ class App extends Component {
     this.setState({'dashboardTimelineTasks': tasks});
   }
 
-  updateProgressBarsonPageLoad = (taskIds) => {
-    const newProgressBar = this.state.progress_bar.slice();
-    taskIds.forEach((taskId)=>{
-      const targetId = +taskId;
-      const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
+  // updateProgressBarsonPageLoad = (taskIds) => {
+  //   const newProgressBar = this.state.progress_bar.slice();
+  //   taskIds.forEach((taskId)=>{
+  //     const targetId = +taskId;
+  //     const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
 
-      const targetTask = allTasks.find((task) => task.id === targetId);
-      const targetUserId = targetTask.userId
-      const buttonClicked = clickedStartButton.find((id) => id === targetId);
+  //     const targetTask = allTasks.find((task) => task.id === targetId);
+  //     const targetUserId = targetTask.userId
+  //     const buttonClicked = clickedStartButton.find((id) => id === targetId);
 
 
-      if (buttonClicked !== targetId) {
-        // console.error("You must begin a task before you can end it!");
-        // Alert.error("You must begin a task before you can end it!");
-      } else {
+  //     if (buttonClicked !== targetId) {
+  //       // console.error("You must begin a task before you can end it!");
+  //       // Alert.error("You must begin a task before you can end it!");
+  //     } else {
 
-        const userProgress = progress_bar
-          .filter((v) => v)
-          .find(({ userId }) => userId === targetUserId)
-        // .find(({ projectId }) => projectId === targetUserId);
+  //       const userProgress = progress_bar
+  //         .filter((v) => v)
+  //         .find(({ userId }) => userId === targetUserId)
+  //       // .find(({ projectId }) => projectId === targetUserId);
 
-        if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+  //       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
-          const progIdx = progress_bar.indexOf(userProgress);
+  //         const progIdx = progress_bar.indexOf(userProgress);
 
-          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+  //         const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
-          const percentOfTasksToChange = 100 / userProgress.total_tasks;
-
+  //         const percentOfTasksToChange = 100 / userProgress.total_tasks;
           
-          newProgressBar[progIdx] = {
-            ...userProgress,
-            completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
-            incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
-          };
-        }
-      }
-    })
-    // console.log(newProgressBar)
-    this.setState({progress_bar: newProgressBar})
-    // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
-  }
+  //         newProgressBar[progIdx] = {
+  //           ...userProgress,
+  //           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+  //           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+  //         };
+  //       }
+  //     }
+  //   })
+  //   // console.log(newProgressBar)
+  //     this.socket.send(JSON.stringify({
+  //       type: 'update-progress-bar',
+  //       progress_bar: newProgressBar,
+  //     }));
+  //   // this.setState({progress_bar: newProgressBar})
+  //   // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
+  // }
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
