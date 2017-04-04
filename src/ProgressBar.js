@@ -9,6 +9,9 @@ class ProgressBar extends Component {
   render() {
     return (
       <Row className='progress-donut-container card-panel'>
+        <div className="card-move-up light-blue lighten-2">
+          <span className="card-title white-text">Progress</span>
+        </div>
         {
           this.props.progressBar.map((field, i) => {
             return <ProgressBarFields

@@ -18,9 +18,7 @@ const DeletePersonButton = React.createClass({
   },
   render: function(){
     return(
-      <span className="right waves-effect waves-light btn-small btn red"
-        onClick={ (e) => this.onClick(e) }
-      >
+      <span className="right waves-effect waves-light btn-small btn red lighten-1" onClick={ (e) => this.onClick(e) }>
         <i className="small material-icons" >delete</i>
       </span>
     )

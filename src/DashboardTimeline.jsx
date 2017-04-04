@@ -12,6 +12,9 @@ class DashboardTimeline extends Component {
 
     return (
       <div className='dashboardTimeline card-panel'>
+        <div className="card-move-up light-blue lighten-2">
+          <span className="card-title white-text">Live Timeline</span>
+        </div>
         <Timeline data={this.props.tasks} library={libraryData} />
       </div>
     );

@@ -919,15 +919,15 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <nav className="nav-extended">
+      <div className="App blue-grey lighten-5">
+        <nav className="nav-extended light-blue lighten-2">
           <div className="nav-wrapper">
             <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
             <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
 
             <ul id="nav-mobile" className="right">
-              <li><a className="waves-effect waves-light btn" onClick={this.showLock}>Sign In</a></li>
-              <li><a className="waves-effect waves-light btn" onClick={this.logout}>Log out</a></li>
+              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a></li>
+              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
               {this.state.profile && <li>Logged in as: {this.state.profile.email}</li>}
             </ul>
 
@@ -947,7 +947,7 @@ class App extends Component {
             </ul>
 
             {this.state.currentWindow === 'EventCreationForm' &&
-              <a onClick={this.submitEvent} className="btn-floating btn-large halfway-fab waves-effect waves-light teal">
+              <a onClick={this.submitEvent} className="btn-floating btn-large halfway-fab waves-effect waves-light green">
                 <i className="material-icons">add</i>
               </a>
             }

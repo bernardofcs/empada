@@ -244,7 +244,7 @@ class Newsfeed extends Component {
   render() {
     return (
       <div className='newsfeed card-panel'>
-        <div className="card-move-up blue">
+        <div className="card-move-up light-blue lighten-2">
           <span className="card-title white-text">Newsfeed</span>
         </div>
         <ReactInterval timeout={5000} enabled={true} callback={this.props.updateNewsfeed} />
