@@ -14,7 +14,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import Nav from './Nav.jsx';
 import { default as Fade } from 'react-fade';
-
+import ProjectSelection from './ProjectSelection.jsx'
 /*
 Users:
 - started a task
@@ -34,7 +34,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentWindow: 'EventCreationForm',
+      currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
+      selectedProject: {},
+      currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       dashboardFade: false,
       eventCreation: {
@@ -88,13 +90,12 @@ class App extends Component {
       dashboardTimelineTasks: [],
       allTasks: [],
       modalIsOpen: false,
-      grace_period: 300000,
+      grace_period: 0,//300000,
       newsfeed: [],
-      list_of_tasks : [],
       progress_bar : [],
       clickedStartButton : [],
       clickedEndButton : [], 
-      counter: []
+      updatedProgressBar: 0
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -102,9 +103,11 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm'})}
-  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
-  displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
+  displayDashboardPage = () => { 
+    this.setState({currentWindow: 'Dashboard'})
+  }
+  displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -159,65 +162,6 @@ class App extends Component {
   }
 
   renderNewsfeed = (data) => {
-    // this.setState({ allTasks: data });
-
-    // let fromDb = [
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'started_task', //'completed_task', 'progress_bar'
-    //     action_time: new Date(2016, 11, 1, 9),
-    //     assigned_time: new Date(2016, 11, 1, 9),
-    //     notification_time: new Date(2016, 11, 1, 9)
-    //   },
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'completed_task',
-    //     action_time: new Date(2016, 11, 1, 9, 10),
-    //     assigned_time: new Date(2016, 11, 1, 9, 0),
-    //     notification_time: new Date(2016, 11, 1, 9, 10)
-    //   },
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'started_task', //'completed_task', 'progress_bar'
-    //     action_time: new Date(2016, 11, 1, 9, 1),
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9, 10)
-    //   },
-    //   {
-    //     type:   'task_timing',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'task_not_started', //'task_not_completed'
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9, 15)
-    //   },
-    //   {
-    //     type:   'task_timing',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'task_not_completed',
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9)
-    //   },
-    //   {
-    //     type:   'project_progress',
-    //     action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-    //     percantage: '50',
-    //     notification_time: new Date(2016, 11, 1, 10)
-    //   },
-    //   {
-    //     type:   'project_progress',
-    //     action: 'percent_expected',
-    //     percantage: '50',
-    //     notification_time: new Date(2016, 11, 1, 10)
-    //   }
-    // ]
 
     const newsfeed = [];
     for (let item of this.state.allTasks) {
@@ -381,7 +325,7 @@ class App extends Component {
   timelineTaskFormatting = (data) => {
     this.setState({allTasks: data});
 
-    const tasks = [];
+    let tasks = [];
     const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late', 'not started'];
     for (let key of Object.keys(this.state.allTasks)) {
       const task = this.state.allTasks[key];
@@ -393,7 +337,7 @@ class App extends Component {
       task.start_time = task.start_time ? new Date(task.start_time) : null;
       task.end_time = task.end_time ? new Date(task.end_time) : null;
 
-      const temp = {};
+      let temp = {};
       temp.start_time = task.start_time;
       temp.end_time = task.end_time;
 
@@ -410,10 +354,10 @@ class App extends Component {
         continue;
       }
 
-      console.log(temp.start_time);
-      console.log(task.assigned_start_time);
-      console.log(temp.start_time < task.assigned_start_time);
-      console.log(temp.end_time);
+      // console.log(temp.start_time);
+      // console.log(task.assigned_start_time);
+      // console.log(temp.start_time < task.assigned_start_time);
+      // console.log(temp.end_time);
 
       if (temp.start_time < task.assigned_start_time
         && temp.end_time < task.assigned_end_time
@@ -552,18 +496,69 @@ class App extends Component {
       'completed late'  : '#F26430',
       'not started'     : '#F26430'
     };
+    console.log('tasks - pre-organization inside timelineTaskFormatting');
+    console.log(tasks);
+    // debugger;
 
-    tasks.map((arr) => {
+    tasks = tasks.map((arr) => {
+      console.log(arr);
       arr.push(colorMap[arr[3]]);
       arr[3] = `${arr[4]} - ${arr[3]}`;
       arr.splice(4,1);
       return arr
     });
-
-    console.log('tasks:');
+    console.log('tasks - post-organization inside timelineTaskFormatting');
     console.log(tasks);
 
     this.setState({'dashboardTimelineTasks': tasks});
+  }
+
+
+
+  updateProgressBarsonPageLoad = (taskIds) => {
+    const newProgressBar = this.state.progress_bar.slice();
+    taskIds.forEach((taskId)=>{
+      const targetId = +taskId;
+      const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
+
+      const targetTask = allTasks.find((task) => task.id === targetId);
+      const targetUserId = targetTask.userId
+      const buttonClicked = clickedStartButton.find((id) => id === targetId);
+
+
+      if (buttonClicked !== targetId) {
+        console.error("You must begin a task before you can end it!");
+        Alert.error("You must begin a task before you can end it!");
+      } else {
+
+        const userProgress = progress_bar
+          .filter((v) => v)
+          .find(({ userId }) => userId === targetUserId)
+        // .find(({ projectId }) => projectId === targetUserId);
+
+        if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+
+          const progIdx = progress_bar.indexOf(userProgress);
+
+          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+
+          const percentOfTasksToChange = 100 / userProgress.total_tasks;
+
+          
+          newProgressBar[progIdx] = {
+            ...userProgress,
+            completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+            incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+          };
+          
+          
+          // console.log(newProgressBar)
+        }
+      }
+    })
+    // console.log(newProgressBar)
+    this.setState({progress_bar: newProgressBar})
+    // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
   }
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
@@ -573,7 +568,7 @@ class App extends Component {
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
-      console.log('clicked button', buttonClicked)
+
 
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
@@ -582,16 +577,14 @@ class App extends Component {
 
       const userProgress = progress_bar
         .filter((v) => v)
-        .find(({ userId }) => userId === targetUserId);
+        .find(({ userId }) => userId === targetUserId)
+        // .find(({ projectId }) => projectId === targetUserId);
 
       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
         const progIdx = progress_bar.indexOf(userProgress);
 
         const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
-
-        console.log('task id', targetId)
-        console.log('user id start time', taskStart.userId)
 
         const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
@@ -611,8 +604,8 @@ class App extends Component {
         }));
       }
     }
-    console.log('end task button pressed');
-   }
+
+  }
 
   checkStartTime = () => {
     const { allTasks = [] } = this.state;
@@ -642,62 +635,47 @@ class App extends Component {
       progress_bar: this.state.progress_bar,
       disabledStartButton: this.state.disabledStartButton
     }
-    console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
-  serverStateStore = (e) => {
-    if (this.state.counter.length > 1) {
-      let message = {
-        type: 'server-state-store'
-      }
-      this.socket.send(JSON.stringify(message));
-    }
-  }
-
-  counter = () => {
-    // if (this.state.counter.length > 1) {
-    //   serverStateStore();
-    // }
-    let message = {
-      type: 'counter'
-    }
-    this.socket.send(JSON.stringify(message));
+  updateProgressBar = () => {
+    this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
   }
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
-      console.log('detected timeline updated')
       this.clearTaskFields();
+    }
+    if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
+      let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
+      this.updateProgressBarsonPageLoad(onlyEndDateTasks)
+      this.setState({updatedProgressBar: 1})
     }
   }
 
   componentDidMount() {
-    console.log("componentDidMount <App />");
+
     this.updateTimeline();
     // this.updateNewsfeed();
 
     setTimeout(() => {
-      this.serverStateStore();
-    }, 2000);
-
-    setTimeout(() => {
       if (!localStorage.profile) {
-        this.showLock();
+        // this.showLock();
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
+        const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.email} //add to successful project creation
+        this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
-    }, 5000)
+    }, 1000)
 
     this.socket = new WebSocket("ws://localhost:3001");
+    // this.socket = new WebSocket('ws://chatserverwebsocketswichopy.herokuapp.com/')
 
     this.socket.onopen = () => {
       console.log('Connected to server!');
-      this.socket.send(JSON.stringify({type: 'request-tasks'}));
       this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
-      setTimeout(() => {
-        this.counter();        
+      setTimeout(() => {    
         this.checkStartTime();
         this.checkEndTime();
       }, 1800);
@@ -707,37 +685,31 @@ class App extends Component {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
-        case 'counter':
-          let counterState = this.state;
-          counterState.counter = data.tracker;
-          console.log('aaaaaaaaa', counterState);
-          this.setState(counterState);
+        case 'update-project-list':
+          this.setState({ currentUserProjects: data.projects})
           break;
 
         case "start-time-button-clicked":
-          console.log('clicked start time')
-          this.serverStateStore();
           this.checkStartTime();
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
         case "end-time-button-clicked":
-          console.log('clicked end time')
-          this.serverStateStore();
           this.checkEndTime();
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
           break;
 
+        case 'update-progress-bar-with-new-field':
+          this.updateProgressBar();
+          break;
+
         case 'update-progress-bar':
-          let newstate = this.state;
-          newstate.progress_bar = data.progress_bar;
-          this.setState(newstate);
+          this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
 
         case 'set-progress-bar-state':
           let updateProgressBarState = this.state;
           updateProgressBarState.progress_bar = data.progress_bar;
-          console.log('progress bar', data.progress_bar)
           this.setState(updateProgressBarState);
           break;
 
@@ -756,42 +728,43 @@ class App extends Component {
         case 'progress-bar-update':
           // console.log(data);
           let task = data.tasks.filter((t) => {
-            return t.id;
+              return t.id;
           });
 
           let user = data.users.filter((u) => {
             return u.id;
           });
 
-          let progress_bar = [];
+          let progress_bar = {};
 
           task.forEach((t) => {
-            if (progress_bar[t.userId])  {
-              progress_bar[t.userId].total_tasks += 1;
+            let key = t.userId + '/' + t.projectId;
+            if (progress_bar[key] && progress_bar[t.projectId])  {
+              progress_bar[key].total_tasks += 1;
             } else {
-              progress_bar[t.userId] = {};
-              progress_bar[t.userId].total_tasks = 1;
-              progress_bar[t.userId].userId = t.userId;
-              progress_bar[t.userId].projectId = t.projectId;
+              progress_bar[key] = {};
+              progress_bar[key].total_tasks = 1;
+              progress_bar[key].userId = t.userId;
+              progress_bar[key].projectId = t.projectId;
               user.forEach((u) => {
                 if (t.userId === u.id) {
-                  progress_bar[t.userId].name = u.first_name;
+                  progress_bar[key].name = u.first_name;
                 }
               })
 
-              if (progress_bar[t.userId].incomplete_tasks === undefined) {
-                progress_bar[t.userId].incomplete_tasks = 100;
-                progress_bar[t.userId].completed_tasks = 0;
+              if (progress_bar[key].incomplete_tasks === undefined) {
+                progress_bar[key].incomplete_tasks = 100;
+                progress_bar[key].completed_tasks = 0;
               } else {
-                progress_bar[t.userId].incomplete_tasks = this.state[t.userId].incomplete_tasks;
-                progress_bar[t.userId].completed_tasks = this.state[t.userId].completed_tasks;
+                progress_bar[key].incomplete_tasks = this.state[t.userId].incomplete_tasks;
+                progress_bar[key].completed_tasks = this.state[t.userId].completed_tasks;
               }
             }
           })
 
-          const pBar = progress_bar.filter((v) => v);
+          // just gets the values the progress_bar map
+          const pBar = Object.keys(progress_bar).map(key => progress_bar[key]);
 
-          console.log('progress_bar', pBar);
 
           let newProgressBarState = {
             progress_bar: pBar
@@ -801,25 +774,11 @@ class App extends Component {
 
           break;
 
-          case 'update-list-of-tasks':
-            // console.log(data);
-            let listOfTasks = data.tasks.filter((t) => {
-              return t.id;
-            });
-            console.log('listOfTasks', listOfTasks);
-
-            let newListState = {
-              list_of_tasks: listOfTasks
-            }
-
-          this.setState(newListState);
-
-          break;
-
         case 'allTasks':
-          console.log('allTasks type detected in componentDidMount');
           this.timelineTaskFormatting(data.data);
           this.renderNewsfeed(data.data);
+          
+          
           break;
 
         // case 'newsfeed':
@@ -837,7 +796,6 @@ class App extends Component {
   }
 
   handleLogin = () => {
-    console.log(this.state.profile.email)
     const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
     this.socket.send(JSON.stringify(loginObj))
   }
@@ -861,32 +819,25 @@ class App extends Component {
   }
 
   handleAssignedEmail = (event) => {
-    let newEmail = Object.assign({},this.state.eventCreation);
-    newEmail.newAssignedEmail = event.target.value;
-    this.setState({eventCreation: newEmail});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedEmail: event.target.value})});
   }
 
   handleAssignedPerson = (event) => {
-    let newPerson = Object.assign({},this.state.eventCreation);
-    newPerson.newAssignedPerson = event.target.value;
-    this.setState({eventCreation: newPerson});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedPerson: event.target.value})});
   }
 
   updateTimeline = () => {
     const date = this.state.eventCreation.startDate;
     var timelineData = this.state.eventCreation.tasks.map( (t) => {
-      // console.log([this.state.assigned_people.filter((p)=> p.id == t.user_id )[0].name, '2017-03-27T'+t.assigned_start_time+'.000Z', '2017-03-27T'+t.assigned_end_time+'.000Z' ]);
       return [this.state.eventCreation.assigned_people.filter((p)=> +p.id === +t.user_id)[0].name,
-       new Date(date+' '+t.assigned_start_time),
-       new Date(date+' '+t.assigned_end_time),
-       '',
-       '' ];
+        new Date(date+' '+t.assigned_start_time),
+        new Date(date+' '+t.assigned_end_time),
+        '',
+        '' ];
     });
-    // console.log(timelineData);
     var newTimelineData = Object.assign({},this.state.eventCreation)
     newTimelineData.timelineData = timelineData;
     this.setState({ eventCreation: newTimelineData });
-    // this.clearTaskFields();
   }
 
   clearTaskFields = () => {
@@ -927,78 +878,35 @@ class App extends Component {
   }
 
   newEventName = (event) => {
-    //watch for values added to new task name
-    // console.log(event.target.value);
-    let newName = Object.assign({},this.state.eventCreation);
-    newName.name = event.target.value;
-    this.setState({eventCreation: newName});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{name: event.target.value})});
   }
 
   newEventDescription = (event) => {
-    //watch for values added to new task description
-    // console.log(event.target.value);
-    let newEventDescription = Object.assign({},this.state.eventCreation);
-    newEventDescription.description = event.target.value;
-    this.setState({eventCreation: newEventDescription});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{description: event.target.value})});
   }
 
   newEventEndDate = (event) => {
-    //watch for values added to new task start time
-    // console.log(event.target.value);
-    let newEventDate = Object.assign({},this.state.eventCreation);
-    newEventDate.endDate = event.target.value;
-    this.setState({eventCreation: newEventDate});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {endDate: event.target.value})});
   }
 
   newEventStartDate = (event) => {
-    //watch for values added to new task start time
-    // console.log(event.target.value);
-    let newEventDate = Object.assign({},this.state.eventCreation);
-    newEventDate.startDate = event.target.value;
-    this.setState({eventCreation: newEventDate});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {startDate: event.target.value})});
   }
 
   newTask = (event) => {
-    //watch for values added to new task name
-    // console.log(event.target.value);
-    let newTask = Object.assign({},this.state.eventCreation);
-    newTask.newTask = event.target.value;
-    this.setState({eventCreation: newTask});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{newTask: event.target.value})});
   }
 
   newDescription = (event) => {
-    //watch for values added to new task description
-    // console.log(event.target.value);
-    let newDescription = Object.assign({},this.state.eventCreation);
-    newDescription.newDescription = event.target.value;
-    this.setState({eventCreation: newDescription});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newDescription: event.target.value})});
   }
 
   newStartTime = (event) => {
-    //watch for values added to new task start time
-    // console.log(event.target.value);
-    let newST = Object.assign({},this.state.eventCreation);
-    newST.newStartTime = event.target.value;
-    this.setState({eventCreation: newST});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newStartTime: event.target.value}) });
   }
 
   newEndTime = (event) => {
-    //watch for values added to new task end time
-    // console.log(event.target.value);
-    let newET = Object.assign({},this.state.eventCreation);
-    newET.newEndTime = event.target.value;
-    this.setState({eventCreation: newET});
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.socket.send(this.state.insert)
-  }
-
-  handleChange = (e) => {
-    e.preventDefault();
-    // console.log(e.target.value)
-    this.setState({insert: e.target.value})
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newEndTime: event.target.value})});
   }
 
   eventCreationSelectToggle = (e) => {
@@ -1039,6 +947,10 @@ class App extends Component {
     this.setState({eventCreation: deleteTask});
   }
 
+  selectProject = (e) => {
+    this.setState({selectedProject: {name: e.target.innerHTML, id: +e.target.getAttribute('data-id')}})
+  }
+
   render() {
     return (
       <div className="App">
@@ -1051,7 +963,10 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
-        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
+
+        {this.state.profile &&
+        <div>
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
 
         <br />
 
@@ -1067,8 +982,19 @@ class App extends Component {
             updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
             clickedStart={this.state.clickedStartButton}
             clickedEnd={this.state.clickedEndButton}
+            selectedProject={this.state.selectedProject}
           />
         </Modal>
+
+        {this.state.currentWindow === 'ProjectSelection' && 
+        <Fade out={this.state.projectSelectionFade} duration={0.7} style={{visibility: 'visible'}} >
+          <ProjectSelection 
+            selectedProject={this.state.selectedProject}
+            currentUserProjects={this.state.currentUserProjects} 
+            selectProject={this.selectProject}
+          /> 
+        </Fade>
+        }
 
         {this.state.currentWindow === 'EventCreationForm' &&
         <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
@@ -1095,6 +1021,9 @@ class App extends Component {
             handleAssignedEmail={this.handleAssignedEmail}
           />
         </div>
+        <div className='timeline'>
+            <Timeline data={this.state.eventCreation.timelineData} />
+          </div>
         </Fade>
         }
 
@@ -1117,12 +1046,8 @@ class App extends Component {
         <div>
           <ProgressBar
             progressBar={this.state.progress_bar}
+            selectedProject={this.state.selectedProject}
           />
-
-
-          <div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
         </div>
         </Fade>
         }
@@ -1133,6 +1058,8 @@ class App extends Component {
         </span>
         <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
       </div>
+      </div>
+        }
     </div>
     );
   }
