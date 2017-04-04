@@ -8,10 +8,10 @@ import '../styles/App.css'
 class ProgressBar extends Component {
   render() {
     return (
-      <Row className='progress-donut-container'>
-        { 
+      <Row className='progress-donut-container card-panel'>
+        {
           this.props.progressBar.map((field, i) => {
-            return <ProgressBarFields 
+            return <ProgressBarFields
               field={field}
               key={i}
             />
@@ -28,9 +28,9 @@ export default ProgressBar;
   render() {
     return (
       <div className='timeline-container'>
-        { 
+        {
           this.props.progressBar.map((field, i) => {
-            return <ProgressBarFields 
+            return <ProgressBarFields
               field={field}
               key={i}
             />

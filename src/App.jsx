@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import Auth0Lock from 'auth0-lock'
-import { Timeline } from 'react-chartkick';
 import TaskDashboard from './TaskDashboard.js'
-import { Button, Modal } from 'react-materialize';
+// import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
 import EventCreationForm from './EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
@@ -12,7 +11,6 @@ import AlertContainer from 'react-alert';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
-import Nav from './Nav.jsx';
 import { default as Fade } from 'react-fade';
 
 /*
@@ -36,6 +34,7 @@ class App extends Component {
     this.state = {
       currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
+      TaskDashboardFade: false,
       dashboardFade: false,
       eventCreation: {
         selected: {name: "", id: NaN},
@@ -101,12 +100,23 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
-  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
-  // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
+  displayEventCreationFormPage = () => {
+    this.setState({
+      currentWindow: 'EventCreationForm',
+      dashboardTimelineTasks: []
+    })
+  }
+  displayDashboardPage = () => {
+    this.setState({currentWindow: 'Dashboard'});
+    this.updateNewsfeed()
+  }
+  displayTaskDashboard = () => {
+    this.setState({currentWindow: 'TaskDashboard'});
+    this.updateNewsfeed();
+  }
 
   componentWillMount = () => {
-    console.log("componentWillMount <App />");
+    // console.log("componentWillMount <App />");
     this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
       theme: {
         primaryColor: '#26e'
@@ -159,64 +169,6 @@ class App extends Component {
 
   renderNewsfeed = (data) => {
     // this.setState({ allTasks: data });
-
-    // let fromDb = [
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'started_task', //'completed_task', 'progress_bar'
-    //     action_time: new Date(2016, 11, 1, 9),
-    //     assigned_time: new Date(2016, 11, 1, 9),
-    //     notification_time: new Date(2016, 11, 1, 9)
-    //   },
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'completed_task',
-    //     action_time: new Date(2016, 11, 1, 9, 10),
-    //     assigned_time: new Date(2016, 11, 1, 9, 0),
-    //     notification_time: new Date(2016, 11, 1, 9, 10)
-    //   },
-    //   {
-    //     type:   'assigned_user_action',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'started_task', //'completed_task', 'progress_bar'
-    //     action_time: new Date(2016, 11, 1, 9, 1),
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9, 10)
-    //   },
-    //   {
-    //     type:   'task_timing',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'task_not_started', //'task_not_completed'
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9, 15)
-    //   },
-    //   {
-    //     type:   'task_timing',
-    //     user:   'assigned_user',
-    //     task:   'assigned_task',
-    //     action: 'task_not_completed',
-    //     assigned_time: new Date(2016, 11, 1, 9, 10),
-    //     notification_time: new Date(2016, 11, 1, 9)
-    //   },
-    //   {
-    //     type:   'project_progress',
-    //     action: 'percent_completed', //'percent_expected' eg.Should be 50% at this point
-    //     percantage: '50',
-    //     notification_time: new Date(2016, 11, 1, 10)
-    //   },
-    //   {
-    //     type:   'project_progress',
-    //     action: 'percent_expected',
-    //     percantage: '50',
-    //     notification_time: new Date(2016, 11, 1, 10)
-    //   }
-    // ]
 
     const newsfeed = [];
     for (let item of this.state.allTasks) {
@@ -309,20 +261,23 @@ class App extends Component {
             }
 
             return (
-              <li>
-                <div className="collapsible-header">
-                  <span className={`new badge ${notif_type[2]}`} data-badge-caption={`${notif_type[3]}`}></span>
-                  <i className="material-icons">{`${notif_type[4]}`}</i>
-                  <p>{`${item.user} has ${notif_type[0].toLowerCase()} ${item.task}`}</p>
+              <div className="card notification waves-effect waves-block waves-light">
+                <div className="card-content activator">
+                    <span className={`new badge ${notif_type[2]} activator`} data-badge-caption={`${notif_type[3]}`}>
+                      <i className="material-icons tiny activator">{`${notif_type[4]}`}</i>
+                    </span>
+                    {`${item.user} has ${notif_type[0].toLowerCase()} ${item.task}`}
                 </div>
-                <div className="collapsible-body left-align">
+
+                <div className="card-reveal">
+                  <span className="card-title"><i className="material-icons right">close</i></span>
                   <dl>
                     <dt><b>Task:</b> {item.task}</dt>
                     <dt><b>{`${notif_type[0]}`} at:</b> {`${item.action_time}`}</dt>
                     <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
                   </dl>
                 </div>
-              </li>
+              </div>
             );
 
           case 'task_timing':
@@ -334,19 +289,21 @@ class App extends Component {
             notif_type.push('late', 'thumb_down');
 
             return (
-              <li>
-                <div className="collapsible-header">
-                  <span className="new badge red" data-badge-caption={`${notif_type[2]}`}></span>
-                  <i className="material-icons">{`${notif_type[3]}`}</i>
-                  <p>{`${item.user} has not ${notif_type[0].toLowerCase()} ${item.task}`}</p>
+              <div className="card notification waves-effect waves-block waves-light">
+                <div className="card-content activator">
+                  <span className="new badge red activator" data-badge-caption={`${notif_type[2]}`}>
+                    <i className="material-icons tiny activator">{`${notif_type[3]}`}</i>
+                  </span>
+                  {`${item.user} has not ${notif_type[0].toLowerCase()} ${item.task}`}
                 </div>
-                <div className="collapsible-body left-align">
+                <div className="card-reveal">
+                  <span className="card-title"><i className="material-icons right">close</i></span>
                   <dl>
                     <dt><b>Task:</b> {item.task}</dt>
                     <dt><b>Expected {`${notif_type[1]}`} time:</b> {`${item.assigned_time}`}</dt>
                   </dl>
                 </div>
-              </li>
+              </div>
             );
 
           case 'project_progress':
@@ -358,13 +315,14 @@ class App extends Component {
             }
 
             return (
-              <li>
-                <div className="collapsible-header">
-                  <span className={`new badge ${notif_type[1]}`} data-badge-caption={`${notif_type[2]}`}></span>
-                  <i className="material-icons">{`${notif_type[3]}`}</i>
-                  <p>{`${item.percent} of project ${notif_type[0]}complete.`}</p>
+              <div className="card notification waves-effect waves-block waves-light">
+                <div className="card-content">
+                  <span className={`new badge ${notif_type[1]}`} data-badge-caption={`${notif_type[2]}`}>
+                    <i className="material-icons tiny">{`${notif_type[3]}`}</i>
+                  </span>
+                  {`${item.percent} of project ${notif_type[0]}complete.`}
                 </div>
-              </li>
+              </div>
             );
 
           default:
@@ -384,8 +342,8 @@ class App extends Component {
     const timing = ['early start', 'late start', 'as scheduled', 'completed early', 'completed late', 'not started'];
     for (let key of Object.keys(this.state.allTasks)) {
       const task = this.state.allTasks[key];
-      console.log('task inside timelineTaskFormatting');
-      console.log(task);
+      // console.log('task inside timelineTaskFormatting');
+      // console.log(task);
 
       task.assigned_start_time = task.assigned_start_time ? new Date(task.assigned_start_time) : null;
       task.assigned_end_time = task.assigned_end_time ? new Date(task.assigned_end_time) : null;
@@ -551,8 +509,6 @@ class App extends Component {
       'completed late'  : '#F26430',
       'not started'     : '#F26430'
     };
-    console.log('tasks - pre-organization inside timelineTaskFormatting');
-    console.log(tasks);
     // debugger;
 
     tasks = tasks.map((arr) => {
@@ -562,8 +518,6 @@ class App extends Component {
       arr.splice(4,1);
       return arr
     });
-    console.log('tasks - post-organization inside timelineTaskFormatting');
-    console.log(tasks);
 
     this.setState({'dashboardTimelineTasks': tasks});
   }
@@ -575,7 +529,7 @@ class App extends Component {
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
-      console.log('clicked button', buttonClicked)
+      // console.log('clicked button', buttonClicked)
 
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
@@ -592,8 +546,8 @@ class App extends Component {
 
         const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
-        console.log('task id', targetId)
-        console.log('user id start time', taskStart.userId)
+        // console.log('task id', targetId)
+        // console.log('user id start time', taskStart.userId)
 
         const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
@@ -612,33 +566,33 @@ class App extends Component {
         }));
       }
     }
-    console.log('end task button pressed');
+    // console.log('end task button pressed');
    }
 
   handleStartTask = (e) => {
     e.preventDefault();
 
-    console.log('task id', e.target.value)
+    // console.log('task id', e.target.value)
 
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
       id: +e.target.value
     }
-    console.log('start task button pressed');
+    // console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
-      console.log('detected timeline updated')
+      // console.log('detected timeline updated')
       this.clearTaskFields();
     }
   }
 
   componentDidMount() {
-    console.log("componentDidMount <App />");
+    // console.log("componentDidMount <App />");
     this.updateTimeline();
     // this.updateNewsfeed();
 
@@ -665,12 +619,12 @@ class App extends Component {
 
       switch (data.type) {
         case "start-time-button-clicked":
-          console.log('clicked start time')
+          // console.log('clicked start time')
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
         case "end-time-button-clicked":
-          console.log('clicked end time')
+          // console.log('clicked end time')
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
           break;
 
@@ -718,7 +672,7 @@ class App extends Component {
 
           const pBar = progress_bar.filter((v) => v);
 
-          console.log('progress_bar', pBar);
+          // console.log('progress_bar', pBar);
 
           let newProgressBarState = {
             progress_bar: pBar
@@ -733,7 +687,7 @@ class App extends Component {
             let listOfTasks = data.tasks.filter((t) => {
               return t.id;
             });
-            console.log('listOfTasks', listOfTasks);
+            // console.log('listOfTasks', listOfTasks);
 
             let newListState = {
               list_of_tasks: listOfTasks
@@ -744,7 +698,7 @@ class App extends Component {
           break;
 
         case 'allTasks':
-          console.log('allTasks type detected in componentDidMount');
+          // console.log('allTasks type detected in componentDidMount');
           this.timelineTaskFormatting(data.data);
           this.renderNewsfeed(data.data);
           break;
@@ -756,12 +710,12 @@ class App extends Component {
         default:
           console.error('Failed to send back');
       }
-      console.log(this.state);
+      // console.log(this.state);
     }
   }
 
   handleLogin = () => {
-    console.log(this.state.profile.email)
+    // console.log(this.state.profile.email)
     const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
     this.socket.send(JSON.stringify(loginObj))
   }
@@ -943,8 +897,8 @@ class App extends Component {
   }
 
   eventCreationDeleteUser = (index) => {
-    console.log('delete this user')
-    console.log(this.state.eventCreation.assigned_people[index]);
+    // console.log('delete this user')
+    // console.log(this.state.eventCreation.assigned_people[index]);
     let deleteUser = Object.assign({},this.state.eventCreation);
     let assigned_people = [...this.state.eventCreation.assigned_people];
     assigned_people.splice(index, 1);
@@ -954,8 +908,8 @@ class App extends Component {
   }
 
   eventCreationDeleteTask = (index) => {
-    console.log('delete this task')
-    console.log(this.state.eventCreation.tasks[index]);
+    // console.log('delete this task')
+    // console.log(this.state.eventCreation.tasks[index]);
     let deleteTask = Object.assign({},this.state.eventCreation);
     let tasks = [...this.state.eventCreation.tasks];
     tasks.splice(index, 1);
@@ -966,99 +920,114 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <h2>Welcome to EMPADA</h2>
-          <div className="login-box">
-            <button onClick={this.showLock}>Sign In</button>
-            <button onClick={this.logout}>Log out</button>
-            {this.state.profile && <p>Logged in as: {this.state.profile.email}</p>}
+        <nav className="nav-extended">
+          <div className="nav-wrapper">
+            <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
+            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+
+            <ul id="nav-mobile" className="right">
+              <li><a className="waves-effect waves-light btn" onClick={this.showLock}>Sign In</a></li>
+              <li><a className="waves-effect waves-light btn" onClick={this.logout}>Log out</a></li>
+              {this.state.profile && <li>Logged in as: {this.state.profile.email}</li>}
+            </ul>
+
+            <ul className="side-nav" id="mobile-demo">
+              <li><a onClick={this.showLock}>Sign In</a></li>
+              <li><a onClick={this.logout}>Log out</a></li>
+              {this.state.profile && <li className='active'><a>Logged in as: {this.state.profile.email}</a></li>}
+            </ul>
           </div>
-          {/*<button onClick={this.openModal}>Login</button>*/}
-        </div>
-        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
 
-        <br />
+          <div className='nav-content'>
+            <ul className="tabs tabs-transparent">
+              <li className="tab"><a className="active" href="#" onClick={this.displayEventCreationFormPage}>Create Event</a></li>
+              <li className="tab disabled"><a href="#" >Projects</a></li>
+              <li className="tab" onClick={this.displayDashboardPage}><a href="#">"Project Name"</a></li>
+              <li className="tab" onClick={this.displayTaskDashboard}><a href="#">Task Dashboard</a></li>
+            </ul>
 
-        <Modal
-          header='Modal Header'
-          trigger={
-            <Button waves='light'>MODAL</Button>
-          }>
+            {this.state.currentWindow === 'EventCreationForm' &&
+              <a onClick={this.submitEvent} className="btn-floating btn-large halfway-fab waves-effect waves-light teal">
+                <i className="material-icons">add</i>
+              </a>
+            }
+          </div>
+        </nav>
 
-          <TaskDashboard
-            handleStartTask={this.handleStartTask}
-            listOfTasks={this.state.allTasks}
-            updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
-            clickedStart={this.state.clickedStartButton}
-            clickedEnd={this.state.clickedEndButton}
-          />
-        </Modal>
+        {this.state.currentWindow === 'TaskDashboard' &&
+          <Fade out={this.state.TaskDashboardFade} duration={0.7} style={{visibility: 'visible'}} >
+            <TaskDashboard
+              handleStartTask={this.handleStartTask}
+              listOfTasks={this.state.allTasks}
+              updateCompletedAndIncompleteTasks={this.updateCompletedAndIncompleteTasks}
+              clickedStart={this.state.clickedStartButton}
+              clickedEnd={this.state.clickedEndButton}
+            />
+          </Fade>
+        }
+
 
         {this.state.currentWindow === 'EventCreationForm' &&
-        <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
-        <div className="event-creation-form">
-          <EventCreationForm
-            {...this.state}
-            eventCreationDeleteUser={this.eventCreationDeleteUser}
-            eventCreationDeleteTask ={this.eventCreationDeleteTask}
-            submitEvent={this.submitEvent}
-            eventCreationSelectToggle={this.eventCreationSelectToggle}
-            addTask={this.addTask}
-            clearTaskFields={this.clearTaskFields}
-            onNewTask={this.newTask}
-            onNewDescription={this.newDescription}
-            onNewStartTime={this.newStartTime}
-            onNewEndTime={this.newEndTime}
-            newEventStartDate={this.newEventStartDate}
-            newEventEndDate={this.newEventEndDate}
-            newEventDescription={this.newEventDescription}
-            newEventName={this.newEventName}
-            updateTimeline={this.updateTimeline}
-            handleAssignedPerson={this.handleAssignedPerson}
-            addNewAssignedUser={this.addNewAssignedUser}
-            handleAssignedEmail={this.handleAssignedEmail}
-          />
-        </div>
-        <div className='timeline'>
-            <Timeline data={this.state.eventCreation.timelineData} />
-          </div>
-        </Fade>
+          <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
+            <div className="event-creation-form">
+              <EventCreationForm
+                {...this.state}
+                eventCreationDeleteUser={this.eventCreationDeleteUser}
+                eventCreationDeleteTask={this.eventCreationDeleteTask}
+                submitEvent={this.submitEvent}
+                eventCreationSelectToggle={this.eventCreationSelectToggle}
+                addTask={this.addTask}
+                clearTaskFields={this.clearTaskFields}
+                onNewTask={this.newTask}
+                onNewDescription={this.newDescription}
+                onNewStartTime={this.newStartTime}
+                onNewEndTime={this.newEndTime}
+                newEventStartDate={this.newEventStartDate}
+                newEventEndDate={this.newEventEndDate}
+                newEventDescription={this.newEventDescription}
+                newEventName={this.newEventName}
+                updateTimeline={this.updateTimeline}
+                handleAssignedPerson={this.handleAssignedPerson}
+                addNewAssignedUser={this.addNewAssignedUser}
+                handleAssignedEmail={this.handleAssignedEmail}
+              />
+            </div>
+          </Fade>
         }
 
-        <br />
         {this.state.currentWindow === 'Dashboard' &&
-        <Fade out={this.state.dashboardFade} duration={0.7} style={{visibility: 'visible'}} >
-        <div className="row">
-          <div className='col s9'>
-            <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
-          </div>
+          <Fade out={this.state.dashboardFade} duration={0.7} style={{visibility: 'visible'}} >
+            <div className="row">
+              <div className="col s12 m3 push-m9">
+                <Newsfeed
+                  newsfeed={this.state.newsfeed}
+                  updateNewsfeed={this.updateNewsfeed}
+                  renderNewsfeed={this.renderNewsfeed}
+                />
+              </div>
 
-          <div className="col s3">
-            <Newsfeed
-              newsfeed={this.state.newsfeed}
-              updateNewsfeed={this.updateNewsfeed}
-              renderNewsfeed={this.renderNewsfeed}
-            />
-          </div>
-        </div>
-        <div>
-          <ProgressBar
-            progressBar={this.state.progress_bar}
-          />
+              <div className="col s12 m9 pull-m3">
+                <ProgressBar
+                  progressBar={this.state.progress_bar}
+                />
+              </div>
+
+              <div className='col s12 m9 pull-m3'>
+                <DashboardTimeline tasks={this.state.dashboardTimelineTasks} />
+              </div>
 
 
-          
-        </div>
-        </Fade>
+            </div>
+          </Fade>
         }
 
-      <div>
-        <span>
-            {this.props.children}
-        </span>
-        <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
+        <div>
+          <span>
+              {this.props.children}
+          </span>
+          <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
+        </div>
       </div>
-    </div>
     );
   }
 }

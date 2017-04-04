@@ -1,45 +1,61 @@
 .App {
-  text-align: center;
+  /*text-align: center;*/
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.brand-logo > i {
+  padding-left: 1em !important;
+  font-size: 45px !important;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.row {
+  margin-bottom: 0;
 }
 
-.collapsible {
-  font-size: 0.7rem;
+.notifications {
+  /*font-size: 0.7rem;*/
+  padding: 0.1rem;
+  overflow: scroll;
 }
 
-.collapsible-header p {
+.newsfeed.card-panel {
+  height: 81vh !important;
+  padding: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.newsfeed > .card-move-up > .card-title {
+  padding: 0 0.5em !important;
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+.badge {
+  height: 1em;
+}
+
+.tiny.material-icons {
+  padding-top: 0.15rem;
+}
+
+.card-content {
   margin: 0;
-  padding: 1rem;
+  padding: 1rem !important;
   line-height: 1rem;
 }
 
-.collapsible-body {
-  padding: 1rem;
+.notification {
+  /*margin-bottom: 0.1em;*/
+  margin: 0.30em;
 }
 
-.timeline {
-  /*width: 50%;*/
-  /*width: 1000px;*/
-  /*margin: auto;*/
-  /*overflow: auto;*/
+.card-reveal {
+  font-size: 0.7rem;
+  padding: 0.5rem !important;
 }
 
-.progress-donut-container {
-  border: 1px solid lightblue;
-  margin: auto;
-  height: 7.9em;
-  transition: 300ms;
+dl {
+  margin: 0;
 }
 
 .dashboardTimeline {
@@ -47,6 +63,61 @@
   /*width: 1000px;*/
   /*margin: auto;*/
   /*overflow: auto;*/
+  height: 55vh;
+  overflow: scroll;
+}
+
+.event-create-timeline {
+  /*width: 50%;*/
+  /*width: 1000px;*/
+  /*margin: auto;*/
+  /*overflow: auto;*/
+  height: 30vh;
+  overflow: scroll;
+}
+
+.event-info {
+  height: 50vh;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 1rem;
+}
+
+.event-users {
+  height: 50vh;
+  overflow: scroll;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 1rem;
+}
+
+.event-create-tasks {
+  height: 50vh;
+  overflow: scroll;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 1rem;
+}
+
+.task-creation-btn {
+  text-align: center;
+}
+
+.collection-item {
+  padding: 0.5rem;
+}
+
+.btn-small {
+  height: 24px;
+  line-height: 24px;
+  padding: 0 0.5rem;
+}
+
+.progress-donut-container {
+  /*margin: auto;*/
+  margin-bottom: 0;
+  transition: 300ms;
+  height: 25vh;
 }
 
 .progress-donut-chart {

@@ -4,6 +4,7 @@ import NewTaskFields from './NewTaskFields.jsx';
 import AddNewPersonButton from './AddNewPersonButton.jsx';
 import DeletePersonButton from './DeletePersonButton.jsx';
 import DeleteTaskButton from './DeleteTaskButton.jsx'
+import { Timeline } from 'react-chartkick';
 
 
 class EventCreationForm extends Component {
@@ -12,8 +13,8 @@ class EventCreationForm extends Component {
     return (
       <div>
         <div className="row">
-          <div className="col s4">
-            <div className="card-panel">
+          <div className="col s12 m3">
+            <div className="card-panel event-info">
             Event Name:
               <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
               Event Description:
@@ -23,7 +24,10 @@ class EventCreationForm extends Component {
               Event End Date:
               <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.endDate} onChange={this.props.newEventEndDate}/>
             </div>
-            <div className="card-panel">
+          </div>
+
+          <div className='col s12 m3'>
+            <div className="card-panel event-users">
               <AddNewPersonButton {...this.props} />
               <input type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
               <input type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
@@ -42,10 +46,10 @@ class EventCreationForm extends Component {
                         }
                         onClick={this.props.eventCreationSelectToggle}>
                         {p.name}({p.email})
-                        <DeletePersonButton 
-                          // onClick={this.props.eventCreationDeleteUser.bind(this)} 
+                        <DeletePersonButton
                           eventCreationDeleteUser={this.props.eventCreationDeleteUser}
-                          index={i}  />
+                          index={i}
+                        />
                       </a>
 
                       );
@@ -53,9 +57,11 @@ class EventCreationForm extends Component {
               </div>
             </div>
           </div>
-          <div className="col s8">
-            <div className="card-panel">
-              <button className="waves-effect waves-light btn" onClick={this.props.addTask}>Add new task for {this.props.eventCreation.selected.name}</button>
+
+
+          <div className="col s12 m6">
+            <div className="card-panel event-create-tasks">
+              <div className="task-creation-btn"><button className="waves-effect waves-light btn" onClick={this.props.addTask}>Add new task for {this.props.eventCreation.selected.name}</button></div>
               <table>
                 <thead>
                   <tr>
@@ -91,10 +97,9 @@ class EventCreationForm extends Component {
                           <td data-task-id={t.id}>{t.assigned_start_time}</td>
                           <td data-task-id={t.id}>{t.assigned_end_time}</td>
                           <td>
-                            <DeleteTaskButton 
-                          // onClick={this.props.eventCreationDeleteUser.bind(this)} 
-                            eventCreationDeleteTask={this.props.eventCreationDeleteTask}
-                            index={i}  
+                            <DeleteTaskButton
+                              eventCreationDeleteTask={this.props.eventCreationDeleteTask}
+                              index={i}
                             />
                           </td>
                         </tr>
@@ -104,8 +109,18 @@ class EventCreationForm extends Component {
               </table>
             </div>
           </div>
+
         </div>
-        <div><button onClick={this.props.submitEvent} className="waves-effect waves-light btn-large">CREATE PROJECT <i className="material-icons right">track_changes</i></button></div>
+
+        <div className='row'>
+          <div className="col s12">
+            <div className='card-panel event-create-timeline'>
+              <Timeline data={this.props.eventCreation.timelineData} />
+            </div>
+          </div>
+        </div>
+
+        {/*<div><button onClick={this.props.submitEvent} className="waves-effect waves-light btn-large">CREATE PROJECT <i className="material-icons right">track_changes</i></button></div>*/}
     </div>
     );
   }

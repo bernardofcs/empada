@@ -18,11 +18,9 @@ const DeleteTaskButton = React.createClass({
   },
   render: function(){
     return(
-      <button 
-        className="right-align" 
-        onClick={(e) => this.onClick(e) }>
+      <span className="waves-effect waves-light right-align btn new badge red" onClick={(e) => this.onClick(e) }>
         <i className="tiny material-icons" >delete</i>
-      </button>
+      </span>
     )
   }
 });
