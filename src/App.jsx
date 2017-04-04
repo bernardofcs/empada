@@ -34,8 +34,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-       currentUserProjects: [],
-      currentWindow: 'EventCreationForm',
+      currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
+      selectedProject: {},
+      currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       dashboardFade: false,
       eventCreation: {
@@ -96,10 +97,6 @@ class App extends Component {
       clickedStartButton : [],
       clickedEndButton : [], 
       counter: [], 
-      selectedProject: {
-        id: 1, 
-        name: 'Wedding'
-      }
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -107,9 +104,11 @@ class App extends Component {
     // this.closeModal = this.closeModal.bind(this);
   }
 
-  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}
-  displayDashboardPage = () => { this.setState({currentWindow: 'Dashboard'})}
-  // displayNewsFeedPage = () => { this.setState({currentWindow: 'NewsFeed'})}
+  displayEventCreationFormPage = () => { this.setState({currentWindow: 'EventCreationForm', dashboardTimelineTasks: []})}        //page changing
+  displayDashboardPage = () => { 
+    this.setState({currentWindow: 'Dashboard'})
+  }
+  displayProjectSelectionPage = () => { this.setState({currentWindow:  'ProjectSelection', dashboardTimelineTasks: []})}
 
   componentWillMount = () => {
     console.log("componentWillMount <App />");
@@ -694,19 +693,15 @@ class App extends Component {
     // this.updateNewsfeed();
 
     setTimeout(() => {
-      // this.serverStateStore();
-    }, 2000);
-
-    setTimeout(() => {
       if (!localStorage.profile) {
-        this.showLock();
+        // this.showLock();
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
          const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
         this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
-    }, 5000)
+    }, 1000)
 
     this.socket = new WebSocket("ws://localhost:3001");
 
@@ -1080,7 +1075,10 @@ class App extends Component {
           </div>
           {/*<button onClick={this.openModal}>Login</button>*/}
         </div>
-        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayNewsFeedPage={this.displayNewsFeedPage} />
+
+        {this.state.profile &&
+        <div>
+        <Nav displayEventCreationFormPage={this.displayEventCreationFormPage} displayDashboardPage={this.displayDashboardPage} displayProjectSelectionPage={this.displayProjectSelectionPage} />
 
         <br />
 
@@ -1172,6 +1170,8 @@ class App extends Component {
         </span>
         <Alert stack={{limit: 3}} effect='genie' timeout={5000} />
       </div>
+      </div>
+        }
     </div>
     );
   }
