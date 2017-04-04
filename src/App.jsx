@@ -97,7 +97,8 @@ class App extends Component {
       progress_bar : [],
       clickedStartButton : [],
       clickedEndButton : [], 
-      counter: []
+      counter: [],
+      updatedProgressBar: 0
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -576,6 +577,57 @@ class App extends Component {
     this.setState({'dashboardTimelineTasks': tasks});
   }
 
+
+
+  updateProgressBarsonPageLoad = (taskIds) => {
+    const newProgressBar = this.state.progress_bar.slice();
+    taskIds.forEach((taskId)=>{
+      const targetId = +taskId;
+      const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
+
+      const targetTask = allTasks.find((task) => task.id === targetId);
+      const targetUserId = targetTask.userId
+      const buttonClicked = clickedStartButton.find((id) => id === targetId);
+      console.log('clicked button', buttonClicked)
+
+      if (buttonClicked !== targetId) {
+        console.error("You must begin a task before you can end it!");
+        Alert.error("You must begin a task before you can end it!");
+      } else {
+
+        const userProgress = progress_bar
+          .filter((v) => v)
+          .find(({ userId }) => userId === targetUserId)
+        // .find(({ projectId }) => projectId === targetUserId);
+
+        if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+
+          const progIdx = progress_bar.indexOf(userProgress);
+
+          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+
+          console.log('task id', targetId)
+          console.log('user id start time', taskStart.userId)
+
+          const percentOfTasksToChange = 100 / userProgress.total_tasks;
+
+          
+          newProgressBar[progIdx] = {
+            ...userProgress,
+            completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+            incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+          };
+          
+          
+          // console.log(newProgressBar)
+        }
+      }
+    })
+    // console.log(newProgressBar)
+    this.setState({progress_bar: newProgressBar})
+    // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
+  }
+
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
     const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
@@ -678,10 +730,24 @@ class App extends Component {
   }
 
   componentDidUpdate(previousProps, previousState) {
+    console.log(previousState.clickedEndButton.length)
+    console.log(this.state.clickedEndButton.length)
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       console.log('detected timeline updated')
       this.clearTaskFields();
     }
+    var countUpdates = 0;
+    if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
+      let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
+      // console.log(onlyEndDateTasks)
+      
+      this.updateProgressBarsonPageLoad(onlyEndDateTasks)
+      // countUpdates++;
+      // console.log(`updating task id: ${doneTask.id} in progress bar`)
+      // if (countUpdates >= onlyEndDateTasks.length)
+      this.setState({updatedProgressBar: 1})
+    }
+    // previousState.
     // setTimeout(() => {
     //   if (previousState.progress_bar !== this.state.progress_bar) {
     //     this.updateProgressBar();
@@ -705,7 +771,7 @@ class App extends Component {
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
-        const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
+        const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.email} //add to successful project creation
         this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
     }, 5000)
@@ -761,9 +827,7 @@ class App extends Component {
           break;
 
         case 'update-progress-bar':
-          let newstate = this.state;
-          newstate.progress_bar = data.progress_bar;
-          this.setState(newstate);
+          this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
 
         case 'set-progress-bar-state':
@@ -852,6 +916,8 @@ class App extends Component {
           console.log('allTasks type detected in componentDidMount');
           this.timelineTaskFormatting(data.data);
           this.renderNewsfeed(data.data);
+          
+          
           break;
 
         // case 'newsfeed':
@@ -958,17 +1024,17 @@ class App extends Component {
   newEventName = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
-    let newName = Object.assign({},this.state.eventCreation);
-    newName.name = event.target.value;
-    this.setState({eventCreation: newName});
+    // newName.name = event.target.value;
+    // let newName = Object.assign({},this.state.eventCreation,{name: event.target.value});
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{name: event.target.value})});
   }
 
   newEventDescription = (event) => {
     //watch for values added to new task description
     // console.log(event.target.value);
-    let newEventDescription = Object.assign({},this.state.eventCreation);
-    newEventDescription.description = event.target.value;
-    this.setState({eventCreation: newEventDescription});
+    // let newEventDescription = Object.assign({},this.state.eventCreation);
+    // newEventDescription.description = event.target.value;
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{description: event.target.value})});
   }
 
   newEventEndDate = (event) => {
@@ -990,9 +1056,9 @@ class App extends Component {
   newTask = (event) => {
     //watch for values added to new task name
     // console.log(event.target.value);
-    let newTask = Object.assign({},this.state.eventCreation);
-    newTask.newTask = event.target.value;
-    this.setState({eventCreation: newTask});
+    // let newTask = Object.assign({},this.state.eventCreation);
+    // newTask.newTask = event.target.value;
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{newTask: event.target.value})});
   }
 
   newDescription = (event) => {
