@@ -698,7 +698,7 @@ class App extends Component {
       } else {
         const storageProfile = JSON.parse(localStorage.profile)
         this.setState({profile: storageProfile})
-         const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
+        const askForProjectsObj = {type: 'getProjectListforManager', email: this.state.profile.name} //add to successful project creation
         this.socket.send(JSON.stringify(askForProjectsObj)) //add to successful project creation
       }
     }, 1000)
@@ -1060,7 +1060,7 @@ class App extends Component {
   }
 
   selectProject = (e) => {
-    this.setState({selectedProject: {name: e.target.innerHTML, id: e.target.getAttribute('data-id')}})
+    this.setState({selectedProject: {name: e.target.innerHTML, id: +e.target.getAttribute('data-id')}})
   }
 
   render() {
