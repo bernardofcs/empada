@@ -917,10 +917,25 @@ class App extends Component {
     this.setState({eventCreation: deleteTask});
   }
 
+  addNewProjectButton = () => {
+    let disabled = "";
+    if (this.state.eventCreation.name === ""){
+      disabled = "disabled";
+    }
+
+    return (
+      <div className="fixed-action-btn">
+        <a onClick={this.submitEvent} className={`${disabled} btn-floating btn-large waves-effect waves-light orange darken-3`}>
+          <i className="material-icons">add</i>
+        </a>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div className="App blue-grey lighten-5">
-        <nav className="nav-extended light-blue lighten-2">
+        <nav className="nav-extended light-blue lighten-1">
           <div className="nav-wrapper">
             <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
             <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
@@ -928,13 +943,21 @@ class App extends Component {
             <ul id="nav-mobile" className="right">
               <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a></li>
               <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
-              {this.state.profile && <li>Logged in as: {this.state.profile.email}</li>}
+              {this.state.profile &&
+                <li>
+                  Logged in as: {this.state.profile.email}
+                </li>
+              }
             </ul>
 
             <ul className="side-nav" id="mobile-demo">
               <li><a onClick={this.showLock}>Sign In</a></li>
               <li><a onClick={this.logout}>Log out</a></li>
-              {this.state.profile && <li className='active'><a>Logged in as: {this.state.profile.email}</a></li>}
+              {this.state.profile &&
+                <li className='active'>
+                  <a>Logged in as: {this.state.profile.email}</a>
+                </li>
+              }
             </ul>
           </div>
 
@@ -945,12 +968,6 @@ class App extends Component {
               <li className="tab" onClick={this.displayDashboardPage}><a href="#">"Project Name"</a></li>
               <li className="tab" onClick={this.displayTaskDashboard}><a href="#">Task Dashboard</a></li>
             </ul>
-
-            {this.state.currentWindow === 'EventCreationForm' &&
-              <a onClick={this.submitEvent} className="btn-floating btn-large halfway-fab waves-effect waves-light green">
-                <i className="material-icons">add</i>
-              </a>
-            }
           </div>
         </nav>
 
@@ -965,7 +982,6 @@ class App extends Component {
             />
           </Fade>
         }
-
 
         {this.state.currentWindow === 'EventCreationForm' &&
           <Fade out={this.state.eventCreationFormFade} duration={0.7} style={{visibility: 'visible'}} >
@@ -992,6 +1008,7 @@ class App extends Component {
                 handleAssignedEmail={this.handleAssignedEmail}
               />
             </div>
+            {this.addNewProjectButton()}
           </Fade>
         }
 

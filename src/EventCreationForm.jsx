@@ -8,16 +8,30 @@ import { Timeline } from 'react-chartkick';
 
 
 class EventCreationForm extends Component {
+  addNewTaskButton = () => {
+    let disabled = "";
+    if (this.props.eventCreation.selected.name === ""){
+      disabled = "disabled";
+    }
+
+    return (
+      <a
+        className={`${disabled} btn-floating halfway-fab waves-effect waves-light btn green lighten-2`}
+        onClick={this.props.addTask}>
+          <i className="material-icons">add</i>
+      </a>
+    );
+  };
+
   render() {
-  // console.log(this.props)
     return (
       <div>
         <div className="row">
           <div className="col s12 m3">
+            <div className="card-move-up card z-depth-0 light-blue lighten-2">
+              <span className="card-title white-text">Event</span>
+            </div>
             <div className="card-panel event-info">
-              <div className="card-move-up light-blue lighten-2">
-                <span className="card-title white-text">Event</span>
-              </div>
               <div className="card-container">
                 Event Name:
                   <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
@@ -32,18 +46,17 @@ class EventCreationForm extends Component {
           </div>
 
           <div className='col s12 m3'>
+            <div className="card-move-up card z-depth-0 light-blue lighten-2">
+              <span className="card-title white-text">People</span>
+              <AddNewPersonButton {...this.props} />
+            </div>
             <div className="card-panel event-users">
-              <div className="card-move-up light-blue lighten-2">
-                <span className="card-title white-text">People</span>
-              </div>
               <div className="card-container">
-                <AddNewPersonButton {...this.props} />
                 <input type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
                 <input type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
                 <div className="collection">
                   {this.props.eventCreation.assigned_people.map( (p, i) => {
                     return (
-
                       <a
                         key={p.id}
                         href="#!"
@@ -68,14 +81,14 @@ class EventCreationForm extends Component {
             </div>
           </div>
 
-
           <div className="col s12 m6">
+            <div className="card-move-up card z-depth-0 light-blue lighten-2">
+              <span className="card-title white-text">Tasks: {this.props.eventCreation.selected.name}</span>
+              {this.addNewTaskButton()}
+            </div>
             <div className="card-panel event-create-tasks">
-              <div className="card-move-up light-blue lighten-2">
-                <span className="card-title white-text">Tasks</span>
-              </div>
               <div className="card-container">
-                <div className="task-creation-btn"><button className="waves-effect waves-light btn green" onClick={this.props.addTask}>Add new task for {this.props.eventCreation.selected.name}</button></div>
+
                 <table>
                   <thead>
                     <tr>
@@ -129,10 +142,10 @@ class EventCreationForm extends Component {
 
         <div className='row'>
           <div className="col s12">
+            <div className="card-move-up card z-depth-0 light-blue lighten-2">
+              <span className="card-title white-text">Timeline</span>
+            </div>
             <div className='card-panel event-create-timeline'>
-              <div className="card-move-up light-blue lighten-2">
-                <span className="card-title white-text">Timeline</span>
-              </div>
               <div className="card-container">
                 <Timeline data={this.props.eventCreation.timelineData} />
               </div>

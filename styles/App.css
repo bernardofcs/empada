@@ -11,10 +11,25 @@
   margin-bottom: 0;
 }
 
+.col {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+
+.card-move-up.card {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
 .notifications {
   /*font-size: 0.7rem;*/
   padding: 0.1rem;
   overflow: scroll;
+}
+
+.card-panel {
+  margin-top: 0;
 }
 
 .newsfeed.card-panel {
@@ -69,29 +84,25 @@ dl {
   /*width: 1000px;*/
   /*margin: auto;*/
   /*overflow: auto;*/
-  height: 55vh;
+  height: 50vh;
   overflow: scroll;
 }
 
 .event-create-timeline {
-  /*width: 50%;*/
-  /*width: 1000px;*/
-  /*margin: auto;*/
-  /*overflow: auto;*/
-  height: 30vh;
+  height: 27vh;
   overflow: scroll;
   padding: 0;
 }
 
 .event-info {
-  height: 50vh;
+  height: 45vh;
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
 }
 
 .event-users {
-  height: 50vh;
+  height: 45vh;
   overflow: scroll;
   margin-bottom: 0;
   font-size: 0.7rem;
@@ -99,8 +110,8 @@ dl {
 }
 
 .event-create-tasks {
-  height: 50vh;
-  overflow: scroll;
+  height: 45vh;
+  /*overflow: scroll;*/
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
@@ -108,6 +119,7 @@ dl {
 
 .card-container {
   padding: 1rem;
+  /*overflow: scroll;*/
 }
 
 .task-creation-btn {
@@ -143,6 +155,12 @@ dl {
   bottom: -1.6em;
   z-index: 1;
   transition: 300ms;
+}
+
+.fixed-action-btn {
+  position: fixed !important;
+  bottom: 25px !important;
+  right: 25px !important;
 }
 
 Table {
