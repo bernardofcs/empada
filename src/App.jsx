@@ -1147,17 +1147,14 @@ class App extends Component {
             </div>
           </div>
         }
-      {this.state.currentWindow === 'HomePage' &&
-        <Fade out={this.state.homePageFade} duration={0.7} style={{visibility: 'visible'}} >
-          <HomePage />
-        </Fade>
-      }
-      <br />
-      <br />
-      <br />
-      <br />
-      <Footerr />
-    </div>
+
+        {this.state.currentWindow === 'HomePage' &&
+          <Fade out={this.state.homePageFade} duration={0.7} style={{visibility: 'visible'}} >
+            <HomePage />
+            <Footerr />
+          </Fade>
+        }
+      </div>
     );
   }
 }
