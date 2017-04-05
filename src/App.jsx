@@ -1033,6 +1033,7 @@ class App extends Component {
               <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
               {this.state.profile &&
                 <li>
+                  <img src={this.state.profile.picture} className="avatar"/>
                   Logged in as: {this.state.profile.email}
                 </li>
               }
