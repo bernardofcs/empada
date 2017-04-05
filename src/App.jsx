@@ -21,10 +21,10 @@ class App extends Component {
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
       selectedProject: {
-        id: 1,
-        name: 'wedding'
+        // id: 1,
+        // name: ''
       },
-      currentWindow: 'ProjectSelection',
+      currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
       TaskDashboardFade: false,
       dashboardFade: false,
@@ -42,21 +42,21 @@ class App extends Component {
         newAssignedPerson: "",
         newAssignedEmail: "",
         assigned_people: [
-          {
-            name: 'Jimmy',
-            id: 1,
-            email: "jimmy@email.com"
-          },
-          {
-            name: 'Johnny',
-            id: 2,
-            email: "Johnny@email.com"
-          },
-          {
-            name: 'Sally',
-            id: 3,
-            email: "sally@email.com"
-          }
+          // {
+          //   name: 'Jimmy',
+          //   id: 1,
+          //   email: "jimmy@email.com"
+          // },
+          // {
+          //   name: 'Johnny',
+          //   id: 2,
+          //   email: "Johnny@email.com"
+          // },
+          // {
+          //   name: 'Sally',
+          //   id: 3,
+          //   email: "sally@email.com"
+          // }
         ],
         tasks: [
           // {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '08:00:00',assigned_end_time: '10:00:00'},
@@ -174,7 +174,11 @@ class App extends Component {
   }
 
   logout = () => {
-    this.setState({profile: undefined})
+    this.setState({
+      profile: undefined,
+      selectedProject: {},
+      currentUserProjects: []
+    })
     localStorage.removeItem("profile")
     // this.showLock()
   }
@@ -345,7 +349,7 @@ class App extends Component {
 
   }
 
-  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate'})) }
+  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate', projectId: this.state.selectedProject.id})) }
 
   timelineTaskFormatting = (data) => {
     this.setState({allTasks: data});
@@ -845,6 +849,7 @@ class App extends Component {
   }
 
   submitEvent = () => {
+    console.log(this.state);
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
@@ -993,7 +998,8 @@ class App extends Component {
 
   addNewProjectButton = () => {
     let disabled = "";
-    if (this.state.eventCreation.name === ""){
+    if (this.state.eventCreation.name === ""
+      || this.state.eventCreation.startDate === ""){
       disabled = "disabled";
     }
 
@@ -1013,21 +1019,17 @@ class App extends Component {
   render() {
     return (
       <div className="App blue-grey lighten-5">
-
-        <div>
-          <button onClick={this.displayProjectSelectionPage}>Select Project</button>
-          <button onClick={this.displayEventCreationFormPage}>Create Project Form</button>
-          <button onClick={this.displayDashboardPage}>Dashboard</button>
-          <button onClick={this.displayHomePage}>Home</button>
-        </div>
-
         <nav className="nav-extended light-blue lighten-1">
           <div className="nav-wrapper">
             <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
-            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+            {/*<a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>*/}
 
             <ul id="nav-mobile" className="right">
-              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a></li>
+              {!(this.state.profile) &&
+                <li>
+                  <a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a>
+                </li>
+              }
               <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
               {this.state.profile &&
                 <li>
@@ -1036,7 +1038,7 @@ class App extends Component {
               }
             </ul>
 
-            <ul className="side-nav" id="mobile-demo">
+            {/*<ul className="side-nav" id="mobile-demo">
               <li><a onClick={this.showLock}>Sign In</a></li>
               <li><a onClick={this.logout}>Log out</a></li>
               {this.state.profile &&
@@ -1044,14 +1046,17 @@ class App extends Component {
                   <a>Logged in as: {this.state.profile.email}</a>
                 </li>
               }
-            </ul>
+            </ul>*/}
           </div>
 
           <div className='nav-content'>
             <ul className="tabs tabs-transparent">
-              <li className="tab"><a className="active" href="#" onClick={this.displayEventCreationFormPage}>Create Event</a></li>
-              <li className="tab disabled"><a href="#" >Projects</a></li>
-              <li className="tab" onClick={this.displayDashboardPage}><a href="#">"Project Name"</a></li>
+              <li className="tab" onClick={this.displayHomePage}><a href="#">Home</a></li>
+              <li className="tab" onClick={this.displayEventCreationFormPage}><a className="active" href="#">Create Event</a></li>
+              <li className="tab" onClick={this.displayProjectSelectionPage}><a href="#">Projects</a></li>
+              {Object.keys(this.state.selectedProject).length !== 0 &&
+                <li className="tab" onClick={this.displayDashboardPage}><a href="#">{this.state.selectedProject.name}</a></li>
+              }
               <li className="tab" onClick={this.displayTaskDashboard}><a href="#">Task Dashboard</a></li>
             </ul>
           </div>
@@ -1070,9 +1075,9 @@ class App extends Component {
           </Fade>
         }
 
+
         {this.state.profile &&
           <div>
-
             {this.state.currentWindow === 'ProjectSelection' &&
               <Fade out={this.state.projectSelectionFade} duration={0.7} style={{visibility: 'visible'}} >
                 <ProjectSelection

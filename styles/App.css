@@ -3,7 +3,7 @@
 }
 
 .brand-logo > i {
-  padding-left: 1em !important;
+  padding-left: 0.1em !important;
   font-size: 45px !important;
 }
 
@@ -25,7 +25,6 @@
 .notifications {
   /*font-size: 0.7rem;*/
   padding: 0.1rem;
-  overflow: scroll;
 }
 
 .card-panel {
@@ -33,10 +32,11 @@
 }
 
 .newsfeed.card-panel {
-  height: 81vh !important;
+  height: 76vh !important;
   padding: 0;
   margin-right: 0;
   margin-left: 0;
+  overflow: scroll;
 }
 
 .dashboardTimeline.card-panel {
@@ -95,14 +95,15 @@ dl {
 }
 
 .event-info {
-  height: 45vh;
+  height: 43.5vh;
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
+  overflow: scroll;
 }
 
 .event-users {
-  height: 45vh;
+  height: 43.5vh;
   overflow: scroll;
   margin-bottom: 0;
   font-size: 0.7rem;
@@ -110,8 +111,8 @@ dl {
 }
 
 .event-create-tasks {
-  height: 45vh;
-  /*overflow: scroll;*/
+  height: 43.5vh;
+  overflow: scroll;
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
@@ -141,7 +142,8 @@ dl {
   margin-bottom: 0;
   padding: 0;
   transition: 300ms;
-  height: 25vh;
+  height: 20vh;
+  overflow: scroll;
 }
 
 .progress-donut-chart {
@@ -152,6 +154,8 @@ dl {
 
 .pie-chart-name {
   position: relative;
+  margin: 0;
+  margin-top: 1em;
   bottom: -1.6em;
   z-index: 1;
   transition: 300ms;

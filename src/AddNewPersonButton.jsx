@@ -2,7 +2,9 @@ import React from 'react';
 
 function AddNewPersonButton (props) {
   let disabled = "";
-  if (props.eventCreation.newAssignedPerson === ""){
+  if (props.eventCreation.newAssignedPerson === ""
+    || props.eventCreation.name === ""
+    || props.eventCreation.startDate === ""){
     disabled = "disabled"
   }
   return (
