@@ -20,10 +20,7 @@ class App extends Component {
     super(props);
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
-      selectedProject: {
-        // id: 1,
-        // name: ''
-      },
+      selectedProject: {},
       currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
       TaskDashboardFade: false,
@@ -125,7 +122,6 @@ class App extends Component {
       dashboardTimelineTasks: []
     })
   }
-
 
   componentWillMount = () => {
     // console.log("componentWillMount <App />");
@@ -528,7 +524,7 @@ class App extends Component {
     // debugger;
 
     tasks = tasks.map((arr) => {
-      console.log(arr);
+      // console.log(arr);
       arr.push(colorMap[arr[3]]);
       arr[3] = `${arr[4]} - ${arr[3]}`;
       arr.splice(4,1);
@@ -540,10 +536,11 @@ class App extends Component {
 
   updateProgressBarsonPageLoad = (taskIds) => {
     const newProgressBar = this.state.progress_bar.slice();
+    let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
     taskIds.forEach((taskId)=>{
       const targetId = +taskId;
-      const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
-
+      // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh
+      progress_bar = newProgressBar
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
@@ -563,10 +560,9 @@ class App extends Component {
 
           const progIdx = progress_bar.indexOf(userProgress);
 
-          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+          // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
           const percentOfTasksToChange = 100 / userProgress.total_tasks;
-
 
           newProgressBar[progIdx] = {
             ...userProgress,
@@ -577,7 +573,12 @@ class App extends Component {
       }
     })
     // console.log(newProgressBar)
-    this.setState({progress_bar: newProgressBar})
+    this.socket.send(JSON.stringify({
+      type: 'new-pb-state',
+      progress_bar: newProgressBar
+    }));
+    // console.log('wills progress bar', newProgressBar);
+    // this.setState({progress_bar: newProgressBar})
     // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
   }
 
@@ -594,6 +595,7 @@ class App extends Component {
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
         Alert.error("You must begin a task before you can end it!");
+
       } else {
 
       const userProgress = progress_bar
@@ -604,7 +606,7 @@ class App extends Component {
       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
         const progIdx = progress_bar.indexOf(userProgress);
-        const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+        // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
         // console.log('task id', targetId)
         // console.log('user id start time', taskStart.userId)
         const percentOfTasksToChange = 100 / userProgress.total_tasks;
@@ -614,7 +616,7 @@ class App extends Component {
           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
         };
-
+        console.log('my progress bar', newProgressBar)
         this.socket.send(JSON.stringify({
           type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
           progress_bar: newProgressBar,
@@ -644,9 +646,6 @@ class App extends Component {
 
   handleStartTask = (e) => {
     e.preventDefault();
-
-    // console.log('task id', e.target.value)
-
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
@@ -654,7 +653,6 @@ class App extends Component {
       progress_bar: this.state.progress_bar,
       disabledStartButton: this.state.disabledStartButton
     }
-    // console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
@@ -673,7 +671,6 @@ class App extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
-      // console.log('detected timeline updated')
       this.clearTaskFields();
     }
     if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
@@ -684,10 +681,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-
     this.updateTimeline();
-    // this.updateNewsfeed();
 
     setTimeout(() => {
       if (!localStorage.profile) {
@@ -738,6 +732,9 @@ class App extends Component {
           break;
 
         case 'update-progress-bar':
+          console.log(`updating progress bar: ${data.progress_bar}`);
+          console.log(data.progress_bar)
+          // let updateProgressBar = this.state;
           this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
 
@@ -773,7 +770,8 @@ class App extends Component {
 
           task.forEach((t) => {
             let key = t.userId + '/' + t.projectId;
-            if (progress_bar[key] && progress_bar[t.projectId])  {
+            // kill the below line if incrementing no longer works
+            if (progress_bar[key])  {
               progress_bar[key].total_tasks += 1;
             } else {
               progress_bar[key] = {};
@@ -782,7 +780,7 @@ class App extends Component {
               progress_bar[key].projectId = t.projectId;
               user.forEach((u) => {
                 if (t.userId === u.id) {
-                  progress_bar[key].name = u.first_name;
+                  progress_bar[key].name = u.first_name || u.email;
                 }
               })
 
@@ -836,15 +834,21 @@ class App extends Component {
           break;
 
         default:
-          console.error('Failed to send back');
+          console.error(data.type + 'Failed to send back');
       }
-      // console.log(this.state);
+      console.log(this.state);
     }
   }
 
   handleLogin = () => {
     // console.log(this.state.profile.email)
-    const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
+    const loginObj = {
+      type: 'auth0-login',
+      email:this.state.profile.email,
+      first_name: this.state.profile.given_name || this.state.profile.email,
+      last_name: this.state.profile.family_name,
+      picture: this.state.profile.picture
+    }
     this.socket.send(JSON.stringify(loginObj))
   }
 
@@ -1025,28 +1029,24 @@ class App extends Component {
             {/*<a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>*/}
 
             <ul id="nav-mobile" className="right">
+              {this.state.profile &&
+                <li className="li-img"><img src={this.state.profile.picture} className="avatar"/></li>
+              }
+              {this.state.profile &&
+                <li>
+                  <a>Logged in as: {this.state.profile.email}</a>
+                </li>
+              }
+              {this.state.profile &&
+                <li><a className="btn-logout waves-effect waves-light btn btn-small green lighten-2" onClick={this.logout}>Log out</a></li>
+              }
               {!(this.state.profile) &&
                 <li>
                   <a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a>
                 </li>
               }
-              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
-              {this.state.profile &&
-                <li>
-                  Logged in as: {this.state.profile.email}
-                </li>
-              }
-            </ul>
 
-            {/*<ul className="side-nav" id="mobile-demo">
-              <li><a onClick={this.showLock}>Sign In</a></li>
-              <li><a onClick={this.logout}>Log out</a></li>
-              {this.state.profile &&
-                <li className='active'>
-                  <a>Logged in as: {this.state.profile.email}</a>
-                </li>
-              }
-            </ul>*/}
+            </ul>
           </div>
 
           <div className='nav-content'>
