@@ -531,7 +531,6 @@ class App extends Component {
   }
 
   updateProgressBarsonPageLoad = (taskIds) => {
-    debugger;
     const newProgressBar = this.state.progress_bar.slice();
     let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
     taskIds.forEach((taskId)=>{
@@ -569,12 +568,12 @@ class App extends Component {
         }
       }
     })
-    console.log(newProgressBar)
+    // console.log(newProgressBar)
     this.socket.send(JSON.stringify({
       type: 'new-pb-state',
       progress_bar: newProgressBar
     }));
-    console.log('wills progress bar', newProgressBar);
+    // console.log('wills progress bar', newProgressBar);
     // this.setState({progress_bar: newProgressBar})
     // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
   }
@@ -642,9 +641,6 @@ class App extends Component {
 
   handleStartTask = (e) => {
     e.preventDefault();
-
-    // console.log('task id', e.target.value)
-
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
@@ -652,7 +648,6 @@ class App extends Component {
       progress_bar: this.state.progress_bar,
       disabledStartButton: this.state.disabledStartButton
     }
-    // console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
@@ -671,7 +666,6 @@ class App extends Component {
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
-      // console.log('detected timeline updated')
       this.clearTaskFields();
     }
     if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
@@ -682,10 +676,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-
     this.updateTimeline();
-    // this.updateNewsfeed();
 
     setTimeout(() => {
       if (!localStorage.profile) {
@@ -845,7 +836,13 @@ class App extends Component {
 
   handleLogin = () => {
     // console.log(this.state.profile.email)
-    const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name, last_name: this.state.profile.family_name}
+    const loginObj = {
+      type: 'auth0-login',
+      email:this.state.profile.email, 
+      first_name: this.state.profile.given_name, 
+      last_name: this.state.profile.family_name,
+      picture: this.state.profile.picture
+    }
     this.socket.send(JSON.stringify(loginObj))
   }
 
