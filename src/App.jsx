@@ -20,10 +20,7 @@ class App extends Component {
     super(props);
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
-      selectedProject: {
-        id: 1,
-        name: 'wedding'
-      },
+      selectedProject: {},
       currentWindow: 'ProjectSelection',
       eventCreationFormFade: false,
       TaskDashboardFade: false,
@@ -524,7 +521,7 @@ class App extends Component {
     // debugger;
 
     tasks = tasks.map((arr) => {
-      console.log(arr);
+      // console.log(arr);
       arr.push(colorMap[arr[3]]);
       arr[3] = `${arr[4]} - ${arr[3]}`;
       arr.splice(4,1);
@@ -573,7 +570,12 @@ class App extends Component {
       }
     })
     // console.log(newProgressBar)
-    this.setState({progress_bar: newProgressBar})
+    // this.socket.send(JSON.stringify({
+    //   type: 'new-pb-state',
+    //   progress_bar: newProgressBar
+    // }));
+    console.log('wills progress bar', newProgressBar);
+    // this.setState({progress_bar: newProgressBar})
     // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
   }
 
@@ -610,7 +612,7 @@ class App extends Component {
           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
         };
-
+        console.log('my progress bar', newProgressBar)
         this.socket.send(JSON.stringify({
           type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
           progress_bar: newProgressBar,
@@ -734,7 +736,9 @@ class App extends Component {
           break;
 
         case 'update-progress-bar':
-          this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
+          let updateProgressBar = this.state;
+          updateProgressBar.progress_bar = data.progress_bar;
+          this.setState(updateProgressBar);
           break;
 
         case 'set-progress-bar-state':
@@ -769,7 +773,8 @@ class App extends Component {
 
           task.forEach((t) => {
             let key = t.userId + '/' + t.projectId;
-            if (progress_bar[key] && progress_bar[t.projectId])  {
+            // kill the below line if incrementing no longer works
+            if (progress_bar[key])  {
               progress_bar[key].total_tasks += 1;
             } else {
               progress_bar[key] = {};
@@ -834,7 +839,7 @@ class App extends Component {
         default:
           console.error('Failed to send back');
       }
-      // console.log(this.state);
+      console.log(this.state);
     }
   }
 
