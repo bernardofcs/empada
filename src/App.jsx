@@ -691,6 +691,10 @@ updateProgressBarsonPageLoad = (taskIds) => {
     this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
   }
 
+  insertIntoProgressesDB = () => {
+    this.socket.send(JSON.stringify({type: 'insert-into-progresses-db'}));
+  }
+
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       // console.log('detected timeline updated')
@@ -828,6 +832,8 @@ updateProgressBarsonPageLoad = (taskIds) => {
           }
 
           this.setState(newProgressBarState);
+
+          // this.insertIntoProgressesDB();
           break;
 
         case 'allTasks':
