@@ -123,7 +123,6 @@ class App extends Component {
     })
   }
 
-
   componentWillMount = () => {
     // console.log("componentWillMount <App />");
     this.lock = new Auth0Lock('TejTiGWUQtFqn8hCNABYJ1KREwuDwyat', 'bfcsiqueira.auth0.com', {
@@ -532,11 +531,13 @@ class App extends Component {
   }
 
   updateProgressBarsonPageLoad = (taskIds) => {
+    debugger;
     const newProgressBar = this.state.progress_bar.slice();
+    let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
     taskIds.forEach((taskId)=>{
       const targetId = +taskId;
-      const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
-
+      // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh 
+      let progress_bar = newProgressBar
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
@@ -560,7 +561,6 @@ class App extends Component {
 
           const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
-
           newProgressBar[progIdx] = {
             ...userProgress,
             completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
@@ -569,11 +569,11 @@ class App extends Component {
         }
       }
     })
-    // console.log(newProgressBar)
-    // this.socket.send(JSON.stringify({
-    //   type: 'new-pb-state',
-    //   progress_bar: newProgressBar
-    // }));
+    console.log(newProgressBar)
+    this.socket.send(JSON.stringify({
+      type: 'new-pb-state',
+      progress_bar: newProgressBar
+    }));
     console.log('wills progress bar', newProgressBar);
     // this.setState({progress_bar: newProgressBar})
     // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
