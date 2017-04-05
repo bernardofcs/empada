@@ -1,17 +1,18 @@
 import React from 'react';
 
 function AddNewPersonButton (props) {
-  //  console.log(props)
-  if (props.eventCreation.newAssignedPerson !== ""){
-    return ( 
-      <button 
-        className="waves-effect waves-light btn" 
-        onClick={props.addNewAssignedUser}>
-          Add { props.eventCreation.newAssignedPerson} to your event!
-      </button>
-    );
+  let disabled = "";
+  if (props.eventCreation.newAssignedPerson === ""){
+    disabled = "disabled"
   }
-  return <div></div>
+  return (
+    <a
+      className={`${disabled} btn-floating halfway-fab waves-effect waves-light btn green lighten-2`}
+      onClick={props.addNewAssignedUser}>
+        {/*Add { props.eventCreation.newAssignedPerson} to your event!*/}
+        <i className="material-icons">add</i>
+    </a>
+  );
 };
 
 module.exports = AddNewPersonButton;

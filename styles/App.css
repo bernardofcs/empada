@@ -1,45 +1,82 @@
 .App {
-  text-align: center;
+  /*text-align: center;*/
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.brand-logo > i {
+  padding-left: 1em !important;
+  font-size: 45px !important;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.row {
+  margin-bottom: 0;
 }
 
-.collapsible {
-  font-size: 0.7rem;
+.col {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
 }
 
-.collapsible-header p {
+
+.card-move-up.card {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.notifications {
+  /*font-size: 0.7rem;*/
+  padding: 0.1rem;
+  overflow: scroll;
+}
+
+.card-panel {
+  margin-top: 0;
+}
+
+.newsfeed.card-panel {
+  height: 81vh !important;
+  padding: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.dashboardTimeline.card-panel {
+  padding: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.card-title {
+  padding: 0 0.5em !important;
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+.badge {
+  height: 1em;
+}
+
+.tiny.material-icons {
+  padding-top: 0.15rem;
+}
+
+.card-content {
   margin: 0;
-  padding: 1rem;
+  padding: 1rem !important;
   line-height: 1rem;
 }
 
-.collapsible-body {
-  padding: 1rem;
+.notification {
+  /*margin-bottom: 0.1em;*/
+  margin: 0.30em;
 }
 
-.timeline {
-  /*width: 50%;*/
-  /*width: 1000px;*/
-  /*margin: auto;*/
-  /*overflow: auto;*/
+.card-reveal {
+  font-size: 0.7rem;
+  padding: 0.5rem !important;
 }
 
-.progress-donut-container {
-  border: 1px solid lightblue;
-  margin: auto;
-  height: 7.9em;
-  transition: 300ms;
+dl {
+  margin: 0;
 }
 
 .dashboardTimeline {
@@ -47,6 +84,64 @@
   /*width: 1000px;*/
   /*margin: auto;*/
   /*overflow: auto;*/
+  height: 50vh;
+  overflow: scroll;
+}
+
+.event-create-timeline {
+  height: 27vh;
+  overflow: scroll;
+  padding: 0;
+}
+
+.event-info {
+  height: 45vh;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 0;
+}
+
+.event-users {
+  height: 45vh;
+  overflow: scroll;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 0;
+}
+
+.event-create-tasks {
+  height: 45vh;
+  /*overflow: scroll;*/
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  padding: 0;
+}
+
+.card-container {
+  padding: 1rem;
+  /*overflow: scroll;*/
+}
+
+.task-creation-btn {
+  text-align: center;
+}
+
+.collection-item {
+  padding: 0.5rem;
+}
+
+.btn-small {
+  height: 24px;
+  line-height: 24px;
+  padding: 0 0.5rem;
+}
+
+.progress-donut-container {
+  /*margin: auto;*/
+  margin-bottom: 0;
+  padding: 0;
+  transition: 300ms;
+  height: 25vh;
 }
 
 .progress-donut-chart {
@@ -62,6 +157,12 @@
   transition: 300ms;
 }
 
+.fixed-action-btn {
+  position: fixed !important;
+  bottom: 25px !important;
+  right: 25px !important;
+}
+
 Table {
   margin: auto;
   width: 80%;
@@ -70,28 +171,28 @@ Table {
 .big-icons {
   font-size: 5em;
   color: lightcoral;
-  transition: 300ms; 
+  transition: 300ms;
 }
 
 .big-icons:hover {
   font-size: 7em;
   color: lightcoral;
-  transition: 300ms; 
+  transition: 300ms;
 }
 
 .cards {
-  transition: 300ms; 
+  transition: 300ms;
 }
 
 .cards:hover {
   border: 3px solid lightcoral;
   width: 600px;
-  transition: 300ms; 
+  transition: 300ms;
 }
 
 MediaBox {
   position: relative;
-  left: -20em; 
+  left: -20em;
 }
 
 @keyframes App-logo-spin {
