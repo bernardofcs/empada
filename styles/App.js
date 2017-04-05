@@ -25,9 +25,10 @@ export default StyleSheet.create({
   'collapsible-body': {
     'padding': [{ 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }, { 'unit': 'rem', 'value': 1 }]
   },
-  'timeline-container': {
-    'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
-    'width': [{ 'unit': '%H', 'value': 0.8 }],
+  'timeline': {
+    // width: 50%;
+    // width: 1000px;
+    // margin: auto;
     // overflow: auto;
   },
   'progress-donut-container': {
@@ -35,6 +36,12 @@ export default StyleSheet.create({
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
     'height': [{ 'unit': 'em', 'value': 7.9 }],
     'transition': '300ms'
+  },
+  'dashboardTimeline': {
+    // width: 50%;
+    // width: 1000px;
+    // margin: auto;
+    // overflow: auto;
   },
   'progress-donut-chart': {
     'position': 'relative',
@@ -50,5 +57,27 @@ export default StyleSheet.create({
   'Table': {
     'margin': [{ 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'string', 'value': 'auto' }],
     'width': [{ 'unit': '%H', 'value': 0.8 }]
+  },
+  'big-icons': {
+    'fontSize': [{ 'unit': 'em', 'value': 5 }],
+    'color': 'lightcoral',
+    'transition': '300ms'
+  },
+  'big-icons:hover': {
+    'fontSize': [{ 'unit': 'em', 'value': 7 }],
+    'color': 'lightcoral',
+    'transition': '300ms'
+  },
+  'cards': {
+    'transition': '300ms'
+  },
+  'cards:hover': {
+    'border': [{ 'unit': 'px', 'value': 3 }, { 'unit': 'string', 'value': 'solid' }, { 'unit': 'string', 'value': 'lightcoral' }],
+    'width': [{ 'unit': 'px', 'value': 600 }],
+    'transition': '300ms'
+  },
+  'MediaBox': {
+    'position': 'relative',
+    'left': [{ 'unit': 'em', 'value': -20 }]
   }
 });

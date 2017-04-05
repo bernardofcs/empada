@@ -31,12 +31,14 @@ class TaskDashboardFields extends Component {
         </td>
         <td>
           <p>{timeInHours(this.props.task.assigned_start_time)}</p>
+          {/*<p>{this.props.task.assigned_start_time}</p>*/}
         </td>
         <td>
           <p>{this.props.task.description}</p>
         </td>
         <td>
           <p>{timeInHours(this.props.task.assigned_end_time)}</p>
+          {/*<p>{this.props.task.assigned_end_time}</p>*/}
         </td>
         <td>
           <Button 

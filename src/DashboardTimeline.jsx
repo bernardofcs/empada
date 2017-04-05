@@ -7,8 +7,8 @@ class DashboardTimeline extends Component {
 
   render() {
     let libraryData = {timeline: {groupByRowLabel: true}};
-    console.log('this.props.tasks:');
-    console.log(this.props.tasks);
+    // console.log('this.props.tasks:');
+    // console.log(this.props.tasks);
 
     return (
       <div>

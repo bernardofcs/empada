@@ -3,9 +3,9 @@ import { Row } from 'react-materialize';
 import ProgressBarFields from './ProgressBarFields.jsx'
 import '../styles/App.css'
 
-// make the donus smaller
 
 class ProgressBar extends Component {
+  debugger;
   render() {
     return (
       <Row className='progress-donut-container card-panel'>
@@ -13,7 +13,8 @@ class ProgressBar extends Component {
           <span className="card-title white-text">Progress</span>
         </div>
         {
-          this.props.progressBar.map((field, i) => {
+          this.props.progressBar.filter(({projectId}) => projectId === this.props.selectedProject.id)
+          .map((field, i) => {
             return <ProgressBarFields
               field={field}
               key={i}
@@ -26,20 +27,3 @@ class ProgressBar extends Component {
 }
 
 export default ProgressBar;
-
-/*class ProgressBar extends Component {
-  render() {
-    return (
-      <div className='timeline-container'>
-        {
-          this.props.progressBar.map((field, i) => {
-            return <ProgressBarFields
-              field={field}
-              key={i}
-            />
-          })
-        }
-        </div>
-    );
-  }
-}*/

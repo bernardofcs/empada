@@ -24,7 +24,8 @@ class TaskDashboard extends Component {
 
           <tbody>
             {
-              this.props.listOfTasks.map((task) => {
+              this.props.listOfTasks.filter(({ projectId }) => projectId === this.props.selectedProject.id)
+              .map((task) => {
                 return <TaskDashboardFields
                   task={task}
                   handleStartTask={this.props.handleStartTask}
