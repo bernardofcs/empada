@@ -536,7 +536,7 @@ class App extends Component {
     taskIds.forEach((taskId)=>{
       const targetId = +taskId;
       // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh 
-      let progress_bar = newProgressBar
+      progress_bar = newProgressBar
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
@@ -556,7 +556,7 @@ class App extends Component {
 
           const progIdx = progress_bar.indexOf(userProgress);
 
-          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+          // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
           const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
@@ -591,6 +591,7 @@ class App extends Component {
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
         Alert.error("You must begin a task before you can end it!");
+
       } else {
 
       const userProgress = progress_bar
@@ -601,7 +602,7 @@ class App extends Component {
       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
         const progIdx = progress_bar.indexOf(userProgress);
-        const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+        // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
         // console.log('task id', targetId)
         // console.log('user id start time', taskStart.userId)
         const percentOfTasksToChange = 100 / userProgress.total_tasks;
@@ -727,9 +728,10 @@ class App extends Component {
           break;
 
         case 'update-progress-bar':
-          let updateProgressBar = this.state;
-          updateProgressBar.progress_bar = data.progress_bar;
-          this.setState(updateProgressBar);
+          console.log(`updating progress bar: ${data.progress_bar}`);
+          console.log(data.progress_bar)
+          // let updateProgressBar = this.state;
+          this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
 
         case 'set-progress-bar-state':
@@ -774,7 +776,7 @@ class App extends Component {
               progress_bar[key].projectId = t.projectId;
               user.forEach((u) => {
                 if (t.userId === u.id) {
-                  progress_bar[key].name = u.first_name;
+                  progress_bar[key].name = u.first_name || u.email;
                 }
               })
 
@@ -828,7 +830,7 @@ class App extends Component {
           break;
 
         default:
-          console.error('Failed to send back');
+          console.error(data.type + 'Failed to send back');
       }
       console.log(this.state);
     }
@@ -839,7 +841,7 @@ class App extends Component {
     const loginObj = {
       type: 'auth0-login',
       email:this.state.profile.email, 
-      first_name: this.state.profile.given_name, 
+      first_name: this.state.profile.given_name || this.state.profile.email, 
       last_name: this.state.profile.family_name,
       picture: this.state.profile.picture
     }
