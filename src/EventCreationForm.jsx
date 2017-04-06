@@ -13,7 +13,6 @@ class EventCreationForm extends Component {
     if (this.props.eventCreation.selected.name === ""){
       disabled = "disabled";
     }
-
     return (
       <a
         className={`${disabled} btn-floating halfway-fab waves-effect waves-light btn green lighten-2`}
@@ -22,6 +21,22 @@ class EventCreationForm extends Component {
       </a>
     );
   };
+
+  personInputsDisabled = () => {
+    let disabled = "";
+    if (this.props.eventCreation.name === ""
+      || this.props.eventCreation.startDate === "") {
+      disabled = "disabled";
+    }
+    return (
+      <div>
+        <input disabled={`${disabled}`} type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
+        <input disabled={`${disabled}`} type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
+      </div>
+    );
+  };
+
+
 
   render() {
     return (
@@ -39,8 +54,8 @@ class EventCreationForm extends Component {
                   <input type="text" placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
                   Event Start Date:
                   <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.startDate} onChange={this.props.newEventStartDate}/>
-                  Event End Date:
-                  <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.endDate} onChange={this.props.newEventEndDate}/>
+                  {/*Event End Date:
+                  <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.endDate} onChange={this.props.newEventEndDate}/>*/}
               </div>
             </div>
           </div>
@@ -52,8 +67,8 @@ class EventCreationForm extends Component {
             </div>
             <div className="card-panel event-users">
               <div className="card-container">
-                <input type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
-                <input type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
+                {this.personInputsDisabled()}
+
                 <div className="collection">
                   {this.props.eventCreation.assigned_people.map( (p, i) => {
                     return (
@@ -63,11 +78,11 @@ class EventCreationForm extends Component {
                         data-id={p.id}
                         className={
                           +this.props.eventCreation.selected.id === +p.id ?
-                          "collection-item active" :
+                          "collection-item active green lighten-2" :
                           "collection-item"
                         }
                         onClick={this.props.eventCreationSelectToggle}>
-                        {p.name}({p.email})
+                        {p.name} ({p.email})
                         <DeletePersonButton
                           eventCreationDeleteUser={this.props.eventCreationDeleteUser}
                           index={i}

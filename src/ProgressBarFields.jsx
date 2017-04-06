@@ -18,8 +18,8 @@ class ProgressBarFields extends Component {
             donut={true}
             stacked={true}
             legend={false}
-            width={"6em"}
-            height={"6em"}
+            width={"10em"}
+            height={"10em"}
           />
         </Col>
       </div>

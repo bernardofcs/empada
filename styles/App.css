@@ -1,108 +1,114 @@
-.App {
-  /*text-align: center;*/
-}
+/*.App {
+    text-align: center;
+}*/
 
 .brand-logo > i {
-  padding-left: 1em !important;
+  padding-left: 0.1em !important;
   font-size: 45px !important;
 }
 
+.avatar {
+    border-radius: 25%;
+    width: 50px;
+    margin: .25em;
+}
+
 .row {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .col {
-  padding-left: 5px !important;
-  padding-right: 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 
-
 .card-move-up.card {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }
 
 .notifications {
   /*font-size: 0.7rem;*/
   padding: 0.1rem;
-  overflow: scroll;
 }
 
 .card-panel {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 .newsfeed.card-panel {
-  height: 81vh !important;
+  height: 76vh !important;
   padding: 0;
   margin-right: 0;
   margin-left: 0;
+  overflow: scroll;
 }
 
 .dashboardTimeline.card-panel {
-  padding: 0;
-  margin-right: 0;
-  margin-left: 0;
+    padding: 0;
+    margin-right: 0;
+    margin-left: 0;
 }
 
 .card-title {
-  padding: 0 0.5em !important;
-  font-size: 1.6rem;
-  font-weight: 300;
+    padding: 0 0.5em !important;
+    font-size: 1.6rem;
+    font-weight: 300;
 }
 
 .badge {
-  height: 1em;
+    height: 1em;
 }
 
 .tiny.material-icons {
-  padding-top: 0.15rem;
+    padding-top: 0.15rem;
 }
 
 .card-content {
-  margin: 0;
-  padding: 1rem !important;
-  line-height: 1rem;
+    margin: 0;
+    padding: 1rem !important;
+    line-height: 1rem;
 }
 
 .notification {
-  /*margin-bottom: 0.1em;*/
-  margin: 0.30em;
+    /*margin-bottom: 0.1em;*/
+    margin: 0.30em;
 }
 
 .card-reveal {
-  font-size: 0.7rem;
-  padding: 0.5rem !important;
+    font-size: 0.7rem;
+    padding: 0.5rem !important;
 }
 
 dl {
-  margin: 0;
+    margin: 0;
 }
 
 .dashboardTimeline {
-  /*width: 50%;*/
-  /*width: 1000px;*/
-  /*margin: auto;*/
-  /*overflow: auto;*/
-  height: 50vh;
-  overflow: scroll;
+    /*width: 50%;*/
+    /*width: 1000px;*/
+    /*margin: auto;*/
+    /*overflow: auto;*/
+    height: 50vh;
+    overflow: scroll;
 }
 
 .event-create-timeline {
-  height: 27vh;
-  overflow: scroll;
-  padding: 0;
+    height: 27vh;
+    overflow: scroll;
+    padding: 0;
 }
 
 .event-info {
-  height: 45vh;
+  height: 43.5vh;
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
+  overflow: scroll;
 }
 
 .event-users {
-  height: 45vh;
+  height: 43.5vh;
   overflow: scroll;
   margin-bottom: 0;
   font-size: 0.7rem;
@@ -110,8 +116,8 @@ dl {
 }
 
 .event-create-tasks {
-  height: 45vh;
-  /*overflow: scroll;*/
+  height: 43.5vh;
+  overflow: scroll;
   margin-bottom: 0;
   font-size: 0.7rem;
   padding: 0;
@@ -136,66 +142,98 @@ dl {
   padding: 0 0.5rem;
 }
 
+.btn-logout {
+  text-transform: none;
+  padding: 0 0.8rem;
+  font-size: 1rem;
+}
+
 .progress-donut-container {
   /*margin: auto;*/
   margin-bottom: 0;
   padding: 0;
   transition: 300ms;
-  height: 25vh;
+  height: 20vh;
+  overflow: scroll;
 }
 
 .progress-donut-chart {
-  position: relative;
-  top: -1.8em;
-  transition: 300ms;
+    position: relative;
+    top: -1.8em;
+    transition: 300ms;
 }
 
 .pie-chart-name {
   position: relative;
+  margin: 0;
+  margin-top: 1em;
   bottom: -1.6em;
+  text-align: center; 
   z-index: 1;
   transition: 300ms;
 }
 
 .fixed-action-btn {
-  position: fixed !important;
-  bottom: 25px !important;
-  right: 25px !important;
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
 }
 
 Table {
-  margin: auto;
-  width: 80%;
+    margin: auto;
+    width: 80%;
+}
+
+.li-img {
+  height: 50px ;
 }
 
 .big-icons {
-  font-size: 5em;
-  color: lightcoral;
-  transition: 300ms;
+    font-size: 5em;
+    color: lightcoral;
+    transition: 300ms;
 }
 
 .big-icons:hover {
-  font-size: 7em;
-  color: lightcoral;
-  transition: 300ms;
+    font-size: 7em;
+    color: lightcoral;
+    transition: 300ms;
 }
 
 .cards {
-  transition: 300ms;
+    transition: 300ms;
+    text-align: center; 
 }
 
 .cards:hover {
-  border: 3px solid lightcoral;
-  width: 600px;
-  transition: 300ms;
+    border: 3px solid lightcoral;
+    width: 600px;
+    transition: 300ms;
 }
 
 MediaBox {
-  position: relative;
-  left: -20em;
+    position: relative;
+    left: -20em;
+}
+
+.icons {
+    position: relative; 
+    margin-left: 1em; 
+}
+
+.big-icons {
+    position: relative; 
+}
+
+.align {
+    text-align: center; 
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

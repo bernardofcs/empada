@@ -21,7 +21,7 @@ class App extends Component {
     this.state = {
       currentUserProjects: [], //[{id:1, name: 'Project 1'}, {id:2, name: 'Project 2'}, {id:3, name: 'Project 3'}],
       selectedProject: {},
-      currentWindow: 'ProjectSelection',
+      currentWindow: 'EventCreationForm',
       eventCreationFormFade: false,
       TaskDashboardFade: false,
       dashboardFade: false,
@@ -145,7 +145,11 @@ class App extends Component {
   }
 
   logout = () => {
-    this.setState({profile: undefined})
+    this.setState({
+      profile: undefined,
+      selectedProject: {},
+      currentUserProjects: []
+    })
     localStorage.removeItem("profile")
     // this.showLock()
   }
@@ -316,7 +320,7 @@ class App extends Component {
 
   }
 
-  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate'})) }
+  updateNewsfeed = () => { this.socket.send(JSON.stringify({type: 'askingForNewsfeedUpdate', projectId: this.state.selectedProject.id})) }
 
   timelineTaskFormatting = (data) => {
     this.setState({allTasks: data});
@@ -492,7 +496,6 @@ class App extends Component {
       'completed late'  : '#F26430',
       'not started'     : '#F26430'
     };
-    // debugger;
 
     tasks = tasks.map((arr) => {
       // console.log(arr);
@@ -552,13 +555,12 @@ updateProgressBarsonPageLoad = (taskIds) => {
   }
 
   updateProgressBarsonPageLoad = (taskIds) => {
-    // debugger;
     const newProgressBar = this.state.progress_bar.slice();
     let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
     taskIds.forEach((taskId)=>{
       const targetId = +taskId;
-      // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh 
-      let progress_bar = newProgressBar
+      // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh
+      progress_bar = newProgressBar
       const targetTask = allTasks.find((task) => task.id === targetId);
       const targetUserId = targetTask.userId
       const buttonClicked = clickedStartButton.find((id) => id === targetId);
@@ -578,7 +580,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
 
           const progIdx = progress_bar.indexOf(userProgress);
 
-          const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+          // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
           const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
@@ -590,18 +592,17 @@ updateProgressBarsonPageLoad = (taskIds) => {
         }
       }
     })
-    console.log(newProgressBar)
+    // console.log(newProgressBar)
     this.socket.send(JSON.stringify({
       type: 'new-pb-state',
       progress_bar: newProgressBar
     }));
-    console.log('wills progress bar', newProgressBar);
+    // console.log('wills progress bar', newProgressBar);
     // this.setState({progress_bar: newProgressBar})
     // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
   }
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
-    // debugger;
     const targetId = +value;
     const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
 
@@ -614,6 +615,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
       if (buttonClicked !== targetId) {
         console.error("You must begin a task before you can end it!");
         Alert.error("You must begin a task before you can end it!");
+
       } else {
 
       const userProgress = progress_bar
@@ -624,7 +626,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
         const progIdx = progress_bar.indexOf(userProgress);
-        const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+        // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
         // console.log('task id', targetId)
         // console.log('user id start time', taskStart.userId)
         const percentOfTasksToChange = 100 / userProgress.total_tasks;
@@ -664,9 +666,6 @@ updateProgressBarsonPageLoad = (taskIds) => {
 
   handleStartTask = (e) => {
     e.preventDefault();
-
-    // console.log('task id', e.target.value)
-
     let message = {
       type: 'start-time-for-contractor-tasks',
       start_time: new Date(),
@@ -674,7 +673,6 @@ updateProgressBarsonPageLoad = (taskIds) => {
       progress_bar: this.state.progress_bar,
       disabledStartButton: this.state.disabledStartButton
     }
-    // console.log('start task button pressed');
     this.socket.send(JSON.stringify(message));
   }
 
@@ -697,7 +695,6 @@ updateProgressBarsonPageLoad = (taskIds) => {
 
   componentDidUpdate(previousProps, previousState) {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
-      // console.log('detected timeline updated')
       this.clearTaskFields();
     }
     if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
@@ -708,10 +705,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
   }
 
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-
     this.updateTimeline();
-    // this.updateNewsfeed();
 
     setTimeout(() => {
       if (!localStorage.profile) {
@@ -762,9 +756,10 @@ updateProgressBarsonPageLoad = (taskIds) => {
           break;
 
         case 'update-progress-bar':
-          let updateProgressBar = this.state;
-          updateProgressBar.progress_bar = data.progress_bar;
-          this.setState(updateProgressBar);
+          console.log(`updating progress bar: ${data.progress_bar}`);
+          console.log(data.progress_bar)
+          // let updateProgressBar = this.state;
+          this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
 
         case 'set-progress-bar-state':
@@ -809,7 +804,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
               progress_bar[key].projectId = t.projectId;
               user.forEach((u) => {
                 if (t.userId === u.id) {
-                  progress_bar[key].name = u.first_name;
+                  progress_bar[key].name = u.first_name || u.email;
                 }
               })
 
@@ -865,7 +860,7 @@ updateProgressBarsonPageLoad = (taskIds) => {
           break;
 
         default:
-          console.error('Failed to send back');
+          console.error(data.type + 'Failed to send back');
       }
       console.log(this.state);
     }
@@ -873,11 +868,18 @@ updateProgressBarsonPageLoad = (taskIds) => {
 
   handleLogin = () => {
     // console.log(this.state.profile.email)
-    const loginObj = {type: 'auth0-login', email:this.state.profile.email, first_name: this.state.profile.given_name || this.state.profile.email, last_name: this.state.profile.family_name}
+    const loginObj = {
+      type: 'auth0-login',
+      email:this.state.profile.email,
+      first_name: this.state.profile.given_name || this.state.profile.email,
+      last_name: this.state.profile.family_name,
+      picture: this.state.profile.picture
+    }
     this.socket.send(JSON.stringify(loginObj))
   }
 
   submitEvent = () => {
+    console.log(this.state);
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
@@ -1026,7 +1028,8 @@ updateProgressBarsonPageLoad = (taskIds) => {
 
   addNewProjectButton = () => {
     let disabled = "";
-    if (this.state.eventCreation.name === ""){
+    if (this.state.eventCreation.name === ""
+      || this.state.eventCreation.startDate === ""){
       disabled = "disabled";
     }
 
@@ -1046,45 +1049,40 @@ updateProgressBarsonPageLoad = (taskIds) => {
   render() {
     return (
       <div className="App blue-grey lighten-5">
-
-        <div>
-          <button onClick={this.displayProjectSelectionPage}>Select Project</button>
-          <button onClick={this.displayEventCreationFormPage}>Create Project Form</button>
-          <button onClick={this.displayDashboardPage}>Dashboard</button>
-          <button onClick={this.displayHomePage}>Home</button>
-        </div>
-
         <nav className="nav-extended light-blue lighten-1">
           <div className="nav-wrapper">
             <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
-            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+            {/*<a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>*/}
 
             <ul id="nav-mobile" className="right">
-              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a></li>
-              <li><a className="waves-effect waves-light btn green lighten-2" onClick={this.logout}>Log out</a></li>
+              {this.state.profile &&
+                <li className="li-img"><img src={this.state.profile.picture} className="avatar"/></li>
+              }
               {this.state.profile &&
                 <li>
-                  Logged in as: {this.state.profile.email}
-                </li>
-              }
-            </ul>
-
-            <ul className="side-nav" id="mobile-demo">
-              <li><a onClick={this.showLock}>Sign In</a></li>
-              <li><a onClick={this.logout}>Log out</a></li>
-              {this.state.profile &&
-                <li className='active'>
                   <a>Logged in as: {this.state.profile.email}</a>
                 </li>
               }
+              {this.state.profile &&
+                <li><a className="btn-logout waves-effect waves-light btn btn-small green lighten-2" onClick={this.logout}>Log out</a></li>
+              }
+              {!(this.state.profile) &&
+                <li>
+                  <a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a>
+                </li>
+              }
+
             </ul>
           </div>
 
           <div className='nav-content'>
             <ul className="tabs tabs-transparent">
-              <li className="tab"><a className="active" href="#" onClick={this.displayEventCreationFormPage}>Create Event</a></li>
-              <li className="tab disabled"><a href="#" >Projects</a></li>
-              <li className="tab" onClick={this.displayDashboardPage}><a href="#">"Project Name"</a></li>
+              <li className="tab" onClick={this.displayHomePage}><a href="#">Home</a></li>
+              <li className="tab" onClick={this.displayEventCreationFormPage}><a className="active" href="#">Create Event</a></li>
+              <li className="tab" onClick={this.displayProjectSelectionPage}><a href="#">Projects</a></li>
+              {Object.keys(this.state.selectedProject).length !== 0 &&
+                <li className="tab" onClick={this.displayDashboardPage}><a href="#">{this.state.selectedProject.name}</a></li>
+              }
               <li className="tab" onClick={this.displayTaskDashboard}><a href="#">Task Dashboard</a></li>
             </ul>
           </div>
@@ -1103,9 +1101,9 @@ updateProgressBarsonPageLoad = (taskIds) => {
           </Fade>
         }
 
+
         {this.state.profile &&
           <div>
-
             {this.state.currentWindow === 'ProjectSelection' &&
               <Fade out={this.state.projectSelectionFade} duration={0.7} style={{visibility: 'visible'}} >
                 <ProjectSelection
