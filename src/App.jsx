@@ -52,7 +52,7 @@ class App extends Component {
       dashboardTimelineTasks: [],
       allTasks: [],
       modalIsOpen: false,
-      grace_period: 0,//300000,
+      grace_period: 10000,//300000,
       newsfeed: [],
       progress_bar : [],
       clickedStartButton : [],
@@ -201,7 +201,7 @@ class App extends Component {
           task:   item.name,
           action: 'task_not_started', //'task_not_completed'
           assigned_time: item.assigned_start_time,
-          notification_time: item.assigned_start_time + this.state.grace_period
+          notification_time: new Date(item.assigned_start_time.getTime() + this.state.grace_period)
         })
       }
 
@@ -217,7 +217,7 @@ class App extends Component {
           task:   item.name,
           action: 'task_not_completed',
           assigned_time: item.assigned_end_time,
-          notification_time: item.assigned_end_time + this.state.grace_period
+          notification_time: new Date(item.assigned_end_time.getTime() + this.state.grace_period)
         })
       }
     };
@@ -475,7 +475,7 @@ class App extends Component {
           task.name,
           temp.start_time,
           temp.end_time,
-          timing[5],
+          timing[1],
           task.user.first_name
         ],
         [
