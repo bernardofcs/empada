@@ -7,8 +7,7 @@ class TaskDashboard extends Component {
   render() {
     return (
       <Row>
-        <Collection header="Task List">
-        </Collection>
+        <h4 className='align'>Task List</h4>
 
         <Table>
 
