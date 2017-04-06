@@ -1132,7 +1132,7 @@ class App extends Component {
         {this.state.currentWindow === 'HomePage' &&
           <Fade out={this.state.homePageFade} duration={0.7} style={{visibility: 'visible'}} >
             <HomePage />
-            <Footerr />
+            {/*<Footerr />*/}
           </Fade>
         }
       </div>
