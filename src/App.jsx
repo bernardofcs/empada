@@ -38,34 +38,9 @@ class App extends Component {
         newEndTime: "",
         newAssignedPerson: "",
         newAssignedEmail: "",
-        assigned_people: [
-          // {
-          //   name: 'Jimmy',
-          //   id: 1,
-          //   email: "jimmy@email.com"
-          // },
-          // {
-          //   name: 'Johnny',
-          //   id: 2,
-          //   email: "Johnny@email.com"
-          // },
-          // {
-          //   name: 'Sally',
-          //   id: 3,
-          //   email: "sally@email.com"
-          // }
-        ],
-        tasks: [
-          // {id: 1, user_id: 1, name: 'buy beer', description: 'go to LBCO',assigned_start_time: '08:00:00',assigned_end_time: '10:00:00'},
-          // {id: 2, user_id: 1, name: 'buy cups', description: 'go to dollar store',assigned_start_time: '15:00:00',assigned_end_time: '17:00:00'},
-          // {id: 3, user_id: 2, name: 'bring music', description: 'check out spotify',assigned_start_time: '09:00:00',assigned_end_time: '11:00:00'},
-          // {id: 4, user_id: 3, name: 'wash car', description: 'clean my car yo',assigned_start_time: '11:00:00',assigned_end_time: '18:00:00'}
-        ],
-        timelineData: [
-          // ["Jimmy", new Date(2017, 3, 25, 17, 0), new Date(2017, 3, 25, 17, 30)],
-          // ["Johnny", new Date(2017, 3, 25, 8, 0), new Date(2017, 3, 25, 10, 0)],
-          // ["Sally",  new Date(2017, 3, 25, 1, 0), new Date(2017, 3, 25, 3, 0)]
-        ]
+        assigned_people: [],
+        tasks: [],
+        timelineData: []
       },
       alertOptions :{
         offset: 14,
@@ -95,7 +70,8 @@ class App extends Component {
   displayEventCreationFormPage = () => {
     this.setState({
       currentWindow: 'EventCreationForm',
-      dashboardTimelineTasks: []
+      dashboardTimelineTasks: [],
+      eventCreation: Object.assign({},this.state.eventCreation,{timelineData: []})
     })
   }
 
@@ -534,53 +510,53 @@ class App extends Component {
     this.setState({'dashboardTimelineTasks': tasks});
   }
 
-  updateProgressBarsonPageLoad = (taskIds) => {
-    const newProgressBar = this.state.progress_bar.slice();
-    let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
-    taskIds.forEach((taskId)=>{
-      const targetId = +taskId;
-      // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh
-      progress_bar = newProgressBar
-      const targetTask = allTasks.find((task) => task.id === targetId);
-      const targetUserId = targetTask.userId
-      const buttonClicked = clickedStartButton.find((id) => id === targetId);
+  // updateProgressBarsonPageLoad = (taskIds) => {
+  //   const newProgressBar = this.state.progress_bar.slice();
+  //   let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
+  //   taskIds.forEach((taskId)=>{
+  //     const targetId = +taskId;
+  //     // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh
+  //     progress_bar = newProgressBar
+  //     const targetTask = allTasks.find((task) => task.id === targetId);
+  //     const targetUserId = targetTask.userId
+  //     const buttonClicked = clickedStartButton.find((id) => id === targetId);
 
 
-      if (buttonClicked !== targetId) {
-        // console.error("You must begin a task before you can end it!");
-        // Alert.error("You must begin a task before you can end it!");
-      } else {
+  //     if (buttonClicked !== targetId) {
+  //       // console.error("You must begin a task before you can end it!");
+  //       // Alert.error("You must begin a task before you can end it!");
+  //     } else {
 
-        const userProgress = progress_bar
-          .filter((v) => v)
-          .find(({ userId }) => userId === targetUserId)
-        // .find(({ projectId }) => projectId === targetUserId);
+  //       const userProgress = progress_bar
+  //         .filter((v) => v)
+  //         .find(({ userId }) => userId === targetUserId)
+  //       // .find(({ projectId }) => projectId === targetUserId);
 
-        if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
+  //       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
 
-          const progIdx = progress_bar.indexOf(userProgress);
+  //         const progIdx = progress_bar.indexOf(userProgress);
 
-          // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
+  //         // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
 
-          const percentOfTasksToChange = 100 / userProgress.total_tasks;
+  //         const percentOfTasksToChange = 100 / userProgress.total_tasks;
 
-          newProgressBar[progIdx] = {
-            ...userProgress,
-            completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
-            incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
-          };
-        }
-      }
-    })
-    // console.log(newProgressBar)
-    this.socket.send(JSON.stringify({
-      type: 'new-pb-state',
-      progress_bar: newProgressBar
-    }));
-    // console.log('wills progress bar', newProgressBar);
-    // this.setState({progress_bar: newProgressBar})
-    // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
-  }
+  //         newProgressBar[progIdx] = {
+  //           ...userProgress,
+  //           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
+  //           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
+  //         };
+  //       }
+  //     }
+  //   })
+  //   // console.log(newProgressBar)
+  //   this.socket.send(JSON.stringify({
+  //     type: 'new-pb-state',
+  //     progress_bar: newProgressBar
+  //   }));
+  //   // console.log('wills progress bar', newProgressBar);
+  //   // this.setState({progress_bar: newProgressBar})
+  //   // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
+  // }
 
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
@@ -616,7 +592,7 @@ class App extends Component {
           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
         };
-        console.log('my progress bar', newProgressBar)
+        // console.log('my progress bar', newProgressBar)
         this.socket.send(JSON.stringify({
           type: 'end-time-for-contractor-tasks-and-updating-progress-bar',
           progress_bar: newProgressBar,
@@ -656,14 +632,14 @@ class App extends Component {
     this.socket.send(JSON.stringify(message));
   }
 
-  serverStateStore = (e) => {
-    if (this.state.counter.length > 1) {
-      let message = {
-        type: 'server-state-store'
-      }
-      this.socket.send(JSON.stringify(message));
-    }
-  }
+  // serverStateStore = (e) => {
+  //   if (this.state.counter.length > 1) {
+  //     let message = {
+  //       type: 'server-state-store'
+  //     }
+  //     this.socket.send(JSON.stringify(message));
+  //   }
+  // }
 
   updateProgressBar = () => {
     this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
@@ -673,16 +649,16 @@ class App extends Component {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       this.clearTaskFields();
     }
-    if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
-      let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
-      this.updateProgressBarsonPageLoad(onlyEndDateTasks)
-      this.setState({updatedProgressBar: 1})
-    }
+    // if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
+    //   let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
+    //   this.updateProgressBarsonPageLoad(onlyEndDateTasks)
+    //   this.setState({updatedProgressBar: 1})
+    // }
   }
 
   componentDidMount() {
     this.updateTimeline();
-
+    setTimeout(()=>{this.updateProgressBar();},2000);
     setTimeout(() => {
       if (!localStorage.profile) {
         // this.showLock();
@@ -733,7 +709,7 @@ class App extends Component {
 
         case 'update-progress-bar':
           console.log(`updating progress bar: ${data.progress_bar}`);
-          console.log(data.progress_bar)
+          // console.log(data.progress_bar)
           // let updateProgressBar = this.state;
           this.setState(Object.assign({},this.state,{progress_bar: data.progress_bar}));
           break;
@@ -836,7 +812,7 @@ class App extends Component {
         default:
           console.error(data.type + 'Failed to send back');
       }
-      console.log(this.state);
+      // console.log(this.state);
     }
   }
 
@@ -853,7 +829,7 @@ class App extends Component {
   }
 
   submitEvent = () => {
-    console.log(this.state);
+    // console.log(this.state);
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
