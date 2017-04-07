@@ -57,7 +57,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 2. npm install for all 3 repos.
 
 3. Run 'npm start' or 'yarn start' each time in your terminal to run all 3 repos. 
-
+    -Requires node 7, run `nvm install 7` then `nvm use 7` if you do not have it.
 4. Open up localhost:3000 to connect to the main app.
 
 Optional: 
