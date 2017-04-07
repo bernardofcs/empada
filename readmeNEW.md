@@ -1,6 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
-WELCOME TO EMPADA
+
+# WELCOME TO EMPADA
 
 This app was created in 2 short weeks utilizing REACT.js, EXPRESS.js, CHARTKICK.js, REACT-S-ALERT.js, SEQUELIZE.js, POSTGRES, PASSPORT, MAILGUN and MATERIALIZE.
 
@@ -21,8 +21,8 @@ Features include:
   - an email is sent out to all contractors with their list of tasks for the day
   - a store listing all of the created projects, both past and present
 
-Setup Instructions
-
+## Setup Instructions
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 1. git clone the following repos:
 
   Runs the front-end for app 
