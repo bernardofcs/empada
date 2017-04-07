@@ -1,5 +1,4 @@
 
-
 # WELCOME TO EMPADA
 
 Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned user's tasks
@@ -45,19 +44,19 @@ Future Features:
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 1. git clone the following repos:
 
-  Runs the front-end for app 
+    Event creation and event dashboard 
   https://github.com/bernardofcs/empada   - the one you are currently
 
-  Runs the server for for both repos
+    Runs the server for for both repos
   https://github.com/bernardofcs/empada-tasklist
 
-  Runs the front-end for the taskdashboard sent through email
+    Runs the front-end for the taskdashboard sent through email
   https://github.com/wichopy/empada-testserver
   
 2. npm install for all 3 repos.
 
 3. Run 'npm start' or 'yarn start' each time in your terminal to run all 3 repos. 
-    -Requires node 7, run `nvm install 7` then `nvm use 7` if you do not have it.
+    - Requires node 7, run `nvm install 7` then `nvm use 7` if you do not have it.
 4. Open up localhost:3000 to connect to the main app.
 
 Optional: 
