@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 WELCOME TO EMPADA
 
-This app was created in 2 short weeks utilizing REACT.js, EXPRESS.js, CHARTKICK.js, REACT-S-ALERT.js, SEQUELIZE.js, POSTGRES, MAILGUN and MATERIALIZE.
+This app was created in 2 short weeks utilizing REACT.js, EXPRESS.js, CHARTKICK.js, REACT-S-ALERT.js, SEQUELIZE.js, POSTGRES, PASSPORT, MAILGUN and MATERIALIZE.
 
 The team consisted of 4 memeber, AMMAR MASUD, BRANDON BOOTH, BERNARDO SIQEIRA and WILL CHOU as part of a final project during a web bootcamp at Lighthouse Labs. 
 
