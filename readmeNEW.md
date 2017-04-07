@@ -4,6 +4,10 @@
 Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned user's tasks
 all on one screen. It has a sleek design that negates the need for the manager to manually track tasks, and instead puts the ownace on the assigned users.
 
+Authentication:
+
+![sign in with Facebook, Github or Google](https://giphy.com/gifs/3oKIPhFrwgCtvZwSVG "Authentication")
+
 This app was created in 2 short weeks utilizing:
 - [REACT.js](https://facebook.github.io/react/)
 - [EXPRESS.js](https://expressjs.com/)
