@@ -1,7 +1,7 @@
 
 # WELCOME TO EMPADA
 
-Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned user's tasks
+Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned users' tasks
 all on one screen. It has a sleek design that negates the need for the manager to manually track tasks, and instead puts the ownace on the assigned users.
 
 ### Authentication:
