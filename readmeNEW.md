@@ -2,24 +2,44 @@
 
 # WELCOME TO EMPADA
 
-This app was created in 2 short weeks utilizing REACT.js, EXPRESS.js, CHARTKICK.js, REACT-S-ALERT.js, SEQUELIZE.js, POSTGRES, PASSPORT, MAILGUN and MATERIALIZE.
+Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned user's tasks
+all on one screen. It has a sleek design that negates the need for the manager to manually track tasks, and instead puts the ownace on the assigned users.
 
-The team consisted of 4 memeber, AMMAR MASUD, BRANDON BOOTH, BERNARDO SIQEIRA and WILL CHOU as part of a final project during a web bootcamp at Lighthouse Labs. 
+This app was created in 2 short weeks utilizing:
+- [REACT.js](https://facebook.github.io/react/)
+- [EXPRESS.js](https://expressjs.com/)
+- [NODE.js](https://nodejs.org/en/)
+- [WEBSOCKETS](https://www.websocket.org/)
+- [REACT CHARTKICK.js](http://chartkick.com/)
+- [MATERIALIZE](http://materializecss.com/)
+- [SEQUELIZE.js](http://docs.sequelizejs.com/en/v3/)
+- [POSTGRES](https://www.postgresql.org/)
+- [AUTH0](https://auth0.com/docs/quickstart/spa/react)
+- [MAILGUN](https://www.mailgun.com/)
 
-Empada is an event management dashboard designed to keep an event planner or manager up to date on the progress of all of their contractors tasks
-all on one screen. It has a sleek design that negates the need for managers to constantly switch between tabs while working on a single project. 
+
+Contributors for this project:
+- [Bernardo S.](https://github.com/bernardofcs)
+- [Ammar M.](https://github.com/Ammarmasud)
+- [Brandon B.](https://github.com/Bbooth4)
+- [Will C.](https://github.com/wichopy)
 
 Features include:
   - real time updates for all app features
-  - a task dashboard featuring:
-    - progress bars
-    - a live timeline
-    - a real time newsfeed
   - event creation page where you can add new contractors and assign them tasks for the day
-  - a dynamically rendered timeline that is created as tasks are assigned to contractors
+    - a dynamically rendered timeline that is created as tasks are assigned to contractors
+  - an event dashboard featuring:
+    - progress bars to viualize each assigned users overall progress
+    - a live timeline that progresses with current time for per second tracking
+    - a real time newsfeed
   - a taskdashboard that shows the event manager all of the tasks they have assigned as well as whether or not they have begun or ended
   - an email is sent out to all contractors with their list of tasks for the day
   - a store listing all of the created projects, both past and present
+  
+Future Features:
+  - Implement an API which allows assigned users to text or send voice clips to dashboard.
+  - Automatic phone calls or text if someone is late on starting a task or to give reminders.
+  - Mobile app for event dashboard.
 
 ## Setup Instructions
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
