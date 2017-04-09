@@ -14,6 +14,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import { default as Fade } from 'react-fade';
 import ProjectSelection from './ProjectSelection.jsx'
+import Nav from './Nav.jsx'
 
 class App extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class App extends Component {
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
-        endDate: "", 
+        endDate: "",
         name: "",
         description: "",
         newTask: "",
@@ -832,7 +833,7 @@ class App extends Component {
       this.updateTimeline();
     }
   }
-  
+
   handleAssignedEmail = (event) => {
     this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedEmail: event.target.value})});
   }
@@ -930,42 +931,16 @@ class App extends Component {
   render() {
     return (
       <div className="App blue-grey lighten-5">
-        <nav className="nav-extended light-blue lighten-1">
-          <div className="nav-wrapper">
-            <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
-            {/*<a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>*/}
-            <ul id="nav-mobile" className="right">
-              {this.state.profile &&
-                <li className="li-img"><img src={this.state.profile.picture} className="avatar"/></li>
-              }
-              {this.state.profile &&
-                <li>
-                  <a>Logged in as: {this.state.profile.email}</a>
-                </li>
-              }
-              {this.state.profile &&
-                <li><a className="btn-logout waves-effect waves-light btn btn-small green lighten-2" onClick={this.logout}>Log out</a></li>
-              }
-              {!(this.state.profile) &&
-                <li>
-                  <a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a>
-                </li>
-              }
-            </ul>
-          </div>
-
-          <div className='nav-content'>
-            <ul className="tabs tabs-transparent">
-              <li className="tab" onClick={this.displayHomePage}><a href="#">Home</a></li>
-              <li className="tab" onClick={this.displayEventCreationFormPage}><a className="active" href="#">Create Event</a></li>
-              <li className="tab" onClick={this.displayProjectSelectionPage}><a href="#">Events</a></li>
-              {Object.keys(this.state.selectedProject).length !== 0 &&
-                <li className="tab" onClick={this.displayDashboardPage}><a href="#">{this.state.selectedProject.name}</a></li>
-              }
-              <li className="tab" onClick={this.displayTaskDashboard}><a href="#">Task Dashboard</a></li>
-            </ul>
-          </div>
-        </nav>
+        <Nav
+          {...this.state}
+          logout={this.logout}
+          showLock={this.showLock}
+          displayHomePage={this.displayHomePage}
+          displayEventCreationFormPage={this.displayEventCreationFormPage}
+          displayProjectSelectionPage={this.displayProjectSelectionPage}
+          displayDashboardPage={this.displayDashboardPage}
+          displayTaskDashboard={this.displayTaskDashboard}
+        />
 
         {this.state.currentWindow === 'TaskDashboard' &&
           <Fade out={this.state.TaskDashboardFade} duration={0.7} style={{visibility: 'visible'}} >
