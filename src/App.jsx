@@ -29,7 +29,7 @@ class App extends Component {
       eventCreation: {
         selected: {name: "", id: NaN},
         startDate: "",
-        endDate: "",
+        endDate: "", 
         name: "",
         description: "",
         newTask: "",
@@ -57,7 +57,6 @@ class App extends Component {
       progress_bar : [],
       clickedStartButton : [],
       clickedEndButton : [],
-      updatedProgressBar: 0
     };
 
     // this.openModal = this.openModal.bind(this);
@@ -510,54 +509,6 @@ class App extends Component {
     this.setState({'dashboardTimelineTasks': tasks});
   }
 
-  // updateProgressBarsonPageLoad = (taskIds) => {
-  //   const newProgressBar = this.state.progress_bar.slice();
-  //   let { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
-  //   taskIds.forEach((taskId)=>{
-  //     const targetId = +taskId;
-  //     // retaining the previous update in progress_bar, which references newProgressBar, so that the state is retained for the next time around, thus survives the page refresh
-  //     progress_bar = newProgressBar
-  //     const targetTask = allTasks.find((task) => task.id === targetId);
-  //     const targetUserId = targetTask.userId
-  //     const buttonClicked = clickedStartButton.find((id) => id === targetId);
-
-
-  //     if (buttonClicked !== targetId) {
-  //       // console.error("You must begin a task before you can end it!");
-  //       // Alert.error("You must begin a task before you can end it!");
-  //     } else {
-
-  //       const userProgress = progress_bar
-  //         .filter((v) => v)
-  //         .find(({ userId }) => userId === targetUserId)
-  //       // .find(({ projectId }) => projectId === targetUserId);
-
-  //       if (progress_bar.find(({ userId }) => userId === +targetUserId)) {
-
-  //         const progIdx = progress_bar.indexOf(userProgress);
-
-  //         // const taskStart = allTasks.find(({ userId }) => userId === targetUserId);
-
-  //         const percentOfTasksToChange = 100 / userProgress.total_tasks;
-
-  //         newProgressBar[progIdx] = {
-  //           ...userProgress,
-  //           completed_tasks: Math.min(100, userProgress.completed_tasks + percentOfTasksToChange),
-  //           incomplete_tasks: Math.max(0, userProgress.incomplete_tasks - percentOfTasksToChange),
-  //         };
-  //       }
-  //     }
-  //   })
-  //   // console.log(newProgressBar)
-  //   this.socket.send(JSON.stringify({
-  //     type: 'new-pb-state',
-  //     progress_bar: newProgressBar
-  //   }));
-  //   // console.log('wills progress bar', newProgressBar);
-  //   // this.setState({progress_bar: newProgressBar})
-  //   // this.setState(Object.assign({},this.state,{progress_bar: newProgressBar}));
-  // }
-
   updateCompletedAndIncompleteTasks = ({ target: { value } }) => {
     const targetId = +value;
     const { progress_bar = [], allTasks = [], clickedStartButton = [] } = this.state;
@@ -632,15 +583,6 @@ class App extends Component {
     this.socket.send(JSON.stringify(message));
   }
 
-  // serverStateStore = (e) => {
-  //   if (this.state.counter.length > 1) {
-  //     let message = {
-  //       type: 'server-state-store'
-  //     }
-  //     this.socket.send(JSON.stringify(message));
-  //   }
-  // }
-
   updateProgressBar = () => {
     this.socket.send(JSON.stringify({type: 'request-tasks-and-users'}));
   }
@@ -649,11 +591,6 @@ class App extends Component {
     if(previousState.eventCreation.timelineData.length !== this.state.eventCreation.timelineData.length){
       this.clearTaskFields();
     }
-    // if (previousState.clickedEndButton.length !== this.state.clickedEndButton.length && this.state.updatedProgressBar !== 1 ){
-    //   let onlyEndDateTasks = this.state.allTasks.filter((task) => task.end_date !== null ).map((task)=> task.id)
-    //   this.updateProgressBarsonPageLoad(onlyEndDateTasks)
-    //   this.setState({updatedProgressBar: 1})
-    // }
   }
 
   componentDidMount() {
@@ -733,7 +670,6 @@ class App extends Component {
           break;
 
         case 'progress-bar-update':
-          // console.log(data);
           let task = data.tasks.filter((t) => {
               return t.id;
           });
@@ -829,7 +765,6 @@ class App extends Component {
   }
 
   submitEvent = () => {
-    // console.log(this.state);
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
     this.socket.send(JSON.stringify(payload));
@@ -845,14 +780,6 @@ class App extends Component {
     newUser.newAssignedEmail = '';
     newUser.newAssignedPerson = '';
     this.setState({eventCreation: newUser});
-  }
-
-  handleAssignedEmail = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedEmail: event.target.value})});
-  }
-
-  handleAssignedPerson = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedPerson: event.target.value})});
   }
 
   updateTimeline = () => {
@@ -905,6 +832,14 @@ class App extends Component {
       this.updateTimeline();
     }
   }
+  
+  handleAssignedEmail = (event) => {
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedEmail: event.target.value})});
+  }
+
+  handleAssignedPerson = (event) => {
+    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedPerson: event.target.value})});
+  }
 
   newEventName = (event) => {
     this.setState({eventCreation: Object.assign({},this.state.eventCreation,{name: event.target.value})});
@@ -956,8 +891,6 @@ class App extends Component {
   }
 
   eventCreationDeleteUser = (index) => {
-    // console.log('delete this user')
-    // console.log(this.state.eventCreation.assigned_people[index]);
     let deleteUser = Object.assign({},this.state.eventCreation);
     let assigned_people = [...this.state.eventCreation.assigned_people];
     assigned_people.splice(index, 1);
@@ -967,8 +900,6 @@ class App extends Component {
   }
 
   eventCreationDeleteTask = (index) => {
-    // console.log('delete this task')
-    // console.log(this.state.eventCreation.tasks[index]);
     let deleteTask = Object.assign({},this.state.eventCreation);
     let tasks = [...this.state.eventCreation.tasks];
     tasks.splice(index, 1);
@@ -1003,7 +934,6 @@ class App extends Component {
           <div className="nav-wrapper">
             <a href="#!" className="brand-logo left"><i className="large material-icons">av_timer</i>EMPADA</a>
             {/*<a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>*/}
-
             <ul id="nav-mobile" className="right">
               {this.state.profile &&
                 <li className="li-img"><img src={this.state.profile.picture} className="avatar"/></li>
@@ -1021,7 +951,6 @@ class App extends Component {
                   <a className="waves-effect waves-light btn green lighten-2" onClick={this.showLock}>Sign In</a>
                 </li>
               }
-
             </ul>
           </div>
 
@@ -1029,7 +958,7 @@ class App extends Component {
             <ul className="tabs tabs-transparent">
               <li className="tab" onClick={this.displayHomePage}><a href="#">Home</a></li>
               <li className="tab" onClick={this.displayEventCreationFormPage}><a className="active" href="#">Create Event</a></li>
-              <li className="tab" onClick={this.displayProjectSelectionPage}><a href="#">Projects</a></li>
+              <li className="tab" onClick={this.displayProjectSelectionPage}><a href="#">Events</a></li>
               {Object.keys(this.state.selectedProject).length !== 0 &&
                 <li className="tab" onClick={this.displayDashboardPage}><a href="#">{this.state.selectedProject.name}</a></li>
               }
@@ -1050,7 +979,6 @@ class App extends Component {
             />
           </Fade>
         }
-
 
         {this.state.profile &&
           <div>
