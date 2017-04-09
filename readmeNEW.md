@@ -1,25 +1,14 @@
 
 # WELCOME TO EMPADA
 
-Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned users' tasks
+Empada is an event management dashboard designed to keep an event manager up to date on the progress of all of their assigned user's tasks
 all on one screen. It has a sleek design that negates the need for the manager to manually track tasks, and instead puts the ownace on the assigned users.
 
-### Authentication:
-![sign in with Facebook, Github or Google](https://media.giphy.com/media/3oKIPhFrwgCtvZwSVG/giphy.gif)
+Authentication:
 
-### Dynamically loaded timeline on task creation:
-![](https://media.giphy.com/media/3ohzdQVqHHkJaw5cVG/giphy.gif)
+![sign in with Facebook, Github or Google](https://giphy.com/gifs/3oKIPhFrwgCtvZwSVG "Authentication")
 
-### Event Selection and Dashboard
-![](https://media.giphy.com/media/3og0Iyire6odnFdvck/giphy.gif)
-
-### Start task and live timeline update.
-![](https://media.giphy.com/media/3o7btQSKU4iYkDOE48/giphy.gif)
-
-### End tasks to update progress bars and stop progressing.
-![](https://media.giphy.com/media/l4FGFc8JdXXuD8Y1y/giphy.gif)
-
-#### This app was created in 2 short weeks utilizing:
+This app was created in 2 short weeks utilizing:
 - [REACT.js](https://facebook.github.io/react/)
 - [EXPRESS.js](https://expressjs.com/)
 - [NODE.js](https://nodejs.org/en/)
@@ -32,13 +21,13 @@ all on one screen. It has a sleek design that negates the need for the manager t
 - [MAILGUN](https://www.mailgun.com/)
 
 
-#### Contributors for this project:
+Contributors for this project:
 - [Bernardo S.](https://github.com/bernardofcs)
 - [Ammar M.](https://github.com/Ammarmasud)
 - [Brandon B.](https://github.com/Bbooth4)
 - [Will C.](https://github.com/wichopy)
 
-#### Features include:
+Features include:
   - real time updates for all app features
   - event creation page where you can add new contractors and assign them tasks for the day
     - a dynamically rendered timeline that is created as tasks are assigned to contractors
@@ -50,7 +39,7 @@ all on one screen. It has a sleek design that negates the need for the manager t
   - an email is sent out to all contractors with their list of tasks for the day
   - a store listing all of the created projects, both past and present
   
-#### Future Features:
+Future Features:
   - Implement an API which allows assigned users to text or send voice clips to dashboard.
   - Automatic phone calls or text if someone is late on starting a task or to give reminders.
   - Mobile app for event dashboard.

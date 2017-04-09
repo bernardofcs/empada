@@ -1,6 +1,6 @@
-.App {
-    /*text-align: center;*/
-}
+/*.App {
+    text-align: center;
+}*/
 
 .brand-logo > i {
   padding-left: 0.1em !important;
@@ -168,6 +168,7 @@ dl {
   margin: 0;
   margin-top: 1em;
   bottom: -1.6em;
+  text-align: center; 
   z-index: 1;
   transition: 300ms;
 }
@@ -201,6 +202,7 @@ Table {
 
 .cards {
     transition: 300ms;
+    text-align: center; 
 }
 
 .cards:hover {
@@ -212,6 +214,19 @@ Table {
 MediaBox {
     position: relative;
     left: -20em;
+}
+
+.icons {
+    position: relative; 
+    margin-left: 1em; 
+}
+
+.big-icons {
+    position: relative; 
+}
+
+.align {
+    text-align: center; 
 }
 
 @keyframes App-logo-spin {
