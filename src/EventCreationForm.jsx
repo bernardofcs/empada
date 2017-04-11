@@ -5,7 +5,7 @@ import AddNewPersonButton from './AddNewPersonButton.jsx';
 import DeletePersonButton from './DeletePersonButton.jsx';
 import DeleteTaskButton from './DeleteTaskButton.jsx'
 import { Timeline } from 'react-chartkick';
-
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 
 class EventCreationForm extends Component {
   addNewTaskButton = () => {
