@@ -13,6 +13,7 @@ class EventCreationForm extends Component {
     if (this.props.eventCreation.selected.name === ""){
       disabled = "disabled";
     }
+    
     return (
       <a
         className={`${disabled} btn-floating halfway-fab waves-effect waves-light btn green lighten-2`}
