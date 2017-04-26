@@ -5,12 +5,12 @@ import AddNewPersonButton from './AddNewPersonButton.jsx';
 import DeletePersonButton from './DeletePersonButton.jsx';
 import DeleteTaskButton from './DeleteTaskButton.jsx'
 import { Timeline } from 'react-chartkick';
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-
+// import { createStore, combineReducers, applyMiddleware } from 'redux'
+const {tasks, name, description, startDate, assigned_people,  newAssignedEmail, newAssignedPerson, selected, timelineData} = this.props.eventCreation;
 class EventCreationForm extends Component {
   addNewTaskButton = () => {
     let disabled = "";
-    if (this.props.eventCreation.selected.name === ""){
+    if (selected.name === ""){
       disabled = "disabled";
     }
     
@@ -25,14 +25,14 @@ class EventCreationForm extends Component {
 
   personInputsDisabled = () => {
     let disabled = "";
-    if (this.props.eventCreation.name === ""
-      || this.props.eventCreation.startDate === "") {
+    if (name === ""
+      || startDate === "") {
       disabled = "disabled";
     }
     return (
       <div>
-        <input disabled={`${disabled}`} type="text" value={this.props.eventCreation.newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
-        <input disabled={`${disabled}`} type="email" value={this.props.eventCreation.newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
+        <input disabled={`${disabled}`} type="text" value={newAssignedPerson} onChange={this.props.handleAssignedPerson} placeholder="Bob,Jim,Sally..." />
+        <input disabled={`${disabled}`} type="email" value={newAssignedEmail} onChange={this.props.handleAssignedEmail} placeholder="Email@something.com..." />
       </div>
     );
   };
@@ -40,6 +40,7 @@ class EventCreationForm extends Component {
 
 
   render() {
+    
     return (
       <div>
         <div className="row">
@@ -50,11 +51,11 @@ class EventCreationForm extends Component {
             <div className="card-panel event-info">
               <div className="card-container">
                 Event Name:
-                  <input type="text" placeholder="THE MAIN EVENT!" value={this.props.eventCreation.name} onChange={this.props.newEventName} />
+                  <input type="text" placeholder="THE MAIN EVENT!" value={name} onChange={this.props.newEventName} />
                   Event Description:
-                  <input type="text" placeholder="Describe your event here" value={this.props.eventCreation.description} onChange={this.props.newEventDescription}/>
+                  <input type="text" placeholder="Describe your event here" value={description} onChange={this.props.newEventDescription}/>
                   Event Start Date:
-                  <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.startDate} onChange={this.props.newEventStartDate}/>
+                  <input type="date" placeholder="2017/01/01" value={startDate} onChange={this.props.newEventStartDate}/>
                   {/*Event End Date:
                   <input type="date" placeholder="2017/01/01" value={this.props.eventCreation.endDate} onChange={this.props.newEventEndDate}/>*/}
               </div>
@@ -71,14 +72,14 @@ class EventCreationForm extends Component {
                 {this.personInputsDisabled()}
 
                 <div className="collection">
-                  {this.props.eventCreation.assigned_people.map( (p, i) => {
+                  {assigned_people.map( (p, i) => {
                     return (
                       <a
                         key={p.id}
                         href="#!"
                         data-id={p.id}
                         className={
-                          +this.props.eventCreation.selected.id === +p.id ?
+                          +selected.id === +p.id ?
                           "collection-item active green lighten-2" :
                           "collection-item"
                         }
@@ -99,7 +100,7 @@ class EventCreationForm extends Component {
 
           <div className="col s12 m6">
             <div className="card-move-up card z-depth-0 light-blue lighten-2">
-              <span className="card-title white-text">Tasks: {this.props.eventCreation.selected.name}</span>
+              <span className="card-title white-text">Tasks: {selected.name}</span>
               {this.addNewTaskButton()}
             </div>
             <div className="card-panel event-create-tasks">
@@ -124,12 +125,12 @@ class EventCreationForm extends Component {
                       onNewStartTime: this.props.onNewStartTime,
                       onNewEndTime: this.props.onNewEndTime
                     }} />
-                    {this.props.eventCreation.tasks
+                    {tasks
                       .filter((t)=> {
                         // console.log('filtering');
                         // console.log(t.user_id);
                         // console.log(this.props.eventCreation.selected.id);
-                        return +t.user_id === +this.props.eventCreation.selected.id;
+                        return +t.user_id === +selected.id;
                       })
                       .map((t,i)=> {
                         // console.log('mapping')
@@ -163,7 +164,7 @@ class EventCreationForm extends Component {
             </div>
             <div className='card-panel event-create-timeline'>
               <div className="card-container">
-                <Timeline data={this.props.eventCreation.timelineData} />
+                <Timeline data={timelineData} />
               </div>
             </div>
           </div>
