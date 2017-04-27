@@ -4,10 +4,10 @@ import Auth0Lock from 'auth0-lock'
 import TaskDashboard from './TaskDashboard.js'
 // import { Button, Modal } from 'react-materialize';
 import ProgressBar from './ProgressBar.js';
-import EventCreationForm from './EventCreationForm.jsx';
+import EventCreationForm from './components/EventCreation/EventCreationForm.jsx';
 import DashboardTimeline from './DashboardTimeline.jsx';
 import HomePage from './HomePage.jsx';
-import Footerr from './Footer.jsx';
+
 import Newsfeed from './Newsfeed.jsx';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -1035,7 +1035,6 @@ class App extends Component {
         {this.state.currentWindow === 'HomePage' &&
           <Fade out={this.state.homePageFade} duration={0.7} style={{visibility: 'visible'}} >
             <HomePage />
-            {/*<Footerr />*/}
           </Fade>
         }
       </div>
