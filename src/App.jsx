@@ -764,7 +764,7 @@ class App extends Component {
     }
     this.socket.send(JSON.stringify(loginObj))
   }
-
+//eventCreationMethods
   submitEvent = () => {
     var payload = Object.assign({}, this.state);
     payload.type = 'eventCreation-newProject';
@@ -834,44 +834,11 @@ class App extends Component {
     }
   }
 
-  handleAssignedEmail = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedEmail: event.target.value})});
-  }
-
-  handleAssignedPerson = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newAssignedPerson: event.target.value})});
-  }
-
-  newEventName = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{name: event.target.value})});
-  }
-
-  newEventDescription = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{description: event.target.value})});
-  }
-
-  newEventEndDate = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {endDate: event.target.value})});
-  }
-
-  newEventStartDate = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {startDate: event.target.value})});
-  }
-
-  newTask = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation,{newTask: event.target.value})});
-  }
-
-  newDescription = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newDescription: event.target.value})});
-  }
-
-  newStartTime = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newStartTime: event.target.value}) });
-  }
-
-  newEndTime = (event) => {
-    this.setState({eventCreation: Object.assign({},this.state.eventCreation, {newEndTime: event.target.value})});
+  updateEventState = (event) => {
+    const field = event.target.name;
+    let eventForm = this.state.eventCreation;
+    eventForm[field] = event.target.value;
+    return this.setState({eventCreation: eventForm})
   }
 
   eventCreationSelectToggle = (e) => {
@@ -972,24 +939,15 @@ class App extends Component {
                 <div className="event-creation-form">
                   <EventCreationForm
                     {...this.state}
+                    updateEventState={this.updateEventState}
                     eventCreationDeleteUser={this.eventCreationDeleteUser}
                     eventCreationDeleteTask={this.eventCreationDeleteTask}
                     submitEvent={this.submitEvent}
                     eventCreationSelectToggle={this.eventCreationSelectToggle}
                     addTask={this.addTask}
                     clearTaskFields={this.clearTaskFields}
-                    onNewTask={this.newTask}
-                    onNewDescription={this.newDescription}
-                    onNewStartTime={this.newStartTime}
-                    onNewEndTime={this.newEndTime}
-                    newEventStartDate={this.newEventStartDate}
-                    newEventEndDate={this.newEventEndDate}
-                    newEventDescription={this.newEventDescription}
-                    newEventName={this.newEventName}
                     updateTimeline={this.updateTimeline}
-                    handleAssignedPerson={this.handleAssignedPerson}
                     addNewAssignedUser={this.addNewAssignedUser}
-                    handleAssignedEmail={this.handleAssignedEmail}
                   />
                 </div>
                 {this.addNewProjectButton()}
