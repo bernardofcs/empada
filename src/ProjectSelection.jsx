@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 
 class ProjectSelection extends Component {
   render() {
+    const { currentUserProjects, selectedProject, selectProject } = this.props;
     return (
       <div className="card-panel">
         <div className="collection">
-          {this.props.currentUserProjects.map( (p, i) => {
+          {currentUserProjects.map( (p, i) => {
             return (
               <a
                 key={p.id}
                 href="#!"
                 data-id={p.id}
                 className={
-                  +this.props.selectedProject.id === +p.id ?
+                  +selectedProject.id === +p.id ?
                     "collection-item active" :
                     "collection-item"
                 }
-                onClick={this.props.selectProject}>
+                onClick={selectProject}>
                 {p.name}
               </a>
               );

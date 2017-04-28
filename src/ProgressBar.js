@@ -5,7 +5,6 @@ import '../styles/App.css'
 
 
 class ProgressBar extends Component {
-  debugger;
   render() {
     return (
       <Row>

@@ -497,7 +497,6 @@ class App extends Component {
       'completed late'  : '#F26430',
       'not started'     : '#F26430'
     };
-    // debugger;
 
     tasks = tasks.map((arr) => {
       // console.log(arr);

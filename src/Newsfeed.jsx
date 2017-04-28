@@ -240,18 +240,17 @@ class Newsfeed extends Component {
 
   // }
   // <ul className="collapsible popout" data-collapsible="accordion"></ul>
-
   render() {
+    const { updateNewsfeed, newsfeed } = this.props;
     return (
       <div>
         <div className="card-move-up card z-depth-0 light-blue lighten-2">
           <span className="card-title white-text">Newsfeed</span>
         </div>
         <div className='newsfeed card-panel'>
-          <ReactInterval timeout={1000} enabled={true} callback={this.props.updateNewsfeed} />
-
+          <ReactInterval timeout={1000} enabled={true} callback={updateNewsfeed} />
           <div className="notifications">
-            {this.props.newsfeed}
+            {newsfeed}
           </div>
         </div>
       </div>

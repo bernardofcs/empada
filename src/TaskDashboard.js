@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Table, Collection } from 'react-materialize';
+import { Row, Table } from 'react-materialize';
 import TaskDashboardFields from './TaskDashboardFields.jsx'
 import '../styles/App.css'
 
