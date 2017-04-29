@@ -15,7 +15,7 @@ import 'react-s-alert/dist/s-alert-css-effects/genie.css';
 import { default as Fade } from 'react-fade';
 import ProjectSelection from './ProjectSelection.jsx'
 import Nav from './Nav.jsx'
-
+import * as types from './actions/actionTypes';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -624,17 +624,17 @@ class App extends Component {
 
       switch (data.type) {
 
-        case 'update-project-list':
+        case types.update_project_list:
           this.setState({ currentUserProjects: data.projects });
           break;
 
-        case "start-time-button-clicked":
+        case types.start_time_button_clicked:
           // console.log('clicked start time')
           this.checkStartTime();
           this.setState({ clickedStartButton: [...this.state.clickedStartButton, +data.id] });
           break;
 
-        case "end-time-button-clicked":
+        case types.end_time_button_clicked:
           // console.log('clicked end time')
           this.checkEndTime();
           this.setState({ clickedEndButton: [...this.state.clickedEndButton, +data.id] });
