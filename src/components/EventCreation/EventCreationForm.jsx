@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes, createElement as ce } from 'react';
 import '../../../styles/App.css';
 import NewTaskFields from './NewTaskFields.jsx';
 import AddNewPersonButton from './AddNewPersonButton.jsx';
-import NewTaskRow from './NewTaskRow.jsx';
-import NewPeopleRow from './NewPeopleRow.jsx';
+import EventCreateTasksCard from './EventCreateTasksCard';
+import EventInfoCard from './EventInfoCard.js';
+import EventUsersCard from './EventUsersCard.js';
 import { Timeline } from 'react-chartkick';
+
+// import {connect} from 'react-redux';
+// import {bindActionCreators} from 'redux';
+// import * as eventActions from '../../actions/courseActions';
+// import {browserHistory} from 'react-router';
 // import { createStore, combineReducers, applyMiddleware } from 'redux'
 class EventCreationForm extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
   addNewTaskButton = () => {
     let disabled = "";
     if (this.props.eventCreation.selected.name === ""){
@@ -48,82 +51,33 @@ class EventCreationForm extends Component {
             <div className="card-move-up card z-depth-0 light-blue lighten-2">
               <span className="card-title white-text">Event</span>
             </div>
-            <div className="card-panel event-info">
-              <div className="card-container">
-                Event Name:
-                  <input type="text" placeholder="THE MAIN EVENT!" value={name} name='name' onChange={updateEventState} />
-                Event Description:
-                  <input type="text" placeholder="Describe your event here" value={description} name='description' onChange={updateEventState}/>
-                Event Start Date:
-                  <input type="date" placeholder="2017/01/01" value={startDate} name='startDate' onChange={updateEventState}/>
-                Event End Date:
-                  <input type="date" placeholder="2017/01/01" value={endDate} name='endDate' onChange={updateEventState}/>
-              </div>
-            </div>
+            <EventInfoCard 
+              name={name} 
+              description={description} 
+              startDate={startDate} 
+              endDate={endDate} 
+              updateEventState={updateEventState} 
+            />
           </div>
           <div className='col s12 m3'>
             <div className="card-move-up card z-depth-0 light-blue lighten-2">
               <span className="card-title white-text">People</span>
               <AddNewPersonButton {...this.props} />
             </div>
-            <div className="card-panel event-users">
-              <div className="card-container">
-                {this.personInputsDisabled()}
-
-                <div className="collection">
-                  {assigned_people
-                    .map( (p, i) => {
-                      return <NewPeopleRow 
-                                p={p} 
-                                i={i} 
-                                selected={selected} 
-                                eventCreationSelectToggle={eventCreationSelectToggle} 
-                                eventCreationDeleteUser={eventCreationDeleteUser}
-                      />
-                    })
-                  }
-                </div>
-              </div>
-            </div>
+            <EventUsersCard
+              personInputsDisabled={this.personInputsDisabled}
+              assigned_people={assigned_people}
+              selected={selected}
+              eventCreationSelectToggle={eventCreationSelectToggle}
+              eventCreationDeleteUser={eventCreationDeleteUser}
+            />
           </div>
-
           <div className="col s12 m6">
             <div className="card-move-up card z-depth-0 light-blue lighten-2">
               <span className="card-title white-text">Tasks: {selected.name}</span>
               {this.addNewTaskButton()}
             </div>
-            <div className="card-panel event-create-tasks">
-              <div className="card-container">
-
-                <table>
-                  <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <NewTaskFields
-                      {...this.props}
-                    />
-                    {tasks
-                      .filter((t)=> {
-                        return +t.user_id === +selected.id;
-                      })
-                      .map((t,i)=> {
-                        return <NewTaskRow 
-                                t={t} 
-                                i={i} 
-                                eventCreationDeleteTask={eventCreationDeleteTask}
-                        />
-                      })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <EventCreateTasksCard {...this.props} eventCreationDeleteTask={eventCreationDeleteTask} />
           </div>
         </div>
         <div className='row'>
@@ -144,4 +98,17 @@ class EventCreationForm extends Component {
   }
 }
 
+// function mapStateToProps(state, ownProps) {
+//   return {
+//     courses: state.courses
+//   };
+// }
+
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     actions: bindActionCreators(courseActions, dispatch)
+//   };
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(EventCreationForm);
 export default EventCreationForm;
